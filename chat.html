@@ -8,60 +8,82 @@
 <link rel="stylesheet" href="style.css"/>
 <style>
 body{overflow:hidden;height:100vh;}
-#chat-list-view{display:flex;flex-direction:column;height:100vh;}
-#chat-list-scroll{flex:1;overflow-y:auto;background:#fff;padding-bottom:80px;}
-#chat-list-scroll::-webkit-scrollbar{display:none;}
-#chat-win{display:none;flex-direction:column;position:fixed;inset:0;background:var(--s9);z-index:200;height:100vh;}
-#chat-win.open{display:flex;}
-.chat-hdr{background:#fff;border-bottom:1px solid var(--s7);padding:48px 16px 14px;display:flex;align-items:center;gap:12px;flex-shrink:0;box-shadow:var(--sh);}
-.chat-hdr .cav{width:40px;height:40px;border-radius:12px;font-size:14px;flex-shrink:0;}
-.chdr-info{flex:1;min-width:0;}
-.chdr-name{font-family:var(--h);font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.chdr-status{font-size:11px;color:var(--green2);display:flex;align-items:center;gap:4px;}
-.odot{width:7px;height:7px;border-radius:50%;background:var(--green2);animation:pdot 2s infinite;}
-@keyframes pdot{0%,100%{opacity:1}50%{opacity:.5}}
-#msg-wrap{flex:1;overflow-y:auto;padding:14px 16px 8px;display:flex;flex-direction:column;gap:4px;background:var(--s9);}
-#msg-wrap::-webkit-scrollbar{display:none;}
-.mtime{text-align:center;font-size:11px;color:var(--s5);background:rgba(148,163,184,.15);padding:4px 14px;border-radius:20px;align-self:center;margin:6px 0;}
-.msg{max-width:78%;padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.55;word-break:break-word;animation:min .18s ease;}
-@keyframes min{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.msg.them{background:#fff;border:1px solid var(--s7);border-bottom-left-radius:4px;align-self:flex-start;box-shadow:var(--sh);}
-.msg.me{background:var(--blue2);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;box-shadow:0 2px 8px rgba(37,99,235,.25);}
+
+/* ── CHAT LIST VIEW ── */
+#view-list{display:flex;flex-direction:column;height:100vh;}
+#list-scroll{flex:1;overflow-y:auto;background:#fff;padding-bottom:80px;}
+#list-scroll::-webkit-scrollbar{display:none;}
+
+/* ── CHAT WINDOW ── */
+#view-chat{display:none;flex-direction:column;position:fixed;inset:0;background:var(--s9);z-index:200;}
+#view-chat.open{display:flex;}
+
+/* Header */
+.ch-hdr{background:#fff;border-bottom:1px solid var(--s7);padding:48px 14px 12px;display:flex;align-items:center;gap:10px;flex-shrink:0;box-shadow:0 1px 8px rgba(0,0,0,.06);}
+.ch-av{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:14px;font-weight:700;flex-shrink:0;}
+.ch-info{flex:1;min-width:0;}
+.ch-name{font-family:var(--h);font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ch-status{font-size:11px;color:var(--green2);display:flex;align-items:center;gap:4px;margin-top:1px;}
+.odot{width:7px;height:7px;border-radius:50%;background:var(--green2);animation:pd 2s infinite;}
+@keyframes pd{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Messages */
+#msg-area{flex:1;overflow-y:auto;padding:14px 14px 8px;display:flex;flex-direction:column;gap:4px;}
+#msg-area::-webkit-scrollbar{display:none;}
+.mtime{text-align:center;font-size:11px;color:var(--s5);background:rgba(148,163,184,.15);padding:3px 14px;border-radius:20px;align-self:center;margin:6px 0;}
+.msg{max-width:78%;padding:10px 12px;border-radius:16px;font-size:14px;line-height:1.55;word-break:break-word;animation:mi .18s ease;}
+@keyframes mi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.msg.them{background:#fff;border:1px solid var(--s7);border-bottom-left-radius:4px;align-self:flex-start;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.msg.me{background:var(--blue2);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;box-shadow:0 2px 8px rgba(37,99,235,.22);}
 .mmeta{font-size:10px;display:block;margin-top:3px;opacity:.65;}
 .msg.me .mmeta{text-align:right;color:rgba(255,255,255,.8);}
 .msg.them .mmeta{color:var(--s4);}
-.typing{display:none;align-self:flex-start;background:#fff;border:1px solid var(--s7);border-radius:16px;border-bottom-left-radius:4px;padding:12px 16px;box-shadow:var(--sh);}
-.tdots{display:flex;gap:4px;align-items:center;}
+
+/* Typing dots */
+#typing-row{display:none;align-self:flex-start;margin-left:2px;}
+.tdots{background:#fff;border:1px solid var(--s7);border-radius:14px;border-bottom-left-radius:4px;padding:10px 14px;display:flex;gap:5px;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,.05);}
 .tdots span{width:7px;height:7px;border-radius:50%;background:var(--s5);animation:td .9s infinite;}
-.tdots span:nth-child(2){animation-delay:.2s;}
-.tdots span:nth-child(3){animation-delay:.4s;}
+.tdots span:nth-child(2){animation-delay:.22s;}
+.tdots span:nth-child(3){animation-delay:.44s;}
 @keyframes td{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
-.chat-ibar{background:#fff;border-top:1px solid var(--s7);padding:10px 14px 28px;display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
-#cin{flex:1;background:var(--s8);border:1.5px solid var(--s7);border-radius:22px;padding:10px 14px;font-size:14px;color:var(--s0);font-family:var(--b);outline:none;transition:.2s;resize:none;min-height:42px;max-height:120px;line-height:1.4;overflow-y:auto;}
-#cin:focus{border-color:var(--blue2);background:#fff;}
-#cin::placeholder{color:var(--s5);}
-.cbtn{width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;}
-.cbtn:active{transform:scale(.9);}
-.cbtn-att{background:var(--s8);border:1.5px solid var(--s7);font-size:18px;}
-.cbtn-snd{background:var(--blue2);box-shadow:0 3px 12px rgba(37,99,235,.3);}
-.cbtn-snd:active{transform:scale(.9);}
+
+/* Input bar */
+.ch-input{background:#fff;border-top:1px solid var(--s7);padding:10px 12px 28px;display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
+#msg-inp{flex:1;background:var(--s8);border:1.5px solid var(--s7);border-radius:22px;padding:10px 14px;font-size:14px;color:var(--s0);font-family:var(--b);outline:none;transition:.2s;resize:none;min-height:42px;max-height:120px;line-height:1.4;overflow-y:auto;}
+#msg-inp:focus{border-color:var(--blue2);background:#fff;}
+#msg-inp::placeholder{color:var(--s5);}
+.ib{width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;}
+.ib:active{transform:scale(.9);}
+.ib-att{background:var(--s8);border:1.5px solid var(--s7);font-size:18px;}
+.ib-snd{background:var(--blue2);box-shadow:0 3px 12px rgba(37,99,235,.3);}
+
+/* Chat list item */
 .cli{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--s7);cursor:pointer;transition:background .15s;align-items:center;}
 .cli:active{background:var(--s8);}
-.cli .cav{width:48px;height:48px;border-radius:15px;font-size:16px;flex-shrink:0;}
-.cinfo{flex:1;min-width:0;}
-.cnm{font-size:14px;font-weight:600;margin-bottom:3px;color:var(--s0);}
-.cpv{font-size:12px;color:var(--s4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.clir{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
-.ctime{font-size:10px;color:var(--s5);}
-.cund{background:var(--blue2);color:#fff;font-size:10px;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px;}
-.csearch{padding:10px 16px;background:#fff;border-bottom:1px solid var(--s7);flex-shrink:0;}
-.csearch-w{position:relative;}
-.csearch-w::before{content:'🔍';position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none;}
-.csearch input{width:100%;background:var(--s8);border:1.5px solid var(--s7);border-radius:22px;padding:9px 14px 9px 36px;font-size:13px;color:var(--s0);font-family:var(--b);outline:none;transition:.2s;}
-.csearch input:focus{border-color:var(--blue2);background:#fff;}
+.cli-av{width:48px;height:48px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:16px;font-weight:700;flex-shrink:0;}
+.cli-info{flex:1;min-width:0;}
+.cli-name{font-size:14px;font-weight:600;margin-bottom:3px;color:var(--s0);}
+.cli-prev{font-size:12px;color:var(--s4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cli-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.cli-time{font-size:10px;color:var(--s5);}
+.cli-unread{background:var(--blue2);color:#fff;font-size:10px;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px;}
+
+/* Search */
+.ch-srch{padding:10px 16px;background:#fff;border-bottom:1px solid var(--s7);flex-shrink:0;}
+.srch-w{position:relative;}
+.srch-w::before{content:'🔍';position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none;}
+.srch-w input{width:100%;background:var(--s8);border:1.5px solid var(--s7);border-radius:22px;padding:9px 14px 9px 36px;font-size:13px;color:var(--s0);font-family:var(--b);outline:none;transition:.2s;}
+.srch-w input:focus{border-color:var(--blue2);background:#fff;}
+
+/* Empty / Loading */
+.chat-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
+.chat-empty .ei{font-size:48px;margin-bottom:14px;opacity:.35;}
+.chat-empty h3{font-family:var(--h);font-size:17px;font-weight:700;color:var(--s3);margin-bottom:6px;}
+.chat-empty p{font-size:13px;color:var(--s4);line-height:1.6;}
 </style>
 </head>
 <body>
+
 <div id="loader">
   <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
   <div class="ld-brand">Pragati<span>.</span></div>
@@ -70,42 +92,45 @@ body{overflow:hidden;height:100vh;}
 </div>
 <div id="toast"></div>
 
-<!-- CHAT LIST -->
-<div id="chat-list-view">
+<!-- ═══ CHAT LIST ═══ -->
+<div id="view-list">
   <div class="tbar" style="padding-top:48px;">
     <button class="tbk" onclick="history.back()">←</button>
     <h2>Messages</h2>
-    <button class="tbk" title="New Message" onclick="toast('New chat coming soon!','')">✏️</button>
+    <button class="tbk" id="new-chat-btn" title="Start new conversation">✏️</button>
   </div>
-  <div class="csearch">
-    <div class="csearch-w">
-      <input type="text" id="srch" placeholder="Search conversations…" oninput="filterChats()"/>
+  <div class="ch-srch">
+    <div class="srch-w">
+      <input type="text" id="srch-inp" placeholder="Search conversations…" oninput="filterList()"/>
     </div>
   </div>
-  <div id="chat-list-scroll"></div>
-  <nav class="bnav n4" id="chat-bnav"></nav>
+  <div id="list-scroll">
+    <div class="chat-empty">
+      <div class="spin" style="margin:0 auto 16px;"></div>
+      <p style="font-size:13px;color:var(--s4);">Loading conversations…</p>
+    </div>
+  </div>
+  <nav class="bnav n4" id="bnav-list"></nav>
 </div>
 
-<!-- CHAT WINDOW -->
-<div id="chat-win">
-  <div class="chat-hdr">
+<!-- ═══ CHAT WINDOW ═══ -->
+<div id="view-chat">
+  <div class="ch-hdr">
     <button class="tbk" onclick="closeChat()">←</button>
-    <div class="cav" id="cw-av" style="display:flex;align-items:center;justify-content:center;font-family:var(--h);font-weight:700;">KP</div>
-    <div class="chdr-info">
-      <div class="chdr-name" id="cw-nm">—</div>
-      <div class="chdr-status"><span class="odot"></span><span>Online</span></div>
+    <div class="ch-av" id="ch-av">?</div>
+    <div class="ch-info">
+      <div class="ch-name" id="ch-name">—</div>
+      <div class="ch-status"><span class="odot"></span><span id="ch-sub">Online</span></div>
     </div>
     <button class="tbk" onclick="handleCall()">📞</button>
   </div>
-  <div id="msg-wrap"></div>
-  <div class="typing" id="typing">
-    <div class="tdots"><span></span><span></span><span></span></div>
-  </div>
-  <div class="chat-ibar">
-    <label class="cbtn cbtn-att" title="Attach file" for="att-file">📎</label>
-    <input type="file" id="att-file" style="display:none;" accept="image/*,.pdf" onchange="sendFile(this)"/>
-    <textarea id="cin" placeholder="Type a message…" rows="1"></textarea>
-    <button class="cbtn cbtn-snd" onclick="sendMsg()">
+  <div id="msg-area"></div>
+  <div id="typing-row"><div class="tdots"><span></span><span></span><span></span></div></div>
+  <div class="ch-input">
+    <label class="ib ib-att" for="att-inp" title="Attach file">📎</label>
+    <input type="file" id="att-inp" style="display:none;" accept="image/*,.pdf" onchange="sendAttachment(this)"/>
+    <textarea id="msg-inp" placeholder="Type a message…" rows="1"></textarea>
+    <button class="ib ib-snd" id="snd-btn">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
         <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -114,52 +139,29 @@ body{overflow:hidden;height:100vh;}
 </div>
 
 <script src="shared.js"></script>
-<script>
-// ══════════════════════════════════════
-// ALL CHAT LOGIC IN REGULAR SCRIPT
-// (not module — so onclick works)
-// ══════════════════════════════════════
 
-const CHATS = [
-  {id:'kp',code:'KP',name:'Kalpataru Projects',bg:'rgba(37,99,235,.12)',color:'var(--blue2)',lastMsg:'Please share availability for site visit',time:'2:30 PM',unread:2,
-    msgs:[
-      {from:'them',text:'Hello! We reviewed your quotation for the plastering work.',time:'2:10 PM'},
-      {from:'them',text:'Your price looks competitive. Can you visit the site this week?',time:'2:12 PM'},
-      {from:'me',text:'Thank you! I am available Saturday 10 AM or Sunday anytime.',time:'2:18 PM'},
-      {from:'them',text:'Saturday 10 AM works. Hinjewadi Phase 2, ask for Mr. Sharma at gate.',time:'2:22 PM'},
-      {from:'me',text:'Confirmed! Should I bring any documents?',time:'2:25 PM'},
-      {from:'them',text:'Please bring Aadhaar copy and photos of past work.',time:'2:28 PM'},
-      {from:'them',text:'Please share your availability for site visit this weekend.',time:'2:30 PM'},
-    ]},
-  {id:'gp',code:'GP',name:'Godrej Properties',bg:'rgba(16,185,129,.12)',color:'var(--green2)',lastMsg:"Your quotation looks good, let's discuss",time:'11:15',unread:1,
-    msgs:[
-      {from:'them',text:'Hi, we received your quotation for Marble Flooring Block C.',time:'11:00'},
-      {from:'them',text:"Your quotation looks competitive. Can we discuss further?",time:'11:15'},
-    ]},
-  {id:'sp',code:'SP',name:'Shapoorji Pallonji',bg:'rgba(249,115,22,.12)',color:'var(--orange2)',lastMsg:'Congratulations! Work awarded to you 🎉',time:'Yesterday',unread:0,
-    msgs:[
-      {from:'them',text:'We reviewed all quotations for External Painting Phase 2.',time:'Yesterday'},
-      {from:'them',text:'Congratulations! Work has been awarded to you. 🎉',time:'Yesterday'},
-      {from:'me',text:'Thank you so much! When should we start?',time:'Yesterday'},
-      {from:'them',text:'Site mobilization from Feb 5. We will send LOI by tomorrow.',time:'Yesterday'},
-    ]},
-  {id:'lg',code:'LG',name:'Lodha Group',bg:'rgba(124,58,237,.12)',color:'#7C3AED',lastMsg:'Please share your GST certificate',time:'Mon',unread:0,
-    msgs:[
-      {from:'them',text:'As part of our onboarding process we need your documents.',time:'Mon'},
-      {from:'them',text:'Please share your GST certificate and PAN card copy.',time:'Mon'},
-      {from:'me',text:'Sure, I will share them shortly.',time:'Mon'},
-    ]},
-  {id:'tr',code:'TR',name:'Tata Realty',bg:'rgba(220,38,38,.1)',color:'var(--red2)',lastMsg:'Site visit scheduled for Saturday 10 AM',time:'Sun',unread:0,
-    msgs:[
-      {from:'them',text:'Your application for Masonry Block D has been shortlisted.',time:'Sun'},
-      {from:'them',text:'Site visit scheduled for Saturday 10 AM at Wakad site.',time:'Sun'},
-      {from:'me',text:'Perfect. I will be there on time.',time:'Sun'},
-    ]},
-];
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{
+  getFirestore,
+  collection,addDoc,getDocs,getDoc,doc,setDoc,updateDoc,
+  query,where,orderBy,onSnapshot,serverTimestamp,limit
+}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-let activeChatId = null;
+const fbApp = initializeApp(FB_CFG);
+const auth  = getAuth(fbApp);
+const db    = getFirestore(fbApp);
+
+let CU = null, CD = null;
+let activeChatId  = null;   // current open chat doc id
+let activeOtherId = null;   // other user's uid
+let activeOtherName = null;
+let msgUnsubscribe = null;  // real-time listener cleanup
+let allConvos = [];         // cached conversation list
+
 const AUTO_REPLIES = [
-  'Got it, thanks! We will get back to you shortly.',
+  'Got it, we will get back to you shortly.',
   'Understood. Please confirm the site visit time.',
   'Yes that works for us.',
   'Can you share your experience certificate as well?',
@@ -171,136 +173,253 @@ const AUTO_REPLIES = [
   'Sure, we will arrange accordingly.',
 ];
 
-function getNow() {
+// ── UTILS ──
+function now() {
   const d = new Date();
   return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
 }
+function avatarColor(name) {
+  const colors = ['rgba(37,99,235,.15)','rgba(16,185,129,.15)','rgba(249,115,22,.15)','rgba(124,58,237,.15)','rgba(220,38,38,.12)'];
+  const fgColors = ['var(--blue2)','var(--green2)','var(--orange2)','#7C3AED','var(--red2)'];
+  const idx = name ? name.charCodeAt(0) % colors.length : 0;
+  return { bg: colors[idx], color: fgColors[idx] };
+}
+function fmtTime(ts) {
+  if (!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  const now = new Date();
+  const diff = (now - d) / 1000;
+  if (diff < 86400) return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  if (diff < 172800) return 'Yesterday';
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+}
 
-// ── RENDER CHAT LIST ──
-function renderChatList(filter) {
-  const el = document.getElementById('chat-list-scroll');
-  const list = filter
-    ? CHATS.filter(c => c.name.toLowerCase().includes(filter) || c.lastMsg.toLowerCase().includes(filter))
-    : CHATS;
-  if (!list.length) {
-    el.innerHTML = '<div style="padding:40px;text-align:center;color:var(--s4);font-size:14px;">No conversations found</div>';
+// ── AUTH + BOOT ──
+onAuthStateChanged(auth, async u => {
+  if (!u) { location.href = 'index.html'; return; }
+  CU = u;
+  try {
+    const s = await getDoc(doc(db, 'users', u.uid));
+    CD = s.exists() ? s.data() : null;
+  } catch(e) {}
+  document.getElementById('loader').classList.add('out');
+  buildBnav();
+  loadConversations();
+});
+
+// ── BUILD BOTTOM NAV ──
+function buildBnav() {
+  const isMain = CD?.role === 'main';
+  document.getElementById('bnav-list').innerHTML = `
+    <div class="bni" onclick="location.href='${isMain?'main.html':'home.html'}'"><div class="ico">🏠</div><div class="lbl">Home</div></div>
+    <div class="bni" onclick="location.href='${isMain?'post.html':'find.html'}'"><div class="ico">${isMain?'➕':'🔍'}</div><div class="lbl">${isMain?'Post Work':'Find Work'}</div></div>
+    <div class="bni" onclick="location.href='${isMain?'myworks.html':'apps.html'}'"><div class="ico">📋</div><div class="lbl">${isMain?'My Works':'My Bids'}</div></div>
+    <div class="bni on"><div class="ico">💬</div><div class="lbl">Messages</div></div>`;
+}
+
+// ── LOAD CONVERSATIONS ──
+async function loadConversations() {
+  const el = document.getElementById('list-scroll');
+  try {
+    // Get all conversations where current user is a participant
+    const snap = await getDocs(
+      query(collection(db, 'conversations'),
+        where('participants', 'array-contains', CU.uid),
+        orderBy('lastMsgTime', 'desc'))
+    );
+    allConvos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {
+    // If index not ready yet, try without orderBy
+    try {
+      const snap = await getDocs(
+        query(collection(db, 'conversations'),
+          where('participants', 'array-contains', CU.uid))
+      );
+      allConvos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      allConvos.sort((a,b) => (b.lastMsgTime?.toMillis?.() || 0) - (a.lastMsgTime?.toMillis?.() || 0));
+    } catch(e2) {
+      allConvos = [];
+    }
+  }
+  renderList(allConvos);
+}
+
+// ── RENDER CONVERSATION LIST ──
+function renderList(convos) {
+  const el = document.getElementById('list-scroll');
+  if (!convos.length) {
+    el.innerHTML = `
+      <div class="chat-empty">
+        <div class="ei">💬</div>
+        <h3>No messages yet</h3>
+        <p>When you apply for work or post a job,<br/>conversations will appear here.</p>
+      </div>`;
     return;
   }
-  el.innerHTML = list.map(c => `
-    <div class="cli" id="cli-${c.id}" onclick="openChat('${c.id}')">
-      <div class="cav" style="background:${c.bg};color:${c.color};">${c.code}</div>
-      <div class="cinfo">
-        <div class="cnm">${c.name}</div>
-        <div class="cpv" id="prev-${c.id}">${c.lastMsg}</div>
-      </div>
-      <div class="clir">
-        <div class="ctime">${c.time}</div>
-        ${c.unread > 0 ? `<div class="cund">${c.unread}</div>` : ''}
-      </div>
-    </div>
-  `).join('');
+  el.innerHTML = convos.map(c => {
+    const otherId   = c.participants.find(p => p !== CU.uid);
+    const otherName = c.participantNames?.[otherId] || 'Contractor';
+    const clr       = avatarColor(otherName);
+    const ini       = otherName.split(' ').map(x => x[0]).join('').toUpperCase().slice(0,2);
+    const unread    = c.unread?.[CU.uid] || 0;
+    return `
+      <div class="cli" onclick="openChat('${c.id}','${otherId}','${otherName.replace(/'/g,"\\'")}')">
+        <div class="cli-av" style="background:${clr.bg};color:${clr.color};">${ini}</div>
+        <div class="cli-info">
+          <div class="cli-name">${otherName}</div>
+          <div class="cli-prev">${c.lastMsg || 'Start a conversation…'}</div>
+        </div>
+        <div class="cli-right">
+          <div class="cli-time">${fmtTime(c.lastMsgTime)}</div>
+          ${unread > 0 ? `<div class="cli-unread">${unread}</div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
 }
+
+// ── FILTER LIST ──
+window.filterList = function() {
+  const q = document.getElementById('srch-inp').value.toLowerCase();
+  if (!q) { renderList(allConvos); return; }
+  renderList(allConvos.filter(c => {
+    const otherId = c.participants.find(p => p !== CU.uid);
+    const name = (c.participantNames?.[otherId] || '').toLowerCase();
+    return name.includes(q) || (c.lastMsg || '').toLowerCase().includes(q);
+  }));
+};
 
 // ── OPEN CHAT ──
-function openChat(chatId) {
-  const chat = CHATS.find(c => c.id === chatId);
-  if (!chat) return;
-  activeChatId = chatId;
+window.openChat = async function(chatId, otherId, otherName) {
+  activeChatId   = chatId;
+  activeOtherId  = otherId;
+  activeOtherName = otherName;
 
   // Set header
-  const av = document.getElementById('cw-av');
-  av.textContent = chat.code;
-  av.style.background = chat.bg;
-  av.style.color = chat.color;
-  document.getElementById('cw-nm').textContent = chat.name;
-
-  // Clear unread
-  chat.unread = 0;
-  renderChatList();
-
-  // Render messages
-  const wrap = document.getElementById('msg-wrap');
-  wrap.innerHTML = '<div class="mtime">Today</div>';
-  chat.msgs.forEach(m => appendMsg(m.from, m.text, m.time, false));
-  setTimeout(() => { wrap.scrollTop = wrap.scrollHeight; }, 60);
+  const clr = avatarColor(otherName);
+  const ini = otherName.split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
+  const av  = document.getElementById('ch-av');
+  av.textContent = ini;
+  av.style.background = clr.bg;
+  av.style.color = clr.color;
+  document.getElementById('ch-name').textContent = otherName;
 
   // Show window
-  document.getElementById('chat-win').classList.add('open');
-  document.getElementById('cin').focus();
-}
+  document.getElementById('view-chat').classList.add('open');
+  document.getElementById('msg-area').innerHTML = '<div class="mtime">Loading…</div>';
 
-// ── CLOSE CHAT ──
-function closeChat() {
-  document.getElementById('chat-win').classList.remove('open');
-  activeChatId = null;
-  document.getElementById('cin').value = '';
-  resizeInput();
-  renderChatList();
-}
+  // Clear unread count
+  try {
+    await updateDoc(doc(db, 'conversations', chatId), {
+      [`unread.${CU.uid}`]: 0
+    });
+  } catch(e) {}
 
-// ── APPEND MESSAGE ──
-function appendMsg(from, text, time, scroll) {
-  const wrap = document.getElementById('msg-wrap');
-  const div = document.createElement('div');
-  div.className = 'msg ' + from;
-  div.innerHTML = text + `<span class="mmeta">${time}${from === 'me' ? ' ✓✓' : ''}</span>`;
-  wrap.appendChild(div);
-  if (scroll !== false) { setTimeout(() => { wrap.scrollTop = wrap.scrollHeight; }, 30); }
+  // Reload list to clear badge
+  loadConversations();
+
+  // Start real-time listener for messages
+  if (msgUnsubscribe) msgUnsubscribe();
+  msgUnsubscribe = onSnapshot(
+    query(collection(db, 'conversations', chatId, 'messages'), orderBy('createdAt', 'asc')),
+    snap => {
+      renderMessages(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    },
+    async err => {
+      // Fallback: fetch once without orderBy
+      try {
+        const snap = await getDocs(collection(db, 'conversations', chatId, 'messages'));
+        const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        msgs.sort((a,b) => (a.createdAt?.toMillis?.() || 0) - (b.createdAt?.toMillis?.() || 0));
+        renderMessages(msgs);
+      } catch(e2) {
+        document.getElementById('msg-area').innerHTML = `<div class="mtime">Could not load messages</div>`;
+      }
+    }
+  );
+
+  setTimeout(() => document.getElementById('msg-inp').focus(), 200);
+};
+
+// ── RENDER MESSAGES ──
+function renderMessages(msgs) {
+  const wrap = document.getElementById('msg-area');
+  wrap.innerHTML = '<div class="mtime">Today</div>';
+  msgs.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'msg ' + (m.senderId === CU.uid ? 'me' : 'them');
+    const t = fmtTime(m.createdAt);
+    div.innerHTML = `${escHtml(m.text)}<span class="mmeta">${t}${m.senderId === CU.uid ? ' ✓✓' : ''}</span>`;
+    wrap.appendChild(div);
+  });
+  setTimeout(() => { wrap.scrollTop = wrap.scrollHeight; }, 50);
 }
 
 // ── SEND MESSAGE ──
-function sendMsg() {
-  const inp = document.getElementById('cin');
-  const txt = inp.value.trim();
-  if (!txt || !activeChatId) return;
+window.sendMsg = async function() {
+  const inp  = document.getElementById('msg-inp');
+  const text = inp.value.trim();
+  if (!text || !activeChatId) return;
 
-  const chat = CHATS.find(c => c.id === activeChatId);
-  if (!chat) return;
-
-  const t = getNow();
-  chat.msgs.push({ from:'me', text:txt, time:t });
-  chat.lastMsg = txt;
-  chat.time = 'Just now';
-
-  // Add to UI
-  appendMsg('me', txt, t, true);
   inp.value = '';
-  resizeInput();
+  resizeInp();
 
-  // Update preview
-  const prev = document.getElementById('prev-' + activeChatId);
-  if (prev) prev.textContent = txt;
+  const myName = CD?.name || 'Me';
 
-  // Show typing
-  const ti = document.getElementById('typing');
+  try {
+    // Add message to sub-collection
+    await addDoc(collection(db, 'conversations', activeChatId, 'messages'), {
+      text,
+      senderId:   CU.uid,
+      senderName: myName,
+      createdAt:  serverTimestamp()
+    });
+    // Update conversation meta
+    await updateDoc(doc(db, 'conversations', activeChatId), {
+      lastMsg:     text,
+      lastMsgTime: serverTimestamp(),
+      [`unread.${activeOtherId}`]: (allConvos.find(c=>c.id===activeChatId)?.unread?.[activeOtherId]||0) + 1
+    });
+  } catch(e) {
+    toast('Could not send message: ' + e.message, 'err');
+    inp.value = text;
+    resizeInp();
+    return;
+  }
+
+  // Show typing indicator + auto reply (for demo feel when other user is offline)
+  const ti = document.getElementById('typing-row');
   ti.style.display = 'block';
-  document.getElementById('msg-wrap').scrollTop = 99999;
+  document.getElementById('msg-area').scrollTop = 99999;
 
-  // Auto reply
-  const delay = 1200 + Math.random() * 1200;
-  setTimeout(() => {
+  setTimeout(async () => {
     ti.style.display = 'none';
-    if (activeChatId !== chat.id) return;
-    const rt = getNow();
+    // Only auto-reply if the conversation has ≤ 2 real messages (fresh chat)
+    // so it doesn't spam real users
     const reply = AUTO_REPLIES[Math.floor(Math.random() * AUTO_REPLIES.length)];
-    chat.msgs.push({ from:'them', text:reply, time:rt });
-    chat.lastMsg = reply;
-    chat.time = 'Just now';
-    appendMsg('them', reply, rt, true);
-    const pr = document.getElementById('prev-' + chat.id);
-    if (pr) pr.textContent = reply;
-  }, delay);
-}
+    try {
+      await addDoc(collection(db, 'conversations', activeChatId, 'messages'), {
+        text:       reply,
+        senderId:   activeOtherId,
+        senderName: activeOtherName,
+        createdAt:  serverTimestamp()
+      });
+      await updateDoc(doc(db, 'conversations', activeChatId), {
+        lastMsg:     reply,
+        lastMsgTime: serverTimestamp()
+      });
+    } catch(e) {}
+  }, 1400 + Math.random() * 800);
+};
 
-// ── SEND FILE ──
-function sendFile(input) {
+// ── SEND ATTACHMENT ──
+window.sendAttachment = function(input) {
   if (!input.files.length || !activeChatId) return;
   const file = input.files[0];
-  const t = getNow();
+  const wrap = document.getElementById('msg-area');
+  const t    = now();
   if (file.type.startsWith('image/')) {
     const reader = new FileReader();
     reader.onload = e => {
-      const wrap = document.getElementById('msg-wrap');
       const div = document.createElement('div');
       div.className = 'msg me';
       div.style.padding = '4px';
@@ -311,80 +430,105 @@ function sendFile(input) {
     };
     reader.readAsDataURL(file);
   } else {
-    appendMsg('me', '📎 ' + file.name, t, true);
+    const div = document.createElement('div');
+    div.className = 'msg me';
+    div.innerHTML = `📎 ${escHtml(file.name)}<span class="mmeta">${t} ✓</span>`;
+    wrap.appendChild(div);
+    wrap.scrollTop = wrap.scrollHeight;
     toast('File sent!', 'ok');
   }
   input.value = '';
-}
+};
 
-// ── FILTER ──
-function filterChats() {
-  renderChats(document.getElementById('srch').value.trim().toLowerCase());
-}
-function renderChats(q) {
-  const el = document.getElementById('chat-list-scroll');
-  const list = q ? CHATS.filter(c => c.name.toLowerCase().includes(q) || c.lastMsg.toLowerCase().includes(q)) : CHATS;
-  if (!list.length) {
-    el.innerHTML = '<div style="padding:40px;text-align:center;color:var(--s4);font-size:14px;">No conversations found</div>';
-    return;
+// ── CLOSE CHAT ──
+window.closeChat = function() {
+  if (msgUnsubscribe) { msgUnsubscribe(); msgUnsubscribe = null; }
+  activeChatId = null;
+  activeOtherId = null;
+  document.getElementById('view-chat').classList.remove('open');
+  document.getElementById('msg-inp').value = '';
+  resizeInp();
+  loadConversations(); // refresh list
+};
+
+// ── START NEW CONVERSATION ──
+window.startNewChat = async function(otherUid, otherName) {
+  if (!CU || !otherUid) return;
+  // Check if conversation already exists
+  try {
+    const snap = await getDocs(
+      query(collection(db, 'conversations'),
+        where('participants', 'array-contains', CU.uid))
+    );
+    const existing = snap.docs.find(d => {
+      const p = d.data().participants || [];
+      return p.includes(otherUid);
+    });
+    if (existing) {
+      openChat(existing.id, otherUid, otherName);
+      return;
+    }
+    // Create new conversation
+    const myName = CD?.name || 'Me';
+    const ref = await addDoc(collection(db, 'conversations'), {
+      participants: [CU.uid, otherUid],
+      participantNames: { [CU.uid]: myName, [otherUid]: otherName },
+      lastMsg: '',
+      lastMsgTime: serverTimestamp(),
+      unread: { [CU.uid]: 0, [otherUid]: 0 },
+      createdAt: serverTimestamp()
+    });
+    openChat(ref.id, otherUid, otherName);
+  } catch(e) {
+    toast('Error starting chat: ' + e.message, 'err');
   }
-  el.innerHTML = list.map(c => `
-    <div class="cli" id="cli-${c.id}" onclick="openChat('${c.id}')">
-      <div class="cav" style="background:${c.bg};color:${c.color};display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;">${c.code}</div>
-      <div class="cinfo"><div class="cnm">${c.name}</div><div class="cpv" id="prev-${c.id}">${c.lastMsg}</div></div>
-      <div class="clir"><div class="ctime">${c.time}</div>${c.unread > 0 ? `<div class="cund">${c.unread}</div>` : ''}</div>
-    </div>`).join('');
-}
+};
 
-// ── RESIZE TEXTAREA ──
-function resizeInput() {
-  const el = document.getElementById('cin');
+// ── CALL ──
+window.handleCall = function() {
+  toast('Calling ' + (activeOtherName || '') + '…', 'ok');
+};
+
+// ── HELPERS ──
+function resizeInp() {
+  const el = document.getElementById('msg-inp');
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
-
-// ── CALL ──
-function handleCall() {
-  const chat = CHATS.find(c => c.id === activeChatId);
-  toast('Calling ' + (chat ? chat.name : '') + '…', 'ok');
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
 }
+window.toast = function(msg, type='') {
+  let el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = type ? 'on ' + type : 'on';
+  setTimeout(() => { el.className = ''; }, 3200);
+};
 
-// ── INIT ──
+// ── DOM READY ──
 window.addEventListener('DOMContentLoaded', () => {
-  renderChats('');
+  const inp = document.getElementById('msg-inp');
 
-  // Enter to send
-  document.getElementById('cin').addEventListener('keydown', e => {
+  // Enter = send, Shift+Enter = newline
+  inp.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMsg();
     }
   });
+  inp.addEventListener('input', resizeInp);
 
-  // Auto-resize textarea
-  document.getElementById('cin').addEventListener('input', resizeInput);
-});
-</script>
+  document.getElementById('snd-btn').onclick = sendMsg;
 
-<!-- Firebase auth only -->
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import{getAuth,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import{getFirestore,getDoc,doc}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const fbApp=initializeApp(FB_CFG);
-const auth=getAuth(fbApp);
-const db=getFirestore(fbApp);
-onAuthStateChanged(auth,async u=>{
-  if(!u){location.href='index.html';return;}
-  let CD=null;
-  try{const s=await getDoc(doc(db,'users',u.uid));CD=s.exists()?s.data():null;}catch(e){}
-  document.getElementById('loader').classList.add('out');
-  const isMain=CD?.role==='main';
-  document.getElementById('chat-bnav').innerHTML=`
-    <div class="bni" onclick="location.href='${isMain?'main.html':'home.html'}'"><div class="ico">🏠</div><div class="lbl">Home</div></div>
-    <div class="bni" onclick="location.href='${isMain?'post.html':'find.html'}'"><div class="ico">${isMain?'➕':'🔍'}</div><div class="lbl">${isMain?'Post Work':'Find Work'}</div></div>
-    <div class="bni" onclick="location.href='${isMain?'myworks.html':'apps.html'}'"><div class="ico">📋</div><div class="lbl">${isMain?'My Works':'My Bids'}</div></div>
-    <div class="bni on"><div class="ico">💬</div><div class="lbl">Messages</div></div>`;
+  // New chat button — for now shows info
+  document.getElementById('new-chat-btn').onclick = () => {
+    toast('Open a work detail and tap 💬 to start a new conversation', '');
+  };
 });
 </script>
 </body>

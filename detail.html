@@ -47,7 +47,7 @@
     <div style="height:100px;"></div>
   </div>
   <div class="scta" id="det-cta">
-    <button class="btn btn-g" style="width:46px;font-size:20px;padding:0;" onclick="go('chat.html')">💬</button>
+    <button class="btn btn-g" style="width:46px;font-size:20px;padding:0;" onclick="startChatWithPoster()">💬</button>
     <button class="btn btn-p" style="flex:1;" id="apply-btn">Submit Quotation →</button>
   </div>
 </div>
@@ -99,6 +99,30 @@ onAuthStateChanged(auth,async u=>{
   }catch(e){}
 });
 function toggleSave(){const b=document.getElementById('save-btn');b.textContent=b.textContent==='🔖'?'🔖✓':'🔖';toast('Saved to bookmarks','ok');}
+
+async function startChatWithPoster(){
+  if(!CU||!CW){toast('Please login first','err');return;}
+  const otherUid=CW.postedBy,otherName=CW.company||CW.postedByName||'Main Contractor';
+  if(!otherUid||otherUid===CU.uid){toast('Cannot chat with yourself','err');return;}
+  toast('Opening chat…','');
+  try{
+    let snap;
+    try{snap=await getDocs(query(collection(db,'conversations'),where('participants','array-contains',CU.uid)));}
+    catch(e){snap={docs:[]};}
+    const existing=snap.docs.find(d=>(d.data().participants||[]).includes(otherUid));
+    if(!existing){
+      const myName=CD?.name||'Contractor';
+      await addDoc(collection(db,'conversations'),{
+        participants:[CU.uid,otherUid],
+        participantNames:{[CU.uid]:myName,[otherUid]:otherName},
+        workId:CW.id,workTitle:CW.title,
+        lastMsg:'',lastMsgTime:serverTimestamp(),
+        unread:{[CU.uid]:0,[otherUid]:0},createdAt:serverTimestamp()
+      });
+    }
+  }catch(e){console.error(e);}
+  location.href='chat.html';
+}
 </script>
 </body>
 </html>
