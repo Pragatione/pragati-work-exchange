@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>Pragati Work Exchange</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --blue:#1D4ED8;--blue2:#2563EB;--blue3:#3B82F6;--blue4:#DBEAFE;--blue5:#EFF6FF;
+  --orange:#C2410C;--orange2:#EA580C;--orange3:#F97316;--orange4:#FEE2D5;--orange5:#FFF7ED;
+  --green:#065F46;--green2:#059669;--green3:#10B981;--green4:#D1FAE5;
+  --red:#991B1B;--red2:#DC2626;--red4:#FEE2E2;
+  --yellow:#92400E;--yellow4:#FEF3C7;
+  --s0:#0F172A;--s1:#1E293B;--s2:#334155;--s3:#475569;--s4:#64748B;--s5:#94A3B8;--s6:#CBD5E1;--s7:#E2E8F0;--s8:#F1F5F9;--s9:#F8FAFF;
+  --h:'Bricolage Grotesque',sans-serif;--b:'Plus Jakarta Sans',sans-serif;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.04);
+  --sh2:0 8px 24px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+}
+html,body{min-height:100%;background:var(--s9);font-family:var(--b);color:var(--s0);font-size:15px;overflow-x:hidden;}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s;}
+#loader.out{opacity:0;pointer-events:none;}
+.ld-icon{width:68px;height:68px;border-radius:20px;background:var(--blue2);display:flex;align-items:center;justify-content:center;margin-bottom:14px;box-shadow:0 8px 28px rgba(37,99,235,.3);}
+.ld-brand{font-family:var(--h);font-size:28px;font-weight:800;margin-bottom:3px;}
+.ld-brand span{color:var(--orange3);}
+.ld-sub{font-size:13px;color:var(--s4);margin-bottom:28px;}
+.ld-bar{width:140px;height:3px;background:var(--s7);border-radius:99px;overflow:hidden;}
+.ld-fill{height:100%;background:linear-gradient(90deg,var(--blue2),var(--orange3));animation:lf 1.8s ease forwards;}
+@keyframes lf{from{width:0}to{width:100%}}
+
+/* TOAST */
+#toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--s1);color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9998;transition:.3s;box-shadow:var(--sh2);white-space:nowrap;max-width:92vw;text-align:center;}
+#toast.on{transform:translateX(-50%) translateY(0);}
+#toast.ok{background:var(--green2);}
+#toast.err{background:var(--red2);}
+
+/* SCREENS */
+.scr{display:none;min-height:100vh;flex-direction:column;animation:fu .25s ease;}
+.scr.on{display:flex;}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* TOPBAR */
+.tbar{background:#fff;border-bottom:1px solid var(--s7);padding:14px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}
+.tbar h2{font-family:var(--h);font-size:17px;font-weight:700;flex:1;}
+.tbk{width:36px;height:36px;border-radius:10px;background:var(--s8);border:none;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:.15s;}
+.tbk:active{transform:scale(.92);}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--s7);display:grid;z-index:50;padding:6px 0 env(safe-area-inset-bottom,16px);box-shadow:0 -4px 20px rgba(0,0,0,.06);}
+.bnav.n4{grid-template-columns:repeat(4,1fr);}
+.bnav.n5{grid-template-columns:repeat(5,1fr);}
+.bni{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 2px;}
+.bni .ico{font-size:22px;transition:transform .2s;}
+.bni .lbl{font-size:10px;font-weight:600;color:var(--s5);}
+.bni.on .ico{transform:scale(1.1);}
+.bni.on .lbl{color:var(--blue2);}
+
+/* SCROLL */
+.pscr{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.pscr::-webkit-scrollbar{display:none;}
+.pb90{padding-bottom:90px;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;font-family:var(--b);font-size:14px;font-weight:600;cursor:pointer;padding:12px 20px;transition:.2s;white-space:nowrap;}
+.btn:active{transform:scale(.97);}
+.btn-p{background:var(--blue2);color:#fff;box-shadow:0 3px 10px rgba(37,99,235,.25);}
+.btn-o{background:var(--orange2);color:#fff;box-shadow:0 3px 10px rgba(234,88,12,.25);}
+.btn-g{background:#fff;color:var(--s0);border:1.5px solid var(--s7);}
+.btn-ol{background:#fff;color:var(--blue2);border:1.5px solid var(--blue2);}
+.btn-r{background:var(--red2);color:#fff;}
+.btn-sm{padding:8px 14px;font-size:12px;border-radius:9px;}
+.btn-lg{padding:14px 24px;font-size:15px;border-radius:13px;}
+.btn-bl{width:100%;}
+.btn-ld{opacity:.65;pointer-events:none;}
+
+/* FORM */
+.field{margin-bottom:16px;}
+.flbl{font-size:11px;font-weight:700;color:var(--s3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;display:block;}
+.fin{width:100%;background:#fff;border:1.5px solid var(--s6);border-radius:11px;padding:12px 14px;font-size:14px;color:var(--s0);font-family:var(--b);outline:none;transition:.2s;-webkit-appearance:none;}
+.fin:focus{border-color:var(--blue2);box-shadow:0 0 0 3px rgba(37,99,235,.08);}
+.fin::placeholder{color:var(--s5);}
+textarea.fin{resize:none;}
+select.fin{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;}
+.ferr{color:var(--red2);font-size:12px;margin-top:5px;display:none;}
+.ferr.on{display:block;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* TAGS */
+.tag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 9px;border-radius:7px;}
+.t-bl{background:var(--blue4);color:var(--blue);}
+.t-or{background:var(--orange4);color:var(--orange);}
+.t-gr{background:var(--green4);color:var(--green);}
+.t-re{background:var(--red4);color:var(--red);}
+.t-ye{background:var(--yellow4);color:var(--yellow);}
+.tags{display:flex;gap:6px;flex-wrap:wrap;}
+
+/* STATUS */
+.sts{font-size:10px;font-weight:700;padding:3px 9px;border-radius:7px;}
+.sts.pend{background:var(--yellow4);color:var(--yellow);}
+.sts.rev{background:var(--blue4);color:var(--blue);}
+.sts.awd{background:var(--green4);color:var(--green);}
+.sts.rej{background:var(--red4);color:var(--red);}
+.sts.open{background:var(--green4);color:var(--green);}
+
+/* CARDS */
+.card{background:#fff;border:1px solid var(--s7);border-radius:16px;box-shadow:var(--sh);}
+.cp{padding:16px;}
+
+/* WORK CARD */
+.wcard{background:#fff;border:1px solid var(--s7);border-radius:16px;overflow:hidden;cursor:pointer;transition:.2s;box-shadow:var(--sh);margin-bottom:12px;}
+.wcard:active{transform:scale(.98);border-color:var(--blue3);}
+.wh{padding:14px 16px 10px;background:linear-gradient(135deg,var(--blue5),#fff);}
+.wb{padding:10px 16px;}
+.wf{padding:10px 16px;border-top:1px solid var(--s7);display:flex;justify-content:space-between;align-items:center;background:var(--s9);}
+.wt{font-family:var(--h);font-size:15px;font-weight:700;margin:7px 0 4px;line-height:1.3;}
+.wco{font-size:12px;color:var(--s4);margin-bottom:8px;}
+.wmeta{display:flex;gap:10px;flex-wrap:wrap;}
+.wmeta span{font-size:11px;color:var(--s4);}
+.wbud{font-family:var(--h);font-size:15px;font-weight:800;color:var(--green2);}
+.wbids{font-size:11px;color:var(--s4);}
+
+/* APP ROW */
+.arow{background:#fff;border:1px solid var(--s7);border-radius:14px;margin-bottom:10px;padding:14px;cursor:pointer;transition:.2s;box-shadow:var(--sh);}
+.arow:active{transform:scale(.98);}
+.art{font-family:var(--h);font-size:14px;font-weight:700;margin-bottom:3px;}
+.ars{font-size:12px;color:var(--s4);margin-bottom:9px;}
+.arf{display:flex;justify-content:space-between;align-items:center;}
+
+/* SECTION HEAD */
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.sh h3{font-family:var(--h);font-size:16px;font-weight:700;}
+.sh a{font-size:13px;color:var(--blue2);font-weight:600;cursor:pointer;}
+
+/* CHIPS */
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;margin-bottom:16px;}
+.chips::-webkit-scrollbar{display:none;}
+.chip{white-space:nowrap;padding:7px 15px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--s7);background:#fff;cursor:pointer;color:var(--s3);transition:.2s;flex-shrink:0;}
+.chip.on{background:var(--blue2);color:#fff;border-color:var(--blue2);}
+
+/* METRICS */
+.mets{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:16px 16px 8px;}
+.met{background:#fff;border:1px solid var(--s7);border-radius:14px;padding:14px 12px;box-shadow:var(--sh);}
+.mn{font-family:var(--h);font-size:26px;font-weight:800;line-height:1;}
+.mn.bl{color:var(--blue2);}
+.mn.or{color:var(--orange2);}
+.mn.gr{color:var(--green2);}
+.mn.pu{color:#7C3AED;}
+.ml{font-size:11px;color:var(--s4);margin-top:4px;font-weight:600;}
+
+/* HOME HERO */
+.hh{background:linear-gradient(135deg,var(--blue) 0%,#1E40AF 100%);padding:52px 18px 24px;color:#fff;position:relative;overflow:hidden;flex-shrink:0;}
+.hh::before{content:'';position:absolute;top:-40px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06);}
+.hh-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;position:relative;}
+.hh-gr{font-size:12px;opacity:.8;margin-bottom:3px;font-weight:500;}
+.hh-nm{font-family:var(--h);font-size:22px;font-weight:800;}
+.hh-av{width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:16px;font-weight:700;cursor:pointer;flex-shrink:0;border:1.5px solid rgba(255,255,255,.25);}
+.spill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;position:relative;}
+.spill span{color:rgba(255,255,255,.65);font-size:14px;}
+
+/* NOTICE */
+.ntc{margin:14px 16px 0;padding:11px 14px;background:var(--orange5);border:1px solid #FED7AA;border-radius:12px;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--orange);font-weight:500;}
+
+/* DETAIL */
+.dh{background:linear-gradient(135deg,var(--blue),#1E40AF);padding:52px 18px 20px;color:#fff;flex-shrink:0;}
+.dh h1{font-family:var(--h);font-size:20px;font-weight:800;margin:10px 0 5px;line-height:1.3;}
+.dh .dco{font-size:12px;opacity:.8;}
+.dprog{height:3px;background:rgba(255,255,255,.2);border-radius:99px;margin-top:14px;overflow:hidden;}
+.dpf{height:100%;background:linear-gradient(90deg,#93C5FD,var(--orange3));border-radius:99px;}
+.dsec{background:#fff;border:1px solid var(--s7);border-radius:14px;margin:12px 16px;padding:14px;box-shadow:var(--sh);}
+.dsec h4{font-size:11px;font-weight:700;color:var(--s4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;}
+.irow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--s8);}
+.irow:last-child{border-bottom:none;}
+.ik{font-size:12px;color:var(--s4);}
+.iv{font-size:13px;font-weight:600;}
+.blit{display:flex;gap:9px;padding:5px 0;font-size:13px;color:var(--s2);}
+.bdo{width:6px;height:6px;border-radius:50%;background:var(--orange2);margin-top:5px;flex-shrink:0;}
+.scta{position:sticky;bottom:0;padding:12px 16px 24px;background:linear-gradient(0deg,#fff 65%,transparent);display:flex;gap:10px;flex-shrink:0;}
+
+/* PROFILE */
+.ph{background:linear-gradient(135deg,var(--blue),#1E40AF);padding:52px 18px 24px;color:#fff;text-align:center;flex-shrink:0;}
+.pav{width:72px;height:72px;border-radius:20px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:24px;font-weight:800;margin:0 auto 12px;position:relative;border:2px solid rgba(255,255,255,.25);}
+.pav-ver{position:absolute;bottom:-4px;right:-4px;width:20px;height:20px;border-radius:50%;background:var(--green3);border:2px solid #1E40AF;display:flex;align-items:center;justify-content:center;font-size:10px;}
+.pnm{font-family:var(--h);font-size:20px;font-weight:800;margin-bottom:3px;}
+.prl{font-size:12px;opacity:.8;}
+.pst{color:#FCD34D;font-size:13px;margin-top:6px;}
+.skts{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px;}
+.skt{background:rgba(255,255,255,.15);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.2);}
+.psts{display:grid;grid-template-columns:repeat(3,1fr);background:#fff;border:1px solid var(--s7);border-radius:14px;margin:0 16px 10px;overflow:hidden;box-shadow:var(--sh);}
+.psi{padding:14px 10px;text-align:center;border-right:1px solid var(--s7);}
+.psi:last-child{border-right:none;}
+.psn{font-family:var(--h);font-size:20px;font-weight:800;color:var(--blue2);}
+.psl{font-size:10px;color:var(--s4);font-weight:600;}
+.psec{background:#fff;border:1px solid var(--s7);border-radius:14px;margin:0 16px 10px;overflow:hidden;box-shadow:var(--sh);}
+.prow{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--s7);cursor:pointer;transition:.15s;}
+.prow:last-child{border-bottom:none;}
+.prow:active{background:var(--s8);}
+.pro-ico{width:32px;height:32px;border-radius:9px;background:var(--s8);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.pro-txt{flex:1;font-size:14px;font-weight:500;}
+.pro-arr{font-size:16px;color:var(--s5);}
+.pro-badge{background:var(--green4);color:var(--green);font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;}
+
+/* BID */
+.bcard{background:#fff;border:1.5px solid var(--s7);border-radius:14px;padding:14px;margin-bottom:12px;position:relative;box-shadow:var(--sh);}
+.bcard.top{border-color:#FED7AA;background:linear-gradient(135deg,var(--orange5),#fff);}
+.bbadge{position:absolute;top:-1px;right:14px;background:linear-gradient(90deg,var(--orange2),var(--orange3));color:#fff;font-size:9px;font-weight:800;padding:3px 9px;border-radius:0 0 8px 8px;letter-spacing:.06em;}
+.bav{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.bnm{font-family:var(--h);font-size:14px;font-weight:700;}
+.bsb{font-size:11px;color:var(--s4);}
+.bpr{font-family:var(--h);font-size:16px;font-weight:800;color:var(--green2);}
+.bpit{font-size:12px;color:var(--s2);background:var(--s8);border-radius:8px;padding:9px 10px;margin:10px 0;line-height:1.5;font-style:italic;}
+
+/* CHAT */
+.cli{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--s7);cursor:pointer;transition:.15s;background:#fff;}
+.cli:active{background:var(--s8);}
+.cav{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:15px;font-weight:700;flex-shrink:0;}
+.cinfo{flex:1;min-width:0;}
+.cnm{font-size:14px;font-weight:600;margin-bottom:2px;}
+.cpv{font-size:12px;color:var(--s4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cund{background:var(--blue2);color:#fff;font-size:9px;font-weight:800;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.mwrap{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:8px;}
+.mtime{text-align:center;font-size:10px;color:var(--s4);padding:4px 0;}
+.msg{max-width:78%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.55;}
+.msg.them{background:var(--s8);border:1px solid var(--s7);border-bottom-left-radius:4px;align-self:flex-start;}
+.msg.me{background:var(--blue2);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;}
+.cbar{padding:10px 14px 22px;background:#fff;border-top:1px solid var(--s7);display:flex;gap:9px;align-items:center;flex-shrink:0;}
+.cin{flex:1;background:var(--s8);border:1.5px solid var(--s7);border-radius:22px;padding:10px 14px;font-size:13px;color:var(--s0);font-family:var(--b);outline:none;}
+.cin:focus{border-color:var(--blue2);}
+.csnd{width:40px;height:40px;border-radius:50%;background:var(--blue2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 10px rgba(37,99,235,.3);}
+.csnd:active{transform:scale(.92);}
+
+/* NOTIFICATIONS */
+.notif-item{background:#fff;border:1px solid var(--s7);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;box-shadow:var(--sh);}
+.notif-item.unread{background:var(--blue5);border-color:#BFDBFE;}
+.ntico{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ntit{font-size:13px;font-weight:600;margin-bottom:2px;}
+.ntsb{font-size:12px;color:var(--s4);line-height:1.4;}
+.nttm{font-size:10px;color:var(--s5);margin-top:4px;}
+
+/* STEP */
+.slbl{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:700;color:var(--blue2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px;margin-top:6px;}
+.snm{width:20px;height:20px;border-radius:50%;background:var(--blue2);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* EMPTY */
+.empty{padding:48px 20px;text-align:center;}
+.empty .ei{font-size:44px;margin-bottom:12px;opacity:.4;}
+.empty h3{font-family:var(--h);font-size:17px;font-weight:700;color:var(--s3);margin-bottom:5px;}
+.empty p{font-size:13px;color:var(--s4);}
+
+/* ILLO STRIP */
+.istrip{display:flex;gap:10px;overflow-x:auto;padding:0 16px 14px;scrollbar-width:none;}
+.istrip::-webkit-scrollbar{display:none;}
+.icard{min-width:110px;background:linear-gradient(135deg,var(--blue5),#fff);border:1px solid #BFDBFE;border-radius:13px;padding:12px 10px;text-align:center;flex-shrink:0;cursor:pointer;transition:.2s;}
+.icard:active{transform:scale(.95);}
+.icico{font-size:26px;margin-bottom:5px;}
+.ictit{font-family:var(--h);font-size:11px;font-weight:700;color:var(--blue);}
+.icsub{font-size:10px;color:var(--s4);}
+
+/* OVERLAY/SHEET */
+.ovl{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:500;display:flex;align-items:flex-end;animation:fi .2s;}
+.ovl.off{display:none;}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.sheet{background:#fff;border-radius:20px 20px 0 0;width:100%;padding:18px 18px 36px;max-height:88vh;overflow-y:auto;animation:su .28s ease;}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.shdl{width:36px;height:4px;border-radius:99px;background:var(--s6);margin:0 auto 16px;}
+.shtit{font-family:var(--h);font-size:17px;font-weight:700;margin-bottom:14px;}
+
+/* AUTH */
+.ahero{background:linear-gradient(135deg,var(--blue2),var(--blue));padding:52px 20px 28px;color:#fff;text-align:center;flex-shrink:0;}
+.ahero h2{font-family:var(--h);font-size:24px;font-weight:800;margin-bottom:6px;}
+.ahero p{font-size:13px;opacity:.8;}
+.abody{flex:1;padding:20px 18px 40px;overflow-y:auto;}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.rcard{border:2px solid var(--s7);border-radius:14px;padding:16px 12px;cursor:pointer;text-align:center;transition:.2s;background:#fff;}
+.rcard:active{transform:scale(.97);}
+.rcard.sel{border-color:var(--blue2);background:var(--blue5);}
+.rcard .ri{font-size:28px;margin-bottom:6px;}
+.rcard h4{font-family:var(--h);font-size:13px;font-weight:700;margin-bottom:2px;}
+.rcard p{font-size:10px;color:var(--s4);}
+.divdr{display:flex;align-items:center;gap:10px;color:var(--s5);font-size:12px;margin:16px 0;}
+.divdr::before,.divdr::after{content:'';flex:1;height:1px;background:var(--s7);}
+
+/* SPINNER */
+.spin{width:28px;height:28px;border:2.5px solid var(--s7);border-top-color:var(--blue2);border-radius:50%;animation:spin .7s linear infinite;}
+
+/* SEARCH BAR */
+.sbar{background:var(--s8);border:1.5px solid var(--s7);border-radius:11px;padding:11px 14px 11px 40px;font-size:14px;color:var(--s0);font-family:var(--b);outline:none;transition:.2s;width:100%;}
+.sbar:focus{border-color:var(--blue2);background:#fff;}
+.sbar-wrap{position:relative;}
+.sbar-wrap::before{content:'🔍';position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;}
+
+/* LANDING */
+.land{background:linear-gradient(160deg,#0F172A 0%,#1E3A5F 55%,#0F172A 100%);}
+.lnav{padding:52px 18px 0;display:flex;justify-content:space-between;align-items:center;}
+.lbrand{display:flex;align-items:center;gap:10px;}
+.lbico{width:36px;height:36px;border-radius:10px;background:var(--blue2);display:flex;align-items:center;justify-content:center;}
+.lbnm{font-family:var(--h);font-size:20px;font-weight:800;color:#fff;}
+.lbnm span{color:var(--orange3);}
+.lbody{flex:1;padding:24px 18px 0;}
+.lcopy h1{font-family:var(--h);font-size:32px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:12px;}
+.lcopy h1 span{color:var(--orange3);}
+.lcopy p{font-size:14px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:24px;}
+.lbtns{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.lstats{display:flex;gap:24px;padding:20px 0;border-top:1px solid rgba(255,255,255,.1);}
+.lsn{font-family:var(--h);font-size:22px;font-weight:800;color:#fff;}
+.lsl{font-size:11px;color:rgba(255,255,255,.5);font-weight:500;}
+.lfeat{background:var(--s8);padding:32px 18px 40px;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fitem{background:#fff;border:1px solid var(--s7);border-radius:14px;padding:16px 14px;box-shadow:var(--sh);}
+.fitem .fi{font-size:22px;margin-bottom:7px;}
+.fitem h4{font-family:var(--h);font-size:13px;font-weight:700;margin-bottom:4px;}
+.fitem p{font-size:12px;color:var(--s4);line-height:1.5;}
+
+/* RATING STARS */
+.stars-input{display:flex;gap:4px;margin-bottom:14px;}
+.star{font-size:28px;cursor:pointer;transition:.1s;opacity:.3;}
+.star.on{opacity:1;}
+
+/* SCROLL SNAP for landing */
+.snap-wrap{height:100vh;overflow-y:auto;scroll-snap-type:y mandatory;scroll-behavior:smooth;}
+.snap-wrap::-webkit-scrollbar{display:none;}
+.snap-sec{scroll-snap-align:start;min-height:100vh;}
+
+@media(min-width:600px){body{max-width:480px;margin:0 auto;box-shadow:0 0 60px rgba(0,0,0,.15);}
+.bnav,#toast{max-width:480px;left:50%;transform:translateX(-50%);}
+#toast.on{transform:translateX(-50%) translateY(0);}
+}
+@media(min-width:900px){body{background:#E8EDF5;}}
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="ld-icon" style="overflow:hidden;"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><svg width="34" height="34" viewBox="0 0 28 28" fill="none" style="display:none;"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange · PragatiOne</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════════
+     LANDING + AUTH (Single Scroll Page)
+══════════════════════════════════════════ -->
+<div class="scr snap-wrap" id="s-auth">
+
+  <!-- HERO SECTION -->
+  <div class="snap-sec land" style="display:flex;flex-direction:column;">
+    <div class="lnav">
+      <div class="lbrand">
+        <div class="lbico" style="overflow:hidden;"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><svg width="20" height="20" viewBox="0 0 28 28" fill="none" style="display:none;"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/></svg></div>
+        <div class="lbnm">Pragati<span>.</span></div>
+      </div>
+      <button class="btn btn-sm" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);" onclick="scrollAuth('sec-login')">Login</button>
+    </div>
+    <div class="lbody" style="flex:1;">
+      <div style="display:flex;justify-content:center;margin-bottom:20px;">
+        <svg viewBox="0 0 300 170" width="290" height="165" fill="none">
+          <rect width="300" height="145" fill="#0F172A" opacity=".35"/>
+          <circle cx="40" cy="18" r="1.5" fill="white" opacity=".5"/><circle cx="120" cy="10" r="1" fill="white" opacity=".6"/><circle cx="200" cy="18" r="1.5" fill="white" opacity=".4"/><circle cx="270" cy="12" r="1" fill="white" opacity=".5"/>
+          <rect x="15" y="42" width="48" height="113" rx="3" fill="#1E40AF"/><rect x="15" y="42" width="48" height="7" rx="2" fill="#2563EB"/>
+          <rect x="21" y="55" width="10" height="8" rx="1" fill="#93C5FD" opacity=".9"/><rect x="36" y="55" width="10" height="8" rx="1" fill="white" opacity=".8"/>
+          <rect x="21" y="70" width="10" height="8" rx="1" fill="white" opacity=".7"/><rect x="36" y="70" width="10" height="8" rx="1" fill="#93C5FD" opacity=".6"/>
+          <rect x="21" y="85" width="10" height="8" rx="1" fill="#93C5FD" opacity=".8"/><rect x="36" y="85" width="10" height="8" rx="1" fill="white" opacity=".5"/>
+          <rect x="21" y="100" width="10" height="8" rx="1" fill="white" opacity=".9"/><rect x="36" y="100" width="10" height="8" rx="1" fill="#93C5FD" opacity=".7"/>
+          <rect x="80" y="75" width="80" height="80" rx="3" fill="#334155"/>
+          <rect x="76" y="42" width="5" height="113" rx="2" fill="#64748B"/><rect x="159" y="42" width="5" height="113" rx="2" fill="#64748B"/>
+          <rect x="76" y="42" width="88" height="5" rx="2" fill="#64748B"/>
+          <rect x="76" y="63" width="88" height="2" rx="1" fill="#94A3B8" opacity=".4"/><rect x="76" y="84" width="88" height="2" rx="1" fill="#94A3B8" opacity=".4"/><rect x="76" y="105" width="88" height="2" rx="1" fill="#94A3B8" opacity=".4"/>
+          <rect x="88" y="86" width="13" height="11" rx="1" fill="#1E40AF" opacity=".6"/><rect x="108" y="86" width="13" height="11" rx="1" fill="#1E40AF" opacity=".4"/><rect x="128" y="86" width="8" height="11" rx="1" fill="#1E40AF" opacity=".5"/>
+          <rect x="88" y="105" width="13" height="11" rx="1" fill="#93C5FD" opacity=".3"/><rect x="108" y="105" width="13" height="11" rx="1" fill="white" opacity=".2"/>
+          <rect x="222" y="14" width="6" height="141" rx="2" fill="#EA580C"/>
+          <rect x="182" y="14" width="78" height="5" rx="2" fill="#F97316"/><rect x="246" y="9" width="17" height="13" rx="3" fill="#DC2626"/>
+          <line x1="202" y1="19" x2="202" y2="46" stroke="#94A3B8" stroke-width="1.5"/><rect x="194" y="46" width="16" height="10" rx="3" fill="#F97316"/>
+          <rect x="246" y="68" width="40" height="87" rx="3" fill="#1E3A5F"/>
+          <rect x="252" y="77" width="9" height="8" rx="1" fill="#93C5FD" opacity=".7"/><rect x="267" y="77" width="9" height="8" rx="1" fill="white" opacity=".8"/>
+          <rect x="252" y="92" width="9" height="8" rx="1" fill="white" opacity=".6"/><rect x="267" y="92" width="9" height="8" rx="1" fill="#93C5FD" opacity=".9"/>
+          <circle cx="94" cy="53" r="5" fill="#FBBF24"/><rect x="89" y="58" width="10" height="12" rx="2" fill="#F97316"/><path d="M88 53 Q94 45 100 53" fill="#EA580C"/>
+          <circle cx="148" cy="136" r="5" fill="#FCD34D"/><rect x="143" y="141" width="10" height="10" rx="2" fill="#2563EB"/><path d="M142 136 Q148 128 154 136" fill="#F59E0B"/>
+          <rect y="150" width="300" height="20" fill="#1E293B"/>
+          <text x="150" y="164" text-anchor="middle" font-size="8" font-weight="800" fill="white" opacity=".5" font-family="sans-serif">PRAGATI WORK EXCHANGE</text>
+        </svg>
+      </div>
+      <div class="lcopy">
+        <h1>Find Construction <span>Work Faster</span></h1>
+        <p>India's #1 marketplace for subcontract work. Post requirements or bid for jobs — free forever.</p>
+        <div class="lbtns">
+          <button class="btn btn-o btn-bl btn-lg" onclick="scrollAuth('sec-register')">Get Started Free →</button>
+          <button class="btn btn-bl btn-lg" style="background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);" onclick="scrollAuth('sec-login')">I Have an Account</button>
+        </div>
+        <div class="lstats">
+          <div><div class="lsn">10K+</div><div class="lsl">Contractors</div></div>
+          <div><div class="lsn">₹200Cr+</div><div class="lsl">Work Awarded</div></div>
+          <div><div class="lsn">28</div><div class="lsl">States</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;padding:14px 0 20px;color:rgba(255,255,255,.4);font-size:12px;animation:bounce 2s infinite;">↓ Scroll to sign up</div>
+  </div>
+
+  <!-- REGISTER SECTION -->
+  <div class="snap-sec" id="sec-register" style="background:#fff;display:flex;flex-direction:column;">
+    <div class="ahero">
+      <div class="ld-icon" style="margin:0 auto 12px;"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="6" fill="white" opacity=".9"/><path d="M4 26c0-5.523 4.477-10 10-10s10 4.477 10 10" fill="white" opacity=".6"/></svg></div>
+      <h2>Create Account</h2>
+      <p>Join 10,000+ contractors on Pragati</p>
+    </div>
+    <div class="abody" style="flex:1;overflow-y:auto;">
+      <p style="font-size:11px;font-weight:700;color:var(--s3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">I am a…</p>
+      <div class="rgrid">
+        <div class="rcard sel" id="rc-petty" onclick="selRole('petty')"><div class="ri">👷</div><h4>Petty Contractor</h4><p>Find & apply for work</p></div>
+        <div class="rcard" id="rc-main" onclick="selRole('main')"><div class="ri">🏗️</div><h4>Main Contractor</h4><p>Post work & hire</p></div>
+      </div>
+      <input type="hidden" id="rg-role" value="petty"/>
+      <div class="field"><label class="flbl">Full Name *</label><input class="fin" id="rg-name" placeholder="e.g. Rajesh Patil"/></div>
+      <div class="g2">
+        <div class="field"><label class="flbl">Phone *</label><input class="fin" id="rg-phone" type="tel" placeholder="+91 98765 43210" inputmode="tel"/></div>
+        <div class="field"><label class="flbl">City *</label><input class="fin" id="rg-city" placeholder="Pune, MH"/></div>
+      </div>
+      <div class="field" id="rg-tw"><label class="flbl">Primary Trade</label>
+        <select class="fin" id="rg-trade"><option value="">Select…</option><option>Plastering</option><option>Flooring</option><option>Painting</option><option>Electrical</option><option>Plumbing</option><option>Masonry</option><option>Carpentry</option><option>Tiling</option><option>Waterproofing</option><option>Civil Work</option></select>
+      </div>
+      <div class="field"><label class="flbl">Email *</label><input class="fin" id="rg-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
+      <div class="field"><label class="flbl">Password *</label><input class="fin" id="rg-pass" type="password" placeholder="Min 6 characters"/></div>
+      <div class="ferr" id="rg-err">Please fill all required fields correctly.</div>
+      <button class="btn btn-p btn-bl btn-lg" id="rg-btn" onclick="doRegister()" style="margin-top:8px;">Create Account →</button>
+      <div class="divdr">or</div>
+      <p style="text-align:center;font-size:14px;color:var(--s3);">Already registered? <span style="color:var(--blue2);font-weight:600;cursor:pointer;" onclick="scrollAuth('sec-login')">Login here</span></p>
+      <p style="text-align:center;font-size:12px;color:var(--s5);margin-top:10px;cursor:pointer;" onclick="scrollAuth('sec-hero')">↑ Back to top</p>
+      <div style="height:20px;"></div>
+    </div>
+  </div>
+
+  <!-- LOGIN SECTION -->
+  <div class="snap-sec" id="sec-login" style="background:#fff;display:flex;flex-direction:column;">
+    <div class="ahero">
+      <div class="ld-icon" style="margin:0 auto 12px;"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg></div>
+      <h2>Welcome Back</h2>
+      <p>Login to your Pragati account</p>
+    </div>
+    <div class="abody" style="flex:1;">
+      <div class="field"><label class="flbl">Email Address</label><input class="fin" id="li-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
+      <div class="field"><label class="flbl">Password</label><input class="fin" id="li-pass" type="password" placeholder="Your password"/></div>
+      <div class="ferr" id="li-err">Invalid email or password. Try again.</div>
+      <div style="text-align:right;margin-bottom:2px;"><span style="font-size:13px;color:var(--blue2);font-weight:600;cursor:pointer;" onclick="showForgotPass()">Forgot Password?</span></div>
+      <button class="btn btn-p btn-bl btn-lg" id="li-btn" onclick="doLogin()" style="margin-top:8px;">Login →</button>
+      <div class="divdr">or</div>
+      <p style="text-align:center;font-size:14px;color:var(--s3);">No account? <span style="color:var(--blue2);font-weight:600;cursor:pointer;" onclick="scrollAuth('sec-register')">Register Free</span></p>
+      <p style="text-align:center;font-size:12px;color:var(--s5);margin-top:10px;cursor:pointer;" onclick="scrollAuth('sec-hero')">↑ Back to top</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PETTY CONTRACTOR APP
+══════════════════════════════════════════ -->
+
+<!-- HOME -->
+<div class="scr" id="s-home">
+  <div class="hh">
+    <div class="hh-top">
+      <div><div class="hh-gr">Good day 👋</div><div class="hh-nm" id="hh-nm">—</div></div>
+      <div class="hh-av" id="hh-av" onclick="P('profile')">RP</div>
+    </div>
+    <div class="spill" onclick="P('find')"><span style="font-size:16px;opacity:.6;">🔍</span><span>Search work by trade, location…</span></div>
+  </div>
+  <div class="pscr pb90">
+    <div class="mets">
+      <div class="met"><div class="mn bl" id="st-open">—</div><div class="ml">Open Works</div></div>
+      <div class="met"><div class="mn or" id="st-app">0</div><div class="ml">Applied</div></div>
+      <div class="met"><div class="mn gr" id="st-awd">0</div><div class="ml">Awarded</div></div>
+      <div class="met"><div class="mn pu" id="st-sh">0</div><div class="ml">Shortlisted</div></div>
+    </div>
+    <div id="home-ntc" style="display:none;" class="ntc">⚡ <span id="home-ntxt"></span></div>
+    <div style="padding:12px 16px 0;"><div class="sh"><h3>Browse by Trade</h3></div></div>
+    <div class="istrip">
+      <div class="icard" onclick="goFindTrade('Plastering')"><div class="icico">🧱</div><div class="ictit">Plastering</div><div class="icsub">Wall & ceiling</div></div>
+      <div class="icard" onclick="goFindTrade('Flooring')"><div class="icico">⬜</div><div class="ictit">Flooring</div><div class="icsub">Tiles & marble</div></div>
+      <div class="icard" onclick="goFindTrade('Electrical')"><div class="icico">⚡</div><div class="ictit">Electrical</div><div class="icsub">Wiring</div></div>
+      <div class="icard" onclick="goFindTrade('Painting')"><div class="icico">🎨</div><div class="ictit">Painting</div><div class="icsub">Int. & ext.</div></div>
+      <div class="icard" onclick="goFindTrade('Plumbing')"><div class="icico">🔧</div><div class="ictit">Plumbing</div><div class="icsub">Sanitary</div></div>
+      <div class="icard" onclick="goFindTrade('Masonry')"><div class="icico">🏗️</div><div class="ictit">Masonry</div><div class="icsub">Brick & block</div></div>
+    </div>
+    <div style="padding:0 16px;"><div class="sh"><h3>Latest Works</h3><a onclick="P('find')">See all →</a></div></div>
+    <div style="padding:0 16px;" id="hw-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
+  </div>
+  <div class="bnav n4">
+    <div class="bni on" onclick="P('home')"><div class="ico">🏠</div><div class="lbl">Home</div></div>
+    <div class="bni" onclick="P('find')"><div class="ico">🔍</div><div class="lbl">Find Work</div></div>
+    <div class="bni" onclick="P('apps')"><div class="ico">📋</div><div class="lbl">My Bids</div></div>
+    <div class="bni" onclick="P('profile')"><div class="ico">👤</div><div class="lbl">Profile</div></div>
+  </div>
+</div>
+
+<!-- FIND WORK -->
+<div class="scr" id="s-find">
+  <div class="tbar"><h2>Find Work</h2><span id="find-cnt" class="tag t-bl">0 Open</span></div>
+  <div style="padding:12px 16px 0;flex-shrink:0;">
+    <div class="sbar-wrap"><input class="sbar" id="s-inp" placeholder="Trade, company, city…" oninput="filterWorks()"/></div>
+  </div>
+  <div class="chips" style="padding:10px 16px 0;flex-shrink:0;">
+    <div class="chip on" onclick="setChip(this,'')">All</div>
+    <div class="chip" onclick="setChip(this,'Plastering')">Plastering</div>
+    <div class="chip" onclick="setChip(this,'Flooring')">Flooring</div>
+    <div class="chip" onclick="setChip(this,'Electrical')">Electrical</div>
+    <div class="chip" onclick="setChip(this,'Painting')">Painting</div>
+    <div class="chip" onclick="setChip(this,'Plumbing')">Plumbing</div>
+    <div class="chip" onclick="setChip(this,'Masonry')">Masonry</div>
+    <div class="chip" onclick="setChip(this,'Carpentry')">Carpentry</div>
+  </div>
+  <div class="pscr pb90" style="padding:10px 16px 0;" id="find-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
+  <div class="bnav n4">
+    <div class="bni" onclick="P('home')"><div class="ico">🏠</div><div class="lbl">Home</div></div>
+    <div class="bni on"><div class="ico">🔍</div><div class="lbl">Find Work</div></div>
+    <div class="bni" onclick="P('apps')"><div class="ico">📋</div><div class="lbl">My Bids</div></div>
+    <div class="bni" onclick="P('profile')"><div class="ico">👤</div><div class="lbl">Profile</div></div>
+  </div>
+</div>
+
+<!-- WORK DETAIL -->
+<div class="scr" id="s-detail">
+  <div class="dh">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <button class="tbk" onclick="goBack()" style="background:rgba(255,255,255,.2);color:#fff;">←</button>
+      <div style="flex:1;"></div>
+      <button class="tbk" id="save-btn" onclick="toggleSave()" style="background:rgba(255,255,255,.2);">🔖</button>
+    </div>
+    <div class="tags" id="det-tags"></div>
+    <h1 id="det-title">Loading…</h1>
+    <div class="dco" id="det-co"></div>
+    <div class="dprog"><div class="dpf" id="det-pf" style="width:50%;"></div></div>
+    <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;opacity:.75;">
+      <span id="det-bt"></span><span id="det-dl"></span>
+    </div>
+  </div>
+  <div class="pscr" style="padding-bottom:0;">
+    <div class="dsec">
+      <h4>Work Details</h4>
+      <div class="irow"><span class="ik">Budget</span><span class="iv" style="color:var(--green2);" id="det-bud">—</span></div>
+      <div class="irow"><span class="ik">Location</span><span class="iv" id="det-loc">—</span></div>
+      <div class="irow"><span class="ik">Duration</span><span class="iv" id="det-dur">—</span></div>
+      <div class="irow"><span class="ik">Start Date</span><span class="iv" id="det-std">—</span></div>
+      <div class="irow"><span class="ik">Experience</span><span class="iv" id="det-exp">—</span></div>
+      <div class="irow"><span class="ik">Labour</span><span class="iv" id="det-lab">—</span></div>
+    </div>
+    <div class="dsec">
+      <h4>Scope of Work</h4>
+      <div id="det-scope"></div>
+    </div>
+    <div class="dsec" id="det-applied-box" style="display:none;text-align:center;padding:16px;">
+      <div style="font-size:32px;margin-bottom:8px;">✅</div>
+      <div style="font-family:var(--h);font-size:15px;font-weight:700;color:var(--green2);">Already Applied!</div>
+      <div style="font-size:12px;color:var(--s4);margin-top:4px;">You'll be notified when status changes.</div>
+    </div>
+    <div style="height:100px;"></div>
+  </div>
+  <div class="scta" id="det-cta">
+    <button class="btn btn-g" style="width:46px;font-size:20px;padding:0;" onclick="P('chat')">💬</button>
+    <button class="btn btn-p" style="flex:1;" onclick="P('quote')">Submit Quotation →</button>
+  </div>
+</div>
+
+<!-- SUBMIT QUOTE -->
+<div class="scr" id="s-quote">
+  <div class="tbar"><button class="tbk" onclick="goBack()">←</button><h2>Submit Quotation</h2></div>
+  <div class="pscr" style="padding:14px 16px 100px;">
+    <div style="background:var(--blue5);border:1px solid #BFDBFE;border-radius:13px;padding:13px;margin-bottom:18px;">
+      <div style="font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue2);margin-bottom:5px;" id="q-wt">—</div>
+      <div style="display:flex;gap:12px;font-size:12px;color:var(--s3);flex-wrap:wrap;"><span id="q-wco">—</span><span id="q-wloc">—</span><span id="q-wbud" style="color:var(--green2);font-weight:700;">—</span></div>
+    </div>
+    <div class="slbl"><div class="snm">1</div>Your Price</div>
+    <div class="g2">
+      <div class="field"><label class="flbl">Quote Amount (₹) *</label><input class="fin" id="q-amt" type="number" placeholder="275000" inputmode="numeric"/></div>
+      <div class="field"><label class="flbl">Timeline (Days) *</label><input class="fin" id="q-days" type="number" placeholder="40" inputmode="numeric"/></div>
+    </div>
+    <div class="field"><label class="flbl">Labour Count</label><input class="fin" id="q-lab" type="number" placeholder="9" inputmode="numeric"/></div>
+    <div class="slbl"><div class="snm">2</div>Your Pitch</div>
+    <div class="field"><label class="flbl">Why choose you? *</label><textarea class="fin" id="q-pitch" rows="4" placeholder="Describe your experience, past projects, quality standards…"></textarea></div>
+    <div class="slbl"><div class="snm">3</div>Payment Terms</div>
+    <div class="field"><label class="flbl">Terms</label><select class="fin" id="q-terms"><option>30% advance · 40% mid · 30% completion</option><option>50% advance · 50% completion</option><option>100% on completion</option><option>Custom terms</option></select></div>
+    <div class="ferr" id="q-err">Please fill all required fields.</div>
+    <button class="btn btn-p btn-bl btn-lg" id="q-btn" onclick="submitQuote()" style="margin-top:8px;">Submit Quotation →</button>
+  </div>
+</div>
+
+<!-- MY APPLICATIONS -->
+<div class="scr" id="s-apps">
+  <div class="tbar"><h2>My Applications</h2><button class="btn btn-p btn-sm" onclick="P('find')">Find Work</button></div>
+  <div class="chips" style="padding:12px 16px 0;flex-shrink:0;">
+    <div class="chip on" onclick="setAppChip(this,'all')">All</div>
+    <div class="chip" onclick="setAppChip(this,'pending')">Pending</div>
+    <div class="chip" onclick="setAppChip(this,'rev')">Shortlisted</div>
+    <div class="chip" onclick="setAppChip(this,'awarded')">Awarded</div>
+    <div class="chip" onclick="setAppChip(this,'rejected')">Rejected</div>
+  </div>
+  <div class="pscr pb90" style="padding:10px 16px 0;" id="apps-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
+  <div class="bnav n4">
+    <div class="bni" onclick="P('home')"><div class="ico">🏠</div><div class="lbl">Home</div></div>
+    <div class="bni" onclick="P('find')"><div class="ico">🔍</div><div class="lbl">Find Work</div></div>
+    <div class="bni on"><div class="ico">📋</div><div class="lbl">My Bids</div></div>
+    <div class="bni" onclick="P('profile')"><div class="ico">👤</div><div class="lbl">Profile</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MAIN CONTRACTOR APP
+══════════════════════════════════════════ -->
+
+<!-- MAIN HOME -->
+<div class="scr" id="s-main">
+  <div class="hh" style="background:linear-gradient(135deg,#065F46,#059669);">
+    <div class="hh-top">
+      <div><div class="hh-gr">Main Contractor 🏗️</div><div class="hh-nm" id="mh-nm">—</div></div>
+      <div class="hh-av" id="mh-av" onclick="P('profile')" style="background:rgba(255,255,255,.2);">MC</div>
+    </div>
+  </div>
+  <div class="pscr pb90">
+    <div class="mets">
+      <div class="met"><div class="mn bl" id="mm-post">0</div><div class="ml">Works Posted</div></div>
+      <div class="met"><div class="mn or" id="mm-bids">0</div><div class="ml">Bids Received</div></div>
+      <div class="met"><div class="mn gr" id="mm-awd">0</div><div class="ml">Awarded</div></div>
+      <div class="met"><div class="mn pu" id="mm-act">0</div><div class="ml">Active Works</div></div>
+    </div>
+    <div style="padding:0 16px 0;"><div class="sh" style="margin-top:4px;"><h3>My Posted Works</h3><a onclick="P('myworks')">View all →</a></div></div>
+    <div style="padding:0 16px;" id="mw-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
+    <div style="padding:10px 16px 4px;"><button class="btn btn-o btn-bl btn-lg" onclick="P('post')">+ Post New Work Requirement</button></div>
+  </div>
+  <div class="bnav n4">
+    <div class="bni on"><div class="ico">🏠</div><div class="lbl">Home</div></div>
+    <div class="bni" onclick="P('post')"><div class="ico">➕</div><div class="lbl">Post Work</div></div>
+    <div class="bni" onclick="P('myworks')"><div class="ico">📋</div><div class="lbl">My Works</div></div>
+    <div class="bni" onclick="P('profile')"><div class="ico">👤</div><div class="lbl">Profile</div></div>
+  </div>
+</div>
+
+<!-- POST WORK -->
+<div class="scr" id="s-post">
+  <div class="tbar"><button class="tbk" onclick="goBack()">←</button><h2>Post New Work</h2></div>
+  <div class="pscr" style="padding:14px 16px 100px;">
+    <div style="background:linear-gradient(135deg,var(--blue5),#fff);border:1px solid #BFDBFE;border-radius:14px;padding:16px;margin-bottom:18px;text-align:center;">
+      <svg viewBox="0 0 240 80" width="100%" height="70" fill="none">
+        <rect x="10" y="20" width="35" height="55" rx="2" fill="#1E40AF"/>
+        <rect x="16" y="28" width="8" height="7" rx="1" fill="#93C5FD" opacity=".9"/><rect x="30" y="28" width="8" height="7" rx="1" fill="white" opacity=".8"/>
+        <rect x="16" y="42" width="8" height="7" rx="1" fill="white" opacity=".7"/><rect x="30" y="42" width="8" height="7" rx="1" fill="#93C5FD" opacity=".6"/>
+        <rect x="60" y="35" width="55" height="40" rx="2" fill="#334155"/>
+        <rect x="57" y="18" width="3" height="57" rx="1" fill="#64748B"/><rect x="112" y="18" width="3" height="57" rx="1" fill="#64748B"/>
+        <rect x="57" y="18" width="58" height="3" rx="1" fill="#64748B"/>
+        <rect x="57" y="33" width="58" height="2" rx="1" fill="#94A3B8" opacity=".4"/><rect x="57" y="48" width="58" height="2" rx="1" fill="#94A3B8" opacity=".4"/>
+        <rect x="68" y="43" width="10" height="9" rx="1" fill="#1E40AF" opacity=".5"/><rect x="84" y="43" width="10" height="9" rx="1" fill="#1E40AF" opacity=".4"/>
+        <rect x="170" y="5" width="4" height="70" rx="2" fill="#EA580C"/>
+        <rect x="148" y="5" width="50" height="4" rx="2" fill="#F97316"/>
+        <rect x="188" y="1" width="14" height="11" rx="2" fill="#DC2626"/>
+        <line x1="160" y1="9" x2="160" y2="28" stroke="#94A3B8" stroke-width="1.5"/>
+        <rect x="153" y="28" width="14" height="9" rx="2" fill="#F97316"/>
+        <circle cx="130" cy="52" r="5" fill="#FBBF24"/><rect x="125" y="57" width="10" height="11" rx="2" fill="#2563EB"/>
+        <path d="M124 52 Q130 44 136 52" fill="#EA580C"/>
+      </svg>
+      <div style="font-family:var(--h);font-size:12px;font-weight:700;color:var(--blue2);margin-top:6px;">Post Work → Get Quotations → Award Best Contractor</div>
+    </div>
+    <div class="slbl"><div class="snm">1</div>Basic Details</div>
+    <div class="field"><label class="flbl">Work Title *</label><input class="fin" id="pw-tit" placeholder="e.g. Interior Plastering – Block A"/></div>
+    <div class="g2">
+      <div class="field"><label class="flbl">Trade Type *</label><select class="fin" id="pw-tr" onchange="toggleOtherTrade()"><option value="">Select…</option><option>Plastering</option><option>Flooring</option><option>Painting</option><option>Electrical</option><option>Plumbing</option><option>Masonry</option><option>Carpentry</option><option>Tiling</option><option>Waterproofing</option><option>Civil Work</option><option value="Other">Other (specify below)</option></select></div><div class="field" id="pw-tr-other-wrap" style="display:none;"><label class="flbl">Specify Trade *</label><input class="fin" id="pw-tr-other" placeholder="e.g. Guniting, Grouting, Scaffolding…"/></div>
+      <div class="field"><label class="flbl">Urgency</label><select class="fin" id="pw-urg"><option value="Normal">Normal</option><option value="Urgent">Urgent</option><option value="Critical">Critical</option></select></div>
+    </div>
+    <div class="field"><label class="flbl">Project Location *</label><input class="fin" id="pw-loc" placeholder="e.g. Hinjewadi, Pune"/></div>
+    <div class="slbl"><div class="snm">2</div>Budget & Timeline</div>
+    <div class="g2">
+      <div class="field"><label class="flbl">Min Budget (₹) *</label><input class="fin" id="pw-min" type="number" placeholder="250000" inputmode="numeric"/></div>
+      <div class="field"><label class="flbl">Max Budget (₹) *</label><input class="fin" id="pw-max" type="number" placeholder="300000" inputmode="numeric"/></div>
+    </div>
+    <div class="g2">
+      <div class="field"><label class="flbl">Start Date</label><input class="fin" id="pw-std" type="date"/></div>
+      <div class="field"><label class="flbl">Duration (Days)</label><input class="fin" id="pw-dur" type="number" placeholder="45" inputmode="numeric"/></div>
+    </div>
+    <div class="slbl"><div class="snm">3</div>Requirements</div>
+    <div class="g2">
+      <div class="field"><label class="flbl">Min Experience</label><input class="fin" id="pw-exp" placeholder="5 years"/></div>
+      <div class="field"><label class="flbl">Labour Count</label><input class="fin" id="pw-lab" placeholder="8–10"/></div>
+    </div>
+    <div class="field"><label class="flbl">Scope of Work *</label><textarea class="fin" id="pw-scope" rows="5" placeholder="Full scope, quality standards, materials expected…"></textarea></div>
+    <div class="slbl"><div class="snm">4</div>Attachments (Optional)</div>
+    <div class="field">
+      <label class="flbl">Upload BOQ / Drawings / Photos</label>
+      <label id="attach-label" style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed var(--s6);border-radius:12px;padding:20px;cursor:pointer;background:var(--s9);gap:6px;" onclick="document.getElementById('pw-files').click()">
+        <span style="font-size:28px;">📎</span>
+        <span style="font-size:13px;font-weight:600;color:var(--s3);">Tap to upload files</span>
+        <span style="font-size:11px;color:var(--s5);">PDF, JPG, PNG, DWG · Max 10MB each</span>
+      </label>
+      <input type="file" id="pw-files" multiple accept=".pdf,.jpg,.jpeg,.png,.dwg" style="display:none;" onchange="showAttachments(this)"/>
+      <div id="attach-list" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+    <div class="ferr" id="pw-err">Please fill all required fields.</div>
+    <button class="btn btn-o btn-bl btn-lg" id="pw-btn" onclick="postWork()" style="margin-top:8px;">Post Work →</button>
+  </div>
+</div>
+
+<!-- MY WORKS -->
+<div class="scr" id="s-myworks">
+  <div class="tbar"><button class="tbk" onclick="goBack()">←</button><h2>My Works</h2><button class="btn btn-o btn-sm" onclick="P('post')">+ Post</button></div>
+  <div class="pscr pb90" style="padding:12px 16px 0;" id="myw-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
+  <div class="bnav n4">
+    <div class="bni" onclick="P('main')"><div class="ico">🏠</div><div class="lbl">Home</div></div>
+    <div class="bni" onclick="P('post')"><div class="ico">➕</div><div class="lbl">Post Work</div></div>
+    <div class="bni on"><div class="ico">📋</div><div class="lbl">My Works</div></div>
+    <div class="bni" onclick="P('profile')"><div class="ico">👤</div><div class="lbl">Profile</div></div>
+  </div>
+</div>
+
+<!-- BID MANAGEMENT -->
+<div class="scr" id="s-bids">
+  <div class="tbar"><button class="tbk" onclick="goBack()">←</button><h2>Bid Management</h2><span id="bids-cnt" class="tag t-bl">0</span></div>
+  <div style="background:var(--blue5);border-bottom:1px solid var(--s7);padding:10px 16px;flex-shrink:0;">
+    <div style="font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue2);" id="bw-tit">—</div>
+    <div style="font-size:11px;color:var(--s4);" id="bw-meta">—</div>
+  </div>
+  <div class="pscr pb90" style="padding:12px 16px 0;" id="bids-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SHARED SCREENS
+══════════════════════════════════════════ -->
+
+<!-- PROFILE -->
+<div class="scr" id="s-profile">
+  <div class="pscr pb90">
+    <div class="ph">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:10px;"><button class="tbk" style="background:rgba(255,255,255,.2);color:#fff;" onclick="showEditProfile()">✏️ Edit</button></div>
+      <div class="pav" id="pf-av">RP<div class="pav-ver">✓</div></div>
+      <div class="pnm" id="pf-nm">—</div>
+      <div class="prl" id="pf-rl">—</div>
+      <div class="pst">★★★★★</div>
+      <div class="skts" id="pf-sk"></div>
+    </div>
+    <div class="psts">
+      <div class="psi"><div class="psn" id="ps-proj">0</div><div class="psl">Projects</div></div>
+      <div class="psi"><div class="psn" id="ps-exp">—</div><div class="psl">Yrs Exp</div></div>
+      <div class="psi"><div class="psn">4.8</div><div class="psl">Rating</div></div>
+    </div>
+    <div class="psec">
+      <div class="prow"><div class="pro-ico">📞</div><div style="flex:1;"><div class="pro-txt" id="pf-ph">—</div><div style="font-size:11px;color:var(--s4);">Phone</div></div><div class="pro-arr">›</div></div>
+      <div class="prow"><div class="pro-ico">📍</div><div style="flex:1;"><div class="pro-txt" id="pf-ct">—</div><div style="font-size:11px;color:var(--s4);">Location</div></div><div class="pro-arr">›</div></div>
+      <div class="prow"><div class="pro-ico">📧</div><div style="flex:1;"><div class="pro-txt" id="pf-em">—</div><div style="font-size:11px;color:var(--s4);">Email</div></div><div class="pro-arr">›</div></div>
+    </div>
+    <div class="psec" style="margin-top:0;">
+      <div class="prow"><div class="pro-ico">🪪</div><div class="pro-txt">Aadhaar Verified</div><div class="pro-badge">Verified</div></div>
+      <div class="prow"><div class="pro-ico">🏦</div><div class="pro-txt">Bank Account</div><div class="pro-badge">Linked</div></div>
+    </div>
+    <div class="psec" style="margin-top:0;">
+      <div class="prow" onclick="P('notifications')"><div class="pro-ico">🔔</div><div class="pro-txt">Notifications</div><div class="pro-arr">›</div></div>
+      <div class="prow" onclick="showHelp()"><div class="pro-ico">❓</div><div class="pro-txt">Help & Support</div><div class="pro-arr">›</div></div>
+      <div class="prow" onclick="showAbout()"><div class="pro-ico">ℹ️</div><div class="pro-txt">About Pragati</div><div class="pro-arr">›</div></div>
+      <div class="prow" onclick="doLogout()"><div class="pro-ico">🚪</div><div class="pro-txt" style="color:var(--red2);">Logout</div><div class="pro-arr" style="color:var(--red2);">›</div></div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="bnav n4" id="pf-bnav">
+    <div class="bni" id="pbn-h"><div class="ico">🏠</div><div class="lbl">Home</div></div>
+    <div class="bni" id="pbn-m"><div class="ico">🔍</div><div class="lbl">Find Work</div></div>
+    <div class="bni" id="pbn-b"><div class="ico">📋</div><div class="lbl">My Bids</div></div>
+    <div class="bni on"><div class="ico">👤</div><div class="lbl">Profile</div></div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div class="scr" id="s-notifications">
+  <div class="tbar"><button class="tbk" onclick="goBack()">←</button><h2>Notifications</h2><button class="btn btn-sm btn-g" onclick="markAllRead()">Mark all read</button></div>
+  <div class="pscr pb90" style="padding:12px 16px 0;" id="notif-list"></div>
+  <div class="bnav n4" id="notif-bnav">
+    <div class="bni" id="nbn-h"><div class="ico">🏠</div><div class="lbl">Home</div></div>
+    <div class="bni" id="nbn-m"><div class="ico">🔍</div><div class="lbl">Find Work</div></div>
+    <div class="bni" id="nbn-b"><div class="ico">📋</div><div class="lbl">My Bids</div></div>
+    <div class="bni" onclick="P('profile')"><div class="ico">👤</div><div class="lbl">Profile</div></div>
+  </div>
+</div>
+
+<!-- CHAT LIST -->
+<div class="scr" id="s-chat">
+  <div class="tbar"><button class="tbk" onclick="goBack()">←</button><h2>Messages</h2></div>
+  <div id="chat-list-view" style="flex:1;overflow-y:auto;background:#fff;">
+    <div class="cli" onclick="openChat('KP','Kalpataru Projects','rgba(37,99,235,.12)','var(--blue2)')"><div class="cav" style="background:rgba(37,99,235,.12);color:var(--blue2);">KP</div><div class="cinfo"><div class="cnm">Kalpataru Projects</div><div class="cpv">Please share availability for site visit</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-size:10px;color:var(--s5);">2:30 PM</div><div class="cund">2</div></div></div>
+    <div class="cli" onclick="openChat('GP','Godrej Properties','rgba(16,185,129,.12)','var(--green2)')"><div class="cav" style="background:rgba(16,185,129,.12);color:var(--green2);">GP</div><div class="cinfo"><div class="cnm">Godrej Properties</div><div class="cpv">Your quotation looks competitive, let's discuss</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-size:10px;color:var(--s5);">11:15</div><div class="cund">1</div></div></div>
+    <div class="cli" onclick="openChat('SP','Shapoorji Pallonji','rgba(249,115,22,.12)','var(--orange2)')"><div class="cav" style="background:rgba(249,115,22,.12);color:var(--orange2);">SP</div><div class="cinfo"><div class="cnm">Shapoorji Pallonji</div><div class="cpv">Congratulations! Work awarded to you 🎉</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-size:10px;color:var(--s5);">Yesterday</div></div></div>
+    <div class="cli" onclick="openChat('LG','Lodha Group','rgba(124,58,237,.12)','#7C3AED')"><div class="cav" style="background:rgba(124,58,237,.12);color:#7C3AED;">LG</div><div class="cinfo"><div class="cnm">Lodha Group</div><div class="cpv">Please share your GST certificate</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-size:10px;color:var(--s5);">Mon</div></div></div>
+    <div class="cli" onclick="openChat('TR','Tata Realty','rgba(220,38,38,.1)','var(--red2)')"><div class="cav" style="background:rgba(220,38,38,.1);color:var(--red2);">TR</div><div class="cinfo"><div class="cnm">Tata Realty</div><div class="cpv">Site visit scheduled for Saturday 10 AM</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-size:10px;color:var(--s5);">Sun</div></div></div>
+    <div style="text-align:center;padding:20px;font-size:13px;color:var(--s4);">All messages shown</div>
+  </div>
+  <div id="chat-win" style="display:none;flex-direction:column;flex:1;">
+    <div style="background:#fff;padding:12px 14px;border-bottom:1px solid var(--s7);display:flex;align-items:center;gap:10px;flex-shrink:0;">
+      <button class="tbk" onclick="closeChat()">←</button>
+      <div class="cav" id="cw-av" style="width:36px;height:36px;border-radius:11px;font-size:13px;">KP</div>
+      <div style="flex:1;"><div style="font-family:var(--h);font-size:14px;font-weight:700;" id="cw-nm">—</div><div style="font-size:11px;color:var(--green2);">● Online</div></div>
+      <button class="tbk">📞</button>
+    </div>
+    <div class="mwrap" id="msg-wrap">
+      <div class="mtime">Today</div>
+      <div class="msg them">Hello! We reviewed your quotation for the plastering work.</div>
+      <div class="msg them">Your price looks competitive. Can you visit the site this week?</div>
+      <div class="msg me">Thank you! I'm available Saturday 10 AM or Sunday anytime.</div>
+      <div class="msg them">Saturday 10 AM works. Hinjewadi Phase 2, ask for Mr. Sharma at gate.</div>
+      <div class="msg me">Confirmed! Should I bring any documents?</div>
+      <div class="msg them">Please bring Aadhaar copy and photos of past work if any.</div>
+    </div>
+    <div class="cbar">
+      <input class="cin" id="cin" placeholder="Type a message…"/>
+      <button class="csnd" onclick="sendMsg()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+  <div class="bnav n4" id="chat-bnav">
+    <div class="bni" id="cbn-h"><div class="ico">🏠</div><div class="lbl">Home</div></div>
+    <div class="bni" id="cbn-m"><div class="ico">🔍</div><div class="lbl">Find Work</div></div>
+    <div class="bni" id="cbn-b"><div class="ico">📋</div><div class="lbl">My Bids</div></div>
+    <div class="bni on"><div class="ico">💬</div><div class="lbl">Messages</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     OVERLAYS / SHEETS
+══════════════════════════════════════════ -->
+
+<!-- EDIT PROFILE SHEET -->
+<div class="ovl off" id="edit-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Edit Profile</div>
+    <div class="field"><label class="flbl">Full Name</label><input class="fin" id="ep-nm"/></div>
+    <div class="g2">
+      <div class="field"><label class="flbl">Phone</label><input class="fin" id="ep-ph" type="tel" inputmode="tel"/></div>
+      <div class="field"><label class="flbl">City</label><input class="fin" id="ep-ct"/></div>
+    </div>
+    <div class="field" id="ep-tw"><label class="flbl">Primary Trade</label><select class="fin" id="ep-tr"><option value="">—</option><option>Plastering</option><option>Flooring</option><option>Painting</option><option>Electrical</option><option>Plumbing</option><option>Masonry</option><option>Carpentry</option><option>Tiling</option><option>Waterproofing</option><option>Civil Work</option></select></div>
+    <div class="g2">
+      <div class="field"><label class="flbl">Years Exp.</label><input class="fin" id="ep-exp" type="number" inputmode="numeric"/></div>
+      <div class="field"><label class="flbl">Company/Firm</label><input class="fin" id="ep-co"/></div>
+    </div>
+    <div class="field"><label class="flbl">Bio / About You</label><textarea class="fin" id="ep-bio" rows="3"></textarea></div>
+    <button class="btn btn-p btn-bl btn-lg" onclick="saveProfile()">Save Profile</button>
+    <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="closeOvl('edit-ovl')">Cancel</button>
+  </div>
+</div>
+
+<!-- AWARD SHEET -->
+<div class="ovl off" id="award-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Award This Work 🏆</div>
+    <p style="font-size:14px;color:var(--s3);margin-bottom:20px;line-height:1.6;" id="award-txt">—</p>
+    <button class="btn btn-o btn-bl btn-lg" onclick="confirmAward()">Yes, Award Work →</button>
+    <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="closeOvl('award-ovl')">Cancel</button>
+  </div>
+</div>
+
+<!-- REVIEW/RATE SHEET -->
+<div class="ovl off" id="rate-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Rate This Work ⭐</div>
+    <p style="font-size:13px;color:var(--s4);margin-bottom:14px;">How was your experience with this contractor?</p>
+    <div class="stars-input" id="stars-input">
+      <span class="star on" onclick="setStar(1)">★</span>
+      <span class="star on" onclick="setStar(2)">★</span>
+      <span class="star on" onclick="setStar(3)">★</span>
+      <span class="star on" onclick="setStar(4)">★</span>
+      <span class="star on" onclick="setStar(5)">★</span>
+    </div>
+    <div class="field"><label class="flbl">Your Review</label><textarea class="fin" id="rate-txt" rows="3" placeholder="Describe quality, punctuality, communication…"></textarea></div>
+    <button class="btn btn-p btn-bl btn-lg" onclick="submitRating()">Submit Rating</button>
+    <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="closeOvl('rate-ovl')">Cancel</button>
+  </div>
+</div>
+
+<!-- HELP SHEET -->
+<div class="ovl off" id="help-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Help & Support</div>
+    <div class="psec" style="margin:0 0 12px;">
+      <div class="prow"><div class="pro-ico">📞</div><div class="pro-txt">Call Support: +91 800-PRAGATI</div><div class="pro-arr">›</div></div>
+      <div class="prow"><div class="pro-ico">📧</div><div class="pro-txt">Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9feceaefeff0edebdfefedfef8feebf6b1f6f1">[email&#160;protected]</a></div><div class="pro-arr">›</div></div>
+      <div class="prow"><div class="pro-ico">💬</div><div class="pro-txt">WhatsApp Support</div><div class="pro-arr">›</div></div>
+    </div>
+    <div style="background:var(--s8);border-radius:12px;padding:14px;font-size:13px;color:var(--s3);line-height:1.7;margin-bottom:12px;">
+      <strong>Common Questions:</strong><br/>
+      • How to apply for work? → Browse Find Work → Open any work → Submit Quotation<br/>
+      • How to post work? → Dashboard → Post New Work → Fill details<br/>
+      • How to award work? → My Works → View Bids → Award to best contractor<br/>
+      • Payment issues? → Contact <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0675737676697472467674676167726f286f68">[email&#160;protected]</a>
+    </div>
+    <button class="btn btn-g btn-bl" onclick="closeOvl('help-ovl')">Close</button>
+  </div>
+</div>
+
+<!-- ABOUT SHEET -->
+<div class="ovl off" id="about-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div style="text-align:center;margin-bottom:16px;">
+      <div class="ld-icon" style="margin:0 auto 12px;"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg></div>
+      <div style="font-family:var(--h);font-size:20px;font-weight:800;">Pragati Work Exchange</div>
+      <div style="font-size:13px;color:var(--s4);margin-top:4px;">Version 1.0.0 · PragatiOne Platform</div>
+    </div>
+    <div style="font-size:13px;color:var(--s3);line-height:1.7;margin-bottom:16px;">
+      Pragati Work Exchange is India's leading marketplace for construction subcontract work. We connect Main Contractors with verified Petty Contractors across 28 states, making it fast and simple to post work, receive quotations, and award contracts.
+    </div>
+    <div style="background:var(--blue5);border-radius:12px;padding:14px;font-size:13px;color:var(--blue);margin-bottom:16px;">
+      🏗️ Part of the <strong>PragatiOne</strong> platform — building India's construction ecosystem.
+    </div>
+    <button class="btn btn-g btn-bl" onclick="closeOvl('about-ovl')">Close</button>
+  </div>
+</div>
+
+<!-- ═══════════════ FIREBASE + APP LOGIC ═══════════════ -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getFirestore,collection,addDoc,getDocs,getDoc,doc,setDoc,updateDoc,query,where,orderBy,serverTimestamp,limit}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ── FIREBASE CONFIG ──
+const cfg={apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",authDomain:"pragati-work-exchange.firebaseapp.com",projectId:"pragati-work-exchange",storageBucket:"pragati-work-exchange.firebasestorage.app",messagingSenderId:"422215240765",appId:"1:422215240765:web:eefb239420262c9d822e54"};
+
+let auth,db,CU=null,CD=null,CW=null,prevScr='s-auth',pendingAward=null,filterTV='',allWorks=[],myAppsData=[],starRating=5;
+
+// ── DEMO DATA ──
+const DW=[
+  {id:'d1',title:'Interior Plastering Work – Phase 2',company:'Kalpataru Constructions',trade:'Plastering',location:'Hinjewadi, Pune',minBudget:250000,maxBudget:300000,duration:45,startDate:'2025-01-15',experience:'5 years',labour:'8–10 workers',urgency:'Urgent',scope:'Internal plastering for 120 flats (3 BHK)\nCement mortar ratio 1:4 throughout\nChicken mesh on all joints mandatory\nPOP punning over plaster for smooth finish\nMaterial supplied by Main Contractor',bids:8,postedBy:'m1',postedByName:'Kalpataru Constructions'},
+  {id:'d2',title:'Marble Flooring – Block C Tower',company:'Godrej Properties',trade:'Flooring',location:'Andheri, Mumbai',minBudget:500000,maxBudget:700000,duration:60,startDate:'2025-01-22',experience:'3 years',labour:'12–15 workers',urgency:'Normal',scope:'Italian marble flooring for 80 apartments\nGrouting with white cement only\nPolishing and final sealing included\nQuality inspection after each floor',bids:14,postedBy:'m2',postedByName:'Godrej Properties'},
+  {id:'d3',title:'Full Electrical Wiring – Tower 2',company:'Lodha Group',trade:'Electrical',location:'Thane, Mumbai',minBudget:800000,maxBudget:1000000,duration:90,startDate:'2025-01-30',experience:'7 years',labour:'15–20 workers',urgency:'Normal',scope:'Complete electrical wiring for 200 residential units\nISI certified conduit wiring throughout\nDB boards and MCB fitting included\nFull testing and commissioning at end',bids:6,postedBy:'m3',postedByName:'Lodha Group'},
+  {id:'d4',title:'External Painting – Phase 2',company:'Shapoorji Pallonji',trade:'Painting',location:'Nagpur, MH',minBudget:400000,maxBudget:600000,duration:30,startDate:'2025-02-05',experience:'2 years',labour:'10–12 workers',urgency:'Normal',scope:'External texture painting for 4 residential towers\nAsian Paints Apex Weather Proof — two coats\nScaffolding and safety equipment by contractor\nFinal inspection before payment',bids:3,postedBy:'m4',postedByName:'Shapoorji Pallonji'},
+  {id:'d5',title:'Sanitary & Plumbing – Phase 3',company:'Prestige Group',trade:'Plumbing',location:'Koramangala, Bangalore',minBudget:350000,maxBudget:500000,duration:45,startDate:'2025-02-10',experience:'4 years',labour:'6–8 workers',urgency:'Urgent',scope:'Complete sanitary and plumbing for 60 units\nCP fittings by Jaquar brand only\nHDPE piping for all drainage\nWater pressure testing on completion',bids:5,postedBy:'m5',postedByName:'Prestige Group'},
+  {id:'d6',title:'Masonry & Brickwork – Block D',company:'Tata Realty',trade:'Masonry',location:'Wakad, Pune',minBudget:600000,maxBudget:800000,duration:70,startDate:'2025-02-20',experience:'6 years',labour:'20–25 workers',urgency:'Normal',scope:'Brick masonry for Block D all floors\nM20 grade concrete for columns and beams\nSand-faced plaster on all external walls\nQuality inspections at DPC and lintel levels',bids:4,postedBy:'m6',postedByName:'Tata Realty'},
+  {id:'d7',title:'False Ceiling – Club House',company:'Brigade Group',trade:'Carpentry',location:'Whitefield, Bangalore',minBudget:180000,maxBudget:250000,duration:25,startDate:'2025-02-28',experience:'3 years',labour:'4–6 workers',urgency:'Urgent',scope:'Gypsum false ceiling for 5000 sqft club house\nCove lighting provision in all areas\nAll electrical conduits to be embedded before boarding\nSmooth finish with two coats of putty',bids:7,postedBy:'m7',postedByName:'Brigade Group'},
+  {id:'d8',title:'Waterproofing – Terrace & Bathrooms',company:'Puravankara Ltd',trade:'Waterproofing',location:'Koregaon Park, Pune',minBudget:120000,maxBudget:180000,duration:20,startDate:'2025-03-05',experience:'4 years',labour:'3–5 workers',urgency:'Normal',scope:'Terrace waterproofing using torch applied membrane\nBathroom waterproofing with polymer-modified mortar\nAll work with 10-year warranty certificate\nPonding test before handover',bids:2,postedBy:'m8',postedByName:'Puravankara Ltd'},
+];
+
+// ── INIT ──
+const fbApp=initializeApp(cfg);
+auth=getAuth(fbApp);
+db=getFirestore(fbApp);
+onAuthStateChanged(auth,async u=>{
+  document.getElementById('loader').classList.add('out');
+  if(u){
+    CU=u;
+    try{const s=await getDoc(doc(db,'users',u.uid));if(s.exists())CD=s.data();}catch(e){}
+    routeHome();
+  } else {
+    CU=null;CD=null;
+    S('s-auth');
+  }
+});
+
+// ── ROUTING ──
+function routeHome(){
+  if(!CD)return S('s-auth');
+  buildNavs();
+  if(CD.role==='main'){loadMainHome();S('s-main');}
+  else{loadPettyHome();S('s-home');}
+}
+
+window.scrollAuth=function(id){
+  const el=document.getElementById(id);
+  if(el)el.scrollIntoView({behavior:'smooth'});
+};
+
+window.S=function(id){
+  const cur=document.querySelector('.scr.on');
+  if(cur&&cur.id!==id)prevScr=cur.id;
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  const el=document.getElementById(id);
+  if(el)el.classList.add('on');
+  window.scrollTo(0,0);
+};
+
+window.P=function(pg){
+  const cur=document.querySelector('.scr.on');
+  if(cur)prevScr=cur.id;
+  const isMain=CD?.role==='main';
+  const map={
+    home:isMain?'s-main':'s-home',
+    main:'s-main',find:'s-find',detail:'s-detail',quote:'s-quote',
+    apps:'s-apps',post:'s-post',myworks:'s-myworks',bids:'s-bids',
+    profile:'s-profile',chat:'s-chat',notifications:'s-notifications'
+  };
+  const id=map[pg]||'s-home';
+  S(id);
+  if(pg==='find')loadFind();
+  if(pg==='home'&&!isMain)loadPettyHome();
+  if(pg==='home'&&isMain)loadMainHome();
+  if(pg==='main')loadMainHome();
+  if(pg==='apps')loadApps();
+  if(pg==='myworks')loadMyWorks();
+  if(pg==='profile')loadProfile();
+  if(pg==='notifications')loadNotifs();
+};
+
+window.goBack=function(){S(prevScr);};
+
+function buildNavs(){
+  const isMain=CD?.role==='main';
+  // profile nav
+  const ph=document.getElementById('pbn-h'),pm=document.getElementById('pbn-m'),pb=document.getElementById('pbn-b');
+  if(ph)ph.onclick=()=>P('home');
+  if(pm){pm.querySelector('.ico').textContent=isMain?'➕':'🔍';pm.querySelector('.lbl').textContent=isMain?'Post Work':'Find Work';pm.onclick=()=>P(isMain?'post':'find');}
+  if(pb){pb.querySelector('.ico').textContent=isMain?'📋':'📋';pb.querySelector('.lbl').textContent=isMain?'My Works':'My Bids';pb.onclick=()=>P(isMain?'myworks':'apps');}
+  // notif nav
+  const nh=document.getElementById('nbn-h'),nm=document.getElementById('nbn-m'),nb=document.getElementById('nbn-b');
+  if(nh)nh.onclick=()=>P('home');
+  if(nm){nm.querySelector('.ico').textContent=isMain?'➕':'🔍';nm.onclick=()=>P(isMain?'post':'find');}
+  if(nb){nb.querySelector('.ico').textContent=isMain?'📋':'📋';nb.onclick=()=>P(isMain?'myworks':'apps');}
+  // chat nav
+  const ch=document.getElementById('cbn-h'),cm=document.getElementById('cbn-m'),cbm=document.getElementById('cbn-b');
+  if(ch)ch.onclick=()=>P('home');
+  if(cm){cm.querySelector('.ico').textContent=isMain?'➕':'🔍';cm.onclick=()=>P(isMain?'post':'find');}
+  if(cbm){cbm.querySelector('.ico').textContent=isMain?'📋':'📋';cbm.onclick=()=>P(isMain?'myworks':'apps');}
+}
+
+// ── AUTH ──
+window.selRole=function(r){
+  document.getElementById('rg-role').value=r;
+  document.getElementById('rc-petty').classList.toggle('sel',r==='petty');
+  document.getElementById('rc-main').classList.toggle('sel',r==='main');
+  document.getElementById('rg-tw').style.display=r==='petty'?'block':'none';
+};
+
+window.doLogin=async function(){
+  const e=document.getElementById('li-email').value.trim(),p=document.getElementById('li-pass').value,err=document.getElementById('li-err'),btn=document.getElementById('li-btn');
+  if(!e||!p){err.classList.add('on');return;}
+  btn.classList.add('btn-ld');btn.textContent='Logging in…';
+  try{
+    await signInWithEmailAndPassword(auth,e,p);
+    err.classList.remove('on');
+  }catch(ex){
+    err.textContent=ex.code==='auth/user-not-found'?'No account with this email.':ex.code==='auth/wrong-password'||ex.code==='auth/invalid-credential'?'Incorrect password.':'Login failed. Try again.';
+    err.classList.add('on');
+  }
+  btn.classList.remove('btn-ld');btn.textContent='Login →';
+};
+
+window.doRegister=async function(){
+  const name=document.getElementById('rg-name').value.trim(),phone=document.getElementById('rg-phone').value.trim(),city=document.getElementById('rg-city').value.trim(),email=document.getElementById('rg-email').value.trim(),pass=document.getElementById('rg-pass').value,role=document.getElementById('rg-role').value,trade=document.getElementById('rg-trade').value,err=document.getElementById('rg-err'),btn=document.getElementById('rg-btn');
+  if(!name||!email||!city||pass.length<6){err.classList.add('on');return;}
+  btn.classList.add('btn-ld');btn.textContent='Creating…';
+  try{
+    const uc=await createUserWithEmailAndPassword(auth,email,pass);
+    const ud={name,email,phone,city,role,trade,exp:'',bio:'',company:role==='main'?name:'',createdAt:serverTimestamp()};
+    await setDoc(doc(db,'users',uc.user.uid),ud);
+    CD=ud;
+    toast('Welcome to Pragati! 🎉','ok');
+  }catch(ex){
+    err.textContent=ex.code==='auth/email-already-in-use'?'Email already registered. Please login.':'Error: '+ex.message;
+    err.classList.add('on');
+  }
+  btn.classList.remove('btn-ld');btn.textContent='Create Account →';
+};
+
+window.doLogout=async function(){await signOut(auth);};
+
+// ── DATA HELPERS ──
+async function getWorks(){
+  try{const s=await getDocs(query(collection(db,'works'),orderBy('createdAt','desc')));return s.docs.map(d=>({id:d.id,...d.data()}));}
+  catch(e){return DW;}
+}
+async function getMyWorks(){
+  try{const s=await getDocs(query(collection(db,'works'),where('postedBy','==',CU.uid)));return s.docs.map(d=>({id:d.id,...d.data()}));}
+  catch(e){return DW.slice(0,3);}
+}
+
+function fmtB(w){
+  const f=n=>n>=100000?'₹'+(n/100000).toFixed(1).replace('.0','')+'L':'₹'+n.toLocaleString('en-IN');
+  return(w.minBudget&&w.maxBudget)?f(w.minBudget)+'–'+f(w.maxBudget):w.minBudget?f(w.minBudget):'TBD';
+}
+function tc(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
+function tl(u){return u||'Normal';}
+
+function mkCard(w){
+  return`<div class="wcard" onclick="openWork('${w.id}')">
+    <div class="wh"><div class="tags"><span class="tag t-bl">${w.trade||'General'}</span><span class="tag ${tc(w.urgency)}">${tl(w.urgency)}</span></div><div class="wt">${w.title}</div><div class="wco">🏢 ${w.company||w.postedByName||'Main Contractor'}</div></div>
+    <div class="wb"><div class="wmeta"><span>📍 ${w.location||'—'}</span><span>⏱ ${w.startDate||'TBD'}</span><span>👷 ${w.experience||'—'}</span></div></div>
+    <div class="wf"><span class="wbud">${fmtB(w)}</span><span class="wbids">${w.bids||0} bids</span></div>
+  </div>`;
+}
+
+// ── PETTY HOME ──
+async function loadPettyHome(){
+  if(!CD)return;
+  const n=CD.name||'Contractor';
+  document.getElementById('hh-nm').textContent=n.split(' ')[0];
+  document.getElementById('hh-av').textContent=initials(n);
+  const works=await getWorks();
+  document.getElementById('st-open').textContent=works.length;
+  document.getElementById('hw-list').innerHTML=works.slice(0,4).map(mkCard).join('')||emptyHTML('🏗️','No works yet','Check back soon');
+  const ntc=document.getElementById('home-ntc');
+  if(works.length){ntc.style.display='flex';document.getElementById('home-ntxt').textContent=works.length+' open works available near you!';}
+  // app stats
+  try{
+    const s=await getDocs(query(collection(db,'applications'),where('applicantId','==',CU.uid)));
+    const apps=s.docs.map(d=>d.data());
+    document.getElementById('st-app').textContent=apps.length;
+    document.getElementById('st-awd').textContent=apps.filter(a=>a.status==='awarded').length;
+    document.getElementById('st-sh').textContent=apps.filter(a=>a.status==='review'||a.status==='shortlisted').length;
+  }catch(e){}
+}
+
+// ── MAIN HOME ──
+async function loadMainHome(){
+  if(!CD)return;
+  const n=CD.name||'Contractor';
+  document.getElementById('mh-nm').textContent=n;
+  document.getElementById('mh-av').textContent=initials(n);
+  const works=await getMyWorks();
+  document.getElementById('mm-post').textContent=works.length;
+  document.getElementById('mm-bids').textContent=works.reduce((s,w)=>s+(w.bids||0),0);
+  document.getElementById('mm-awd').textContent=works.filter(w=>w.status==='awarded').length;
+  document.getElementById('mm-act').textContent=works.filter(w=>!w.status||w.status==='open').length;
+  document.getElementById('mw-list').innerHTML=works.slice(0,3).map(w=>`<div class="arow" onclick="openBids('${w.id}')">
+    <div class="tags" style="margin-bottom:7px;"><span class="tag t-bl">${w.trade||'—'}</span><span class="tag ${tc(w.urgency)}">${tl(w.urgency)}</span></div>
+    <div class="art">${w.title}</div><div class="ars">📍 ${w.location||'—'} · ${w.bids||0} bids received</div>
+    <div class="arf"><span class="sts ${w.status==='awarded'?'awd':'open'}">${w.status==='awarded'?'Awarded ✓':'Accepting Bids'}</span><span style="font-size:13px;font-weight:700;color:var(--green2);">${fmtB(w)}</span></div>
+  </div>`).join('')||emptyHTML('🏗️','No works posted yet','Post your first work requirement');
+}
+
+// ── FIND ──
+async function loadFind(){
+  allWorks=await getWorks();
+  document.getElementById('find-cnt').textContent=allWorks.length+' Open';
+  renderFind(allWorks);
+}
+function renderFind(arr){
+  const el=document.getElementById('find-list');
+  el.innerHTML=arr.length?arr.map(mkCard).join(''):emptyHTML('🔍','No results','Try different filters');
+}
+window.filterWorks=function(){
+  const q=document.getElementById('s-inp').value.toLowerCase();
+  const f=allWorks.filter(w=>(w.title+''+w.location+''+w.trade+''+w.company+''+w.postedByName).toLowerCase().includes(q));
+  renderFind(filterTV?f.filter(w=>w.trade===filterTV):f);
+};
+window.setChip=function(el,t){
+  document.querySelectorAll('#s-find .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');filterTV=t;filterWorks();
+};
+window.goFindTrade=function(t){filterTV=t;P('find');setTimeout(()=>{document.querySelectorAll('#s-find .chip').forEach(c=>c.classList.toggle('on',c.textContent===t));filterWorks();},80);};
+
+// ── OPEN WORK ──
+window.openWork=async function(id){
+  let w=null;
+  try{const s=await getDoc(doc(db,'works',id));if(s.exists())w={id:s.id,...s.data()};}catch(e){}
+  if(!w)w=DW.find(x=>x.id===id);
+  if(!w)return;CW=w;
+  document.getElementById('det-tags').innerHTML=`<span class="tag" style="background:rgba(255,255,255,.2);color:#fff;">${w.trade||''}</span>${w.urgency&&w.urgency!=='Normal'?`<span class="tag t-or">${w.urgency.toUpperCase()}</span>`:''}`;
+  document.getElementById('det-title').textContent=w.title;
+  document.getElementById('det-co').textContent='🏢 '+(w.company||w.postedByName||'')+' · 📍 '+(w.location||'');
+  document.getElementById('det-bud').textContent=fmtB(w);
+  document.getElementById('det-loc').textContent=w.location||'—';
+  document.getElementById('det-dur').textContent=w.duration?w.duration+' Days':'—';
+  document.getElementById('det-std').textContent=w.startDate||'—';
+  document.getElementById('det-exp').textContent=w.experience||'—';
+  document.getElementById('det-lab').textContent=w.labour||'—';
+  document.getElementById('det-bt').textContent=(w.bids||0)+' bids received';
+  document.getElementById('det-dl').textContent=w.startDate?'Start: '+w.startDate:'';
+  document.getElementById('det-pf').style.width=Math.min(100,((w.bids||0)/12)*100)+'%';
+  document.getElementById('det-scope').innerHTML=w.scope?w.scope.split(/\n/).filter(s=>s.trim()).map(s=>`<div class="blit"><div class="bdo"></div>${s.trim()}</div>`).join(''):`<p style="color:var(--s4);font-size:13px;">No scope details provided.</p>`;
+  // set quote ref
+  document.getElementById('q-wt').textContent=w.title;
+  document.getElementById('q-wco').textContent='🏢 '+(w.company||w.postedByName||'');
+  document.getElementById('q-wloc').textContent='📍 '+(w.location||'');
+  document.getElementById('q-wbud').textContent=fmtB(w);
+  // check applied
+  let applied=false;
+  try{const s=await getDocs(query(collection(db,'applications'),where('workId','==',id),where('applicantId','==',CU.uid)));applied=!s.empty;}catch(e){}
+  document.getElementById('det-applied-box').style.display=applied?'block':'none';
+  document.getElementById('det-cta').style.display=applied?'none':'flex';
+  P('detail');
+};
+
+window.toggleSave=function(){
+  const btn=document.getElementById('save-btn');
+  btn.textContent=btn.textContent==='🔖'?'🔖✓':'🔖';
+  toast('Work saved to bookmarks','ok');
+};
+
+// ── SUBMIT QUOTE ──
+window.submitQuote=async function(){
+  if(!CW||!CU){toast('Please login first','err');return;}
+  const amt=document.getElementById('q-amt').value,days=document.getElementById('q-days').value,pitch=document.getElementById('q-pitch').value.trim(),err=document.getElementById('q-err'),btn=document.getElementById('q-btn');
+  if(!amt||!days||!pitch){err.classList.add('on');return;}err.classList.remove('on');
+  btn.classList.add('btn-ld');btn.textContent='Submitting…';
+  try{
+    await addDoc(collection(db,'applications'),{
+      workId:CW.id,workTitle:CW.title,workCompany:CW.company||CW.postedByName||'',workLocation:CW.location||'',
+      applicantId:CU.uid,applicantName:CD?.name||'',applicantPhone:CD?.phone||'',
+      amount:Number(amt),days:Number(days),labour:document.getElementById('q-lab').value||'',
+      pitch,terms:document.getElementById('q-terms').value,status:'pending',createdAt:serverTimestamp()
+    });
+    try{await updateDoc(doc(db,'works',CW.id),{bids:(CW.bids||0)+1});}catch(e){}
+    toast('Quotation submitted! 🎉','ok');
+    ['q-amt','q-days','q-lab','q-pitch'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+    P('apps');
+  }catch(e){toast('Error: '+e.message,'err');}
+  btn.classList.remove('btn-ld');btn.textContent='Submit Quotation →';
+};
+
+// ── MY APPS ──
+async function loadApps(){
+  const el=document.getElementById('apps-list');
+  el.innerHTML=`<div class="empty"><div class="spin" style="margin:0 auto;"></div></div>`;
+  try{
+    // Try with orderBy first; if composite index missing, fall back to simple query
+    let snap;
+    try{snap=await getDocs(query(collection(db,'applications'),where('applicantId','==',CU.uid),orderBy('createdAt','desc')));}
+    catch(e2){snap=await getDocs(query(collection(db,'applications'),where('applicantId','==',CU.uid)));}
+    myAppsData=snap.docs.map(d=>({id:d.id,...d.data()}));
+    // sort client-side
+    myAppsData.sort((a,b)=>(b.createdAt?.toMillis?.()||b.createdAt||0)-(a.createdAt?.toMillis?.()||a.createdAt||0));
+  }catch(e){myAppsData=[];}
+  renderApps('all');
+}
+function renderApps(filter){
+  const el=document.getElementById('apps-list');
+  const mp={pending:'pending',rev:'review',shortlisted:'review',awarded:'awarded',rejected:'rejected'};
+  const arr=filter==='all'?myAppsData:myAppsData.filter(a=>{
+    if(filter==='rev')return a.status==='review'||a.status==='shortlisted';
+    return a.status===filter;
+  });
+  if(!arr.length){el.innerHTML=emptyHTML('📋','No applications yet','Browse works and submit your first quotation!')+`<div style="padding:0 0 10px;"><button class="btn btn-p btn-bl" onclick="P('find')">Browse Works →</button></div>`;return;}
+  const sl={pending:'Under Review',review:'Shortlisted ✓',shortlisted:'Shortlisted ✓',awarded:'Awarded 🎉',rejected:'Not Selected'};
+  el.innerHTML=arr.map(a=>`<div class="arow">
+    <div class="art">${a.workTitle}</div>
+    <div class="ars">${a.workCompany} · ${a.workLocation}</div>
+    <div style="font-size:12px;color:var(--s4);margin-bottom:9px;">Quoted ₹${Number(a.amount).toLocaleString('en-IN')} · ${a.days} days</div>
+    <div class="arf">
+      <span class="sts ${mp[a.status]||'pend'}">${sl[a.status||'pending']||'Pending'}</span>
+      <div style="display:flex;gap:6px;">
+        ${a.status==='awarded'?`<button class="btn btn-sm" style="background:var(--green4);color:var(--green);border:none;" onclick="showRateOvl()">Rate ⭐</button>`:''}
+        <button class="btn btn-g btn-sm" onclick="P('chat')">💬</button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+window.setAppChip=function(el,f){document.querySelectorAll('#s-apps .chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');renderApps(f);};
+
+// ── POST WORK ──
+window.postWork=async function(){
+  if(!CU)return;
+  const rawTrade=document.getElementById('pw-tr').value,trade=rawTrade==='Other'?(document.getElementById('pw-tr-other').value.trim()||'Other'):rawTrade;
+  const title=document.getElementById('pw-tit').value.trim(),loc=document.getElementById('pw-loc').value.trim(),minB=document.getElementById('pw-min').value,maxB=document.getElementById('pw-max').value,scope=document.getElementById('pw-scope').value.trim(),err=document.getElementById('pw-err'),btn=document.getElementById('pw-btn');
+  if(!title||!trade||!loc||!minB||!maxB||!scope){err.classList.add('on');return;}err.classList.remove('on');
+  btn.classList.add('btn-ld');btn.textContent='Posting…';
+  try{
+    await addDoc(collection(db,'works'),{
+      title,trade,location:loc,company:CD?.name||'Main Contractor',postedByName:CD?.name||'',postedBy:CU.uid,
+      minBudget:Number(minB),maxBudget:Number(maxB),duration:document.getElementById('pw-dur').value||'',
+      startDate:document.getElementById('pw-std').value||'',experience:document.getElementById('pw-exp').value||'',
+      labour:document.getElementById('pw-lab').value||'',urgency:document.getElementById('pw-urg').value,
+      scope,bids:0,status:'open',createdAt:serverTimestamp()
+    });
+    toast('Work posted successfully! 🎉','ok');
+    ['pw-tit','pw-loc','pw-min','pw-max','pw-dur','pw-exp','pw-lab','pw-scope'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+    P('myworks');
+  }catch(e){toast('Error: '+e.message,'err');}
+  btn.classList.remove('btn-ld');btn.textContent='Post Work →';
+};
+
+// ── MY WORKS ──
+async function loadMyWorks(){
+  const el=document.getElementById('myw-list');
+  el.innerHTML=`<div class="empty"><div class="spin" style="margin:0 auto;"></div></div>`;
+  const works=await getMyWorks();
+  if(!works.length){el.innerHTML=emptyHTML('🏗️','No works posted yet','Post your first work requirement')+`<div style="padding:0 0 10px;"><button class="btn btn-o btn-bl btn-lg" onclick="P('post')">Post Now →</button></div>`;return;}
+  el.innerHTML=works.map(w=>`<div class="arow" onclick="openBids('${w.id}')">
+    <div class="tags" style="margin-bottom:7px;"><span class="tag t-bl">${w.trade||'—'}</span><span class="tag ${tc(w.urgency)}">${tl(w.urgency)}</span></div>
+    <div class="art">${w.title}</div>
+    <div class="ars">📍 ${w.location||'—'} · ${fmtB(w)}</div>
+    <div class="arf">
+      <span class="sts ${w.status==='awarded'?'awd':'open'}">${w.status==='awarded'?'Awarded ✓':'Accepting Bids'}</span>
+      <span style="font-size:12px;font-weight:700;color:var(--blue2);">${w.bids||0} bids →</span>
+    </div>
+  </div>`).join('');
+}
+
+// ── BIDS ──
+window.openBids=async function(id){
+  let w=null;
+  try{const s=await getDoc(doc(db,'works',id));if(s.exists())w={id:s.id,...s.data()};}catch(e){}
+  if(!w)w=DW.find(x=>x.id===id);
+  if(!w)return;CW=w;
+  document.getElementById('bw-tit').textContent=w.title;
+  document.getElementById('bw-meta').textContent=`📍 ${w.location||''} · ${fmtB(w)} · ${w.bids||0} quotations received`;
+  const el=document.getElementById('bids-list');
+  el.innerHTML=`<div class="empty"><div class="spin" style="margin:0 auto;"></div></div>`;
+  let apps=[];
+  try{const s=await getDocs(query(collection(db,'applications'),where('workId','==',id)));apps=s.docs.map(d=>({id:d.id,...d.data()}));}catch(e){}
+  // demo bids
+  if(!apps.length&&id.startsWith('d')){
+    apps=[
+      {id:'b1',applicantName:'Mohan Kumar',amount:265000,days:40,pitch:'15 years experience in plastering across Pune and Mumbai. 12 major residential projects. POP certified.',rating:4.8,projects:12,status:'pending'},
+      {id:'b2',applicantName:'Rajesh Patil',amount:275000,days:38,pitch:'Expert plasterer with 8 years. Specialize in high-end residential. Full team safety-certified.',rating:4.7,projects:15,status:'pending'},
+      {id:'b3',applicantName:'Suresh More',amount:280000,days:45,pitch:'Quality work with 1 year warranty on workmanship. References from Lodha and Godrej projects available.',rating:4.5,projects:8,status:'pending'},
+      {id:'b4',applicantName:'Vijay Deshmukh',amount:290000,days:48,pitch:'Honest contractor. Dedicated team. Smaller but fully committed to quality delivery.',rating:4.2,projects:5,status:'pending'},
+    ];
+  }
+  document.getElementById('bids-cnt').textContent=apps.length;
+  const cols=['#1D4ED8','#059669','#7C3AED','#EA580C','#DC2626'];
+  if(!apps.length){el.innerHTML=emptyHTML('📬','No bids yet','Share your work posting to attract contractors');return;}
+  el.innerHTML=apps.map((a,i)=>`<div class="bcard ${i===0?'top':''}">
+    ${i===0?'<div class="bbadge">BEST MATCH</div>':''}
+    <div style="display:flex;gap:11px;align-items:center;margin-bottom:10px;">
+      <div class="bav" style="background:${cols[i%5]};">${initials(a.applicantName||'C')}</div>
+      <div style="flex:1;"><div class="bnm">${a.applicantName||'Contractor'}</div><div class="bsb">${a.rating?'⭐ '+a.rating+' · ':''} ${a.projects||0} projects</div></div>
+      <div style="text-align:right;"><div class="bpr">₹${Number(a.amount).toLocaleString('en-IN')}</div><div style="font-size:10px;color:var(--s4);">${a.days} days</div></div>
+    </div>
+    <div class="bpit">"${a.pitch||'No pitch provided'}"</div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      ${a.status==='awarded'?`<span class="sts awd" style="padding:8px 14px;">Awarded ✓</span>`:`<button class="btn btn-g btn-sm" style="flex:1;" onclick="P('chat')">💬 Chat</button><button class="btn btn-o btn-sm" onclick="showAward('${a.id}','${a.applicantName}')">Award →</button>`}
+    </div>
+  </div>`).join('');
+  P('bids');
+};
+
+// ── AWARD ──
+window.showAward=function(id,name){pendingAward=id;document.getElementById('award-txt').textContent=`Award this work to ${name}? They will be notified immediately and their status updated.`;document.getElementById('award-ovl').classList.remove('off');};
+window.confirmAward=async function(){
+  if(!pendingAward)return;
+  try{await updateDoc(doc(db,'applications',pendingAward),{status:'awarded'});toast('Work awarded! 🏆','ok');}catch(e){toast('Error: '+e.message,'err');}
+  closeOvl('award-ovl');P('myworks');
+};
+
+// ── PROFILE ──
+function loadProfile(){
+  if(!CD)return;
+  const n=CD.name||'User';
+  document.getElementById('pf-av').innerHTML=initials(n)+'<div class="pav-ver">✓</div>';
+  document.getElementById('pf-nm').textContent=n;
+  document.getElementById('pf-rl').textContent=(CD.trade||CD.role==='main'?'Main Contractor':'Petty Contractor')+(CD.city?' · '+CD.city:'');
+  document.getElementById('pf-ph').textContent=CD.phone||'—';
+  document.getElementById('pf-ct').textContent=CD.city||'—';
+  document.getElementById('pf-em').textContent=CD.email||'—';
+  document.getElementById('ps-exp').textContent=CD.exp||'—';
+  document.getElementById('pf-sk').innerHTML=CD.trade?`<span class="skt">${CD.trade}</span>${CD.exp?`<span class="skt">${CD.exp} yrs exp</span>`:''}${CD.city?`<span class="skt">${CD.city}</span>`:''}`:'' ;
+}
+
+window.showEditProfile=function(){
+  if(!CD)return;
+  document.getElementById('ep-nm').value=CD.name||'';
+  document.getElementById('ep-ph').value=CD.phone||'';
+  document.getElementById('ep-ct').value=CD.city||'';
+  document.getElementById('ep-tr').value=CD.trade||'';
+  document.getElementById('ep-exp').value=CD.exp||'';
+  document.getElementById('ep-co').value=CD.company||'';
+  document.getElementById('ep-bio').value=CD.bio||'';
+  if(CD.role==='main')document.getElementById('ep-tw').style.display='none';
+  document.getElementById('edit-ovl').classList.remove('off');
+};
+
+window.saveProfile=async function(){
+  if(!CU)return;
+  const u={name:document.getElementById('ep-nm').value.trim()||CD.name,phone:document.getElementById('ep-ph').value.trim(),city:document.getElementById('ep-ct').value.trim(),trade:document.getElementById('ep-tr').value,exp:document.getElementById('ep-exp').value,company:document.getElementById('ep-co').value.trim(),bio:document.getElementById('ep-bio').value.trim()};
+  try{await updateDoc(doc(db,'users',CU.uid),u);CD={...CD,...u};toast('Profile saved ✓','ok');loadProfile();closeOvl('edit-ovl');}
+  catch(e){toast('Error: '+e.message,'err');}
+};
+
+// ── NOTIFICATIONS ──
+function loadNotifs(){
+  const el=document.getElementById('notif-list');
+  const notifs=[
+    {icon:'🎉',title:'Work Awarded!',sub:'Congratulations! Shapoorji Pallonji awarded you the External Painting work.',time:'2 hours ago',unread:true},
+    {icon:'👁️',title:'Shortlisted',sub:'Kalpataru Constructions shortlisted your bid for Interior Plastering Work.',time:'5 hours ago',unread:true},
+    {icon:'💬',title:'New Message',sub:'Godrej Properties sent you a message: "Your quotation looks good..."',time:'Yesterday',unread:true},
+    {icon:'📋',title:'New Work Posted',sub:'6 new works posted near Pune today matching your trade.',time:'Yesterday',unread:false},
+    {icon:'⭐',title:'Rating Received',sub:'Tata Realty rated you 4.8 stars for the recent Masonry work.',time:'2 days ago',unread:false},
+    {icon:'🔔',title:'Bid Deadline',sub:'Your application for Marble Flooring – Mumbai closes in 2 days.',time:'3 days ago',unread:false},
+  ];
+  el.innerHTML=notifs.map(n=>`<div class="notif-item ${n.unread?'unread':''}">
+    <div class="ntico" style="background:${n.unread?'var(--blue4)':'var(--s8)'};">${n.icon}</div>
+    <div style="flex:1;"><div class="ntit">${n.title}</div><div class="ntsb">${n.sub}</div><div class="nttm">${n.time}</div></div>
+  </div>`).join('');
+}
+window.markAllRead=function(){document.querySelectorAll('.notif-item.unread').forEach(el=>el.classList.remove('unread'));toast('All marked as read','ok');};
+
+// ── CHAT ──
+let currentChatName='';
+window.openChat=function(code,name,bg,color){
+  currentChatName=name;
+  document.getElementById('chat-list-view').style.display='none';
+  const cw=document.getElementById('chat-win');cw.style.display='flex';
+  const av=document.getElementById('cw-av');av.textContent=code;av.style.background=bg;av.style.color=color;
+  document.getElementById('cw-nm').textContent=name;
+  // Remove unread badge on this chat
+  document.querySelectorAll('.cli').forEach(cli=>{
+    if(cli.querySelector('.cnm')?.textContent===name){const u=cli.querySelector('.cund');if(u)u.remove();}
+  });
+};
+window.closeChat=function(){
+  document.getElementById('chat-list-view').style.display='block';
+  document.getElementById('chat-win').style.display='none';
+};
+window.sendMsg=function(){
+  const inp=document.getElementById('cin');
+  const txt=inp.value.trim();if(!txt)return;
+  const mw=document.getElementById('msg-wrap');
+  // Add my message
+  const m=document.createElement('div');m.className='msg me';m.textContent=txt;
+  mw.appendChild(m);inp.value='';mw.scrollTop=mw.scrollHeight;
+  // Simulate reply after 1.5s
+  setTimeout(()=>{
+    const replies=['Got it, thanks!','Sure, will check and get back to you.','Please confirm the site visit time.','Yes that works for us.','Can you share your experience certificate?','We will review and let you know soon.'];
+    const r=document.createElement('div');r.className='msg them';
+    r.textContent=replies[Math.floor(Math.random()*replies.length)];
+    mw.appendChild(r);mw.scrollTop=mw.scrollHeight;
+    // Update last message in chat list
+    document.querySelectorAll('.cli').forEach(cli=>{
+      if(cli.querySelector('.cnm')?.textContent===currentChatName){
+        const prev=cli.querySelector('.cpv');if(prev)prev.textContent=r.textContent;
+      }
+    });
+  },1500);
+};
+// Allow Enter key to send
+document.addEventListener('DOMContentLoaded',()=>{
+  const ci=document.getElementById('cin');
+  if(ci)ci.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();window.sendMsg();}});
+});
+
+// ── RATING ──
+window.showRateOvl=function(){document.getElementById('rate-ovl').classList.remove('off');};
+window.setStar=function(n){starRating=n;document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));};
+window.submitRating=function(){closeOvl('rate-ovl');toast('Rating submitted! ⭐','ok');};
+
+// ── OVERLAYS ──
+window.closeOvl=function(id){document.getElementById(id).classList.add('off');};
+window.showHelp=function(){document.getElementById('help-ovl').classList.remove('off');};
+window.showAbout=function(){document.getElementById('about-ovl').classList.remove('off');};
+
+// ── UTILS ──
+function initials(n){return(n||'U').split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);}
+function emptyHTML(icon,title,sub){return`<div class="empty"><div class="ei">${icon}</div><h3>${title}</h3><p>${sub}</p></div>`;}
+window.toast=function(msg,type=''){const el=document.getElementById('toast');el.textContent=msg;el.className=type?'on '+type:'on';setTimeout(()=>{el.className='';},3000);};
+
+// ── CLOSE OVERLAYS ON BACKDROP CLICK ──
+document.querySelectorAll('.ovl').forEach(ovl=>{
+  ovl.addEventListener('click',e=>{if(e.target===ovl)ovl.classList.add('off');});
+});
+</script>
+
+<!-- FORGOT PASSWORD SHEET -->
+<div class="ovl off" id="forgot-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Reset Password 🔑</div>
+    <p style="font-size:14px;color:var(--s4);margin-bottom:16px;line-height:1.6;">Enter your registered email. We will send a password reset link to your inbox.</p>
+    <div class="field"><label class="flbl">Email Address</label><input class="fin" id="fp-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
+    <div class="ferr" id="fp-err">Please enter a valid email address.</div>
+    <div id="fp-success" style="display:none;background:var(--green4);border:1px solid #A7F3D0;border-radius:10px;padding:12px 14px;font-size:13px;color:var(--green);margin-bottom:14px;">✅ Reset link sent! Please check your email inbox.</div>
+    <button class="btn btn-p btn-bl btn-lg" id="fp-btn" onclick="sendResetEmail()">Send Reset Link →</button>
+    <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="closeOvl('forgot-ovl')">Cancel</button>
+  </div>
+</div>
+
+<script type="module">
+import{getAuth,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+window.showForgotPass=function(){
+  document.getElementById('fp-email').value=document.getElementById('li-email')?.value||'';
+  document.getElementById('fp-err').classList.remove('on');
+  document.getElementById('fp-success').style.display='none';
+  const btn=document.getElementById('fp-btn');if(btn){btn.style.display='';btn.textContent='Send Reset Link →';}
+  document.getElementById('forgot-ovl').classList.remove('off');
+};
+window.sendResetEmail=async function(){
+  const email=document.getElementById('fp-email').value.trim();
+  const err=document.getElementById('fp-err'),btn=document.getElementById('fp-btn'),suc=document.getElementById('fp-success');
+  if(!email||!email.includes('@')){err.textContent='Please enter a valid email.';err.classList.add('on');return;}
+  err.classList.remove('on');btn.classList.add('btn-ld');btn.textContent='Sending…';
+  try{
+    const auth=getAuth();
+    await sendPasswordResetEmail(auth,email);
+    suc.style.display='block';btn.style.display='none';
+    window.toast('Reset link sent! Check your email.','ok');
+  }catch(e){
+    err.textContent=e.code==='auth/user-not-found'?'No account found with this email.':'Failed: '+e.message;
+    err.classList.add('on');btn.classList.remove('btn-ld');btn.textContent='Send Reset Link →';
+  }
+};
+</script>
+</body>
+</html>
