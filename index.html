@@ -327,6 +327,8 @@ select.finput{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xm
 @media(min-width:900px){
   body{background:#E8EDF5;}
 }
+
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
 </style>
 </head>
 <body>
@@ -345,16 +347,18 @@ select.finput{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xm
 <div id="toast"></div>
 
 <!-- ════════════════ LANDING ════════════════ -->
-<div class="scr" id="s-land" style="display:flex;flex-direction:column;">
-  <div class="land-page">
+<div class="scr" id="s-land" style="display:flex;flex-direction:column;overflow-y:auto;scroll-snap-type:y mandatory;height:100vh;">
+
+  <!-- SECTION 1: HERO -->
+  <section id="sec-hero" style="min-height:100vh;scroll-snap-align:start;flex-shrink:0;background:linear-gradient(160deg,#0F172A 0%,#1E3A5F 55%,#0F172A 100%);display:flex;flex-direction:column;">
     <div class="land-nav">
       <div class="land-brand">
         <div class="lb-icon"><svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg></div>
         <div class="lb-name">Pragati<span>.</span></div>
       </div>
-      <button class="btn btn-sm" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);" onclick="S('s-login')">Login</button>
+      <button class="btn btn-sm" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);" onclick="scrollToSection('sec-login')">Login</button>
     </div>
-    <div class="land-body">
+    <div class="land-body" style="flex:1;">
       <div class="land-illo">
         <svg viewBox="0 0 300 180" width="300" height="180" fill="none">
           <rect width="300" height="150" fill="#0F172A" opacity=".4"/>
@@ -362,7 +366,6 @@ select.finput{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xm
           <circle cx="110" cy="12" r="1" fill="white" opacity=".6"/>
           <circle cx="190" cy="20" r="1.5" fill="white" opacity=".4"/>
           <circle cx="260" cy="14" r="1" fill="white" opacity=".5"/>
-          <!-- Building 1 -->
           <rect x="15" y="45" width="50" height="115" rx="3" fill="#1E40AF"/>
           <rect x="15" y="45" width="50" height="7" rx="2" fill="#2563EB"/>
           <rect x="22" y="58" width="10" height="9" rx="1" fill="#93C5FD" opacity=".9"/>
@@ -373,7 +376,6 @@ select.finput{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xm
           <rect x="38" y="90" width="10" height="9" rx="1" fill="white" opacity=".5"/>
           <rect x="22" y="106" width="10" height="9" rx="1" fill="white" opacity=".9"/>
           <rect x="38" y="106" width="10" height="9" rx="1" fill="#93C5FD" opacity=".7"/>
-          <!-- Building 2 under construction -->
           <rect x="82" y="80" width="80" height="80" rx="3" fill="#334155"/>
           <rect x="78" y="45" width="5" height="115" rx="2" fill="#64748B"/>
           <rect x="161" y="45" width="5" height="115" rx="2" fill="#64748B"/>
@@ -386,28 +388,22 @@ select.finput{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xm
           <rect x="136" y="92" width="8" height="12" rx="1" fill="#1E40AF" opacity=".5"/>
           <rect x="92" y="112" width="14" height="12" rx="1" fill="#93C5FD" opacity=".3"/>
           <rect x="114" y="112" width="14" height="12" rx="1" fill="white" opacity=".2"/>
-          <!-- Crane -->
           <rect x="226" y="15" width="6" height="145" rx="2" fill="#EA580C"/>
           <rect x="185" y="15" width="80" height="5" rx="2" fill="#F97316"/>
           <rect x="250" y="10" width="18" height="14" rx="3" fill="#DC2626"/>
           <line x1="205" y1="20" x2="205" y2="50" stroke="#94A3B8" stroke-width="1.5"/>
           <rect x="196" y="50" width="18" height="11" rx="3" fill="#F97316"/>
-          <!-- Building 3 right -->
           <rect x="248" y="70" width="42" height="90" rx="3" fill="#1E3A5F"/>
           <rect x="254" y="80" width="9" height="8" rx="1" fill="#93C5FD" opacity=".7"/>
           <rect x="270" y="80" width="9" height="8" rx="1" fill="white" opacity=".8"/>
           <rect x="254" y="96" width="9" height="8" rx="1" fill="white" opacity=".6"/>
           <rect x="270" y="96" width="9" height="8" rx="1" fill="#93C5FD" opacity=".9"/>
-          <rect x="254" y="112" width="9" height="8" rx="1" fill="#93C5FD" opacity=".5"/>
-          <rect x="270" y="112" width="9" height="8" rx="1" fill="white" opacity=".7"/>
-          <!-- Workers -->
           <circle cx="96" cy="56" r="5" fill="#FBBF24"/>
           <rect x="91" y="61" width="10" height="12" rx="2" fill="#F97316"/>
           <path d="M90 56 Q96 48 102 56" fill="#EA580C"/>
           <circle cx="150" cy="140" r="5" fill="#FCD34D"/>
           <rect x="145" y="145" width="10" height="11" rx="2" fill="#2563EB"/>
           <path d="M144 140 Q150 132 156 140" fill="#F59E0B"/>
-          <!-- Ground -->
           <rect y="155" width="300" height="25" fill="#1E293B"/>
           <text x="150" y="170" text-anchor="middle" font-size="9" font-weight="800" fill="white" opacity=".5" font-family="sans-serif">PRAGATI WORK EXCHANGE</text>
         </svg>
@@ -416,8 +412,8 @@ select.finput{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xm
         <h1>Find Construction <span>Work Faster</span></h1>
         <p>India's marketplace for subcontract work. Post requirements or find jobs — all in one app.</p>
         <div class="land-btns">
-          <button class="btn btn-orange btn-block btn-lg" onclick="S('s-register')">Get Started Free →</button>
-          <button class="btn btn-block btn-lg" style="background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);" onclick="S('s-login')">I Have an Account</button>
+          <button class="btn btn-orange btn-block btn-lg" onclick="scrollToSection('sec-register')">Get Started Free →</button>
+          <button class="btn btn-block btn-lg" style="background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);" onclick="scrollToSection('sec-login')">I Have an Account</button>
         </div>
         <div class="land-stats">
           <div class="ls-item"><div class="n">10K+</div><div class="l">Contractors</div></div>
@@ -426,71 +422,60 @@ select.finput{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xm
         </div>
       </div>
     </div>
-  </div>
-  <div class="land-feat">
-    <div style="text-align:center;margin-bottom:20px;">
-      <div style="font-family:var(--h);font-size:20px;font-weight:800;margin-bottom:6px;">Why Choose Pragati?</div>
-      <div style="font-size:13px;color:var(--s4);">Built for India's construction industry</div>
-    </div>
-    <div class="feat-grid">
-      <div class="feat-item"><div class="fi">🔍</div><h4>Discover Work</h4><p>Browse 100s of subcontract jobs filtered by trade & location</p></div>
-      <div class="feat-item"><div class="fi">📊</div><h4>Compare Bids</h4><p>Receive ranked quotations and award work in one tap</p></div>
-      <div class="feat-item"><div class="fi">🏆</div><h4>Build Reputation</h4><p>Get rated and win higher-paying contracts over time</p></div>
-      <div class="feat-item"><div class="fi">💬</div><h4>Direct Chat</h4><p>Talk directly with contractors without middlemen</p></div>
-    </div>
-    <div style="text-align:center;margin-top:24px;">
-      <button class="btn btn-primary btn-lg btn-block" onclick="S('s-register')">Join Free →</button>
-      <p style="font-size:12px;color:var(--s4);margin-top:10px;">No credit card · Free forever for basic use</p>
-    </div>
-  </div>
-</div>
+    <!-- Scroll hint -->
+    <div style="text-align:center;padding:16px 0;color:rgba(255,255,255,.4);font-size:12px;animation:bounce 2s infinite;">↓ Scroll to sign up</div>
+  </section>
 
-<!-- ════════════════ LOGIN ════════════════ -->
-<div class="scr" id="s-login">
-  <div class="auth-hero">
-    <div class="ld-icon" style="margin:0 auto 12px;"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg></div>
-    <h2>Welcome Back</h2>
-    <p>Login to your Pragati account</p>
-  </div>
-  <div class="auth-body">
-    <div class="field"><label class="flabel">Email Address</label><input class="finput" id="li-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
-    <div class="field"><label class="flabel">Password</label><input class="finput" id="li-pass" type="password" placeholder="Your password"/></div>
-    <div class="form-err" id="li-err">Invalid email or password.</div>
-    <button class="btn btn-primary btn-block btn-lg" id="li-btn" onclick="doLogin()" style="margin-top:8px;">Login →</button>
-    <div class="divider">or</div>
-    <p style="text-align:center;font-size:14px;color:var(--s3);">No account? <span style="color:var(--blue2);font-weight:600;cursor:pointer;" onclick="S('s-register')">Register Free</span></p>
-    <p style="text-align:center;font-size:13px;color:var(--s4);margin-top:12px;cursor:pointer;" onclick="S('s-land')">← Back to home</p>
-  </div>
-</div>
+  <!-- SECTION 2: REGISTER -->
+  <section id="sec-register" style="min-height:100vh;scroll-snap-align:start;flex-shrink:0;background:#fff;display:flex;flex-direction:column;">
+    <div class="auth-hero">
+      <div class="ld-icon" style="margin:0 auto 12px;"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="6" fill="white" opacity=".9"/><path d="M4 26c0-5.523 4.477-10 10-10s10 4.477 10 10" fill="white" opacity=".6"/></svg></div>
+      <h2>Create Account</h2>
+      <p>Join 10,000+ contractors on Pragati</p>
+    </div>
+    <div class="auth-body" style="flex:1;overflow-y:auto;">
+      <p style="font-size:11px;font-weight:700;color:var(--s3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">I am a…</p>
+      <div class="role-grid">
+        <div class="role-card sel" id="rc-petty" onclick="selRole('petty')"><div class="ri">👷</div><h4>Petty Contractor</h4><p>Find & apply for work</p></div>
+        <div class="role-card" id="rc-main" onclick="selRole('main')"><div class="ri">🏗️</div><h4>Main Contractor</h4><p>Post work & hire</p></div>
+      </div>
+      <input type="hidden" id="rg-role" value="petty"/>
+      <div class="field"><label class="flabel">Full Name *</label><input class="finput" id="rg-name" placeholder="e.g. Rajesh Patil"/></div>
+      <div class="grid2">
+        <div class="field"><label class="flabel">Phone *</label><input class="finput" id="rg-phone" type="tel" placeholder="+91 98765 43210" inputmode="tel"/></div>
+        <div class="field"><label class="flabel">City *</label><input class="finput" id="rg-city" placeholder="Pune, MH"/></div>
+      </div>
+      <div class="field" id="rg-trade-wrap"><label class="flabel">Primary Trade</label>
+        <select class="finput" id="rg-trade"><option value="">Select…</option><option>Plastering</option><option>Flooring</option><option>Painting</option><option>Electrical</option><option>Plumbing</option><option>Masonry</option><option>Carpentry</option><option>Tiling</option><option>Waterproofing</option><option>Civil Work</option></select>
+      </div>
+      <div class="field"><label class="flabel">Email *</label><input class="finput" id="rg-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
+      <div class="field"><label class="flabel">Password *</label><input class="finput" id="rg-pass" type="password" placeholder="Min 6 characters"/></div>
+      <div class="form-err" id="rg-err">Please fill all required fields.</div>
+      <button class="btn btn-primary btn-block btn-lg" id="rg-btn" onclick="doRegister()" style="margin-top:8px;">Create Account →</button>
+      <div class="divider">or</div>
+      <p style="text-align:center;font-size:14px;color:var(--s3);">Already have an account? <span style="color:var(--blue2);font-weight:600;cursor:pointer;" onclick="scrollToSection('sec-login')">Login here</span></p>
+      <p style="text-align:center;font-size:12px;color:var(--s5);margin-top:10px;cursor:pointer;" onclick="scrollToSection('sec-hero')">↑ Back to top</p>
+    </div>
+  </section>
 
-<!-- ════════════════ REGISTER ════════════════ -->
-<div class="scr" id="s-register">
-  <div class="auth-hero">
-    <div class="ld-icon" style="margin:0 auto 12px;"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="6" fill="white" opacity=".9"/><path d="M4 26c0-5.523 4.477-10 10-10s10 4.477 10 10" fill="white" opacity=".6"/></svg></div>
-    <h2>Create Account</h2>
-    <p>Join 10,000+ contractors on Pragati</p>
-  </div>
-  <div class="auth-body">
-    <p style="font-size:11px;font-weight:700;color:var(--s3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">I am a…</p>
-    <div class="role-grid">
-      <div class="role-card sel" id="rc-petty" onclick="selRole('petty')"><div class="ri">👷</div><h4>Petty Contractor</h4><p>Find & apply for work</p></div>
-      <div class="role-card" id="rc-main" onclick="selRole('main')"><div class="ri">🏗️</div><h4>Main Contractor</h4><p>Post work & hire</p></div>
+  <!-- SECTION 3: LOGIN -->
+  <section id="sec-login" style="min-height:100vh;scroll-snap-align:start;flex-shrink:0;background:#fff;display:flex;flex-direction:column;">
+    <div class="auth-hero">
+      <div class="ld-icon" style="margin:0 auto 12px;"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg></div>
+      <h2>Welcome Back</h2>
+      <p>Login to your Pragati account</p>
     </div>
-    <input type="hidden" id="rg-role" value="petty"/>
-    <div class="field"><label class="flabel">Full Name *</label><input class="finput" id="rg-name" placeholder="e.g. Rajesh Patil"/></div>
-    <div class="grid2">
-      <div class="field"><label class="flabel">Phone *</label><input class="finput" id="rg-phone" type="tel" placeholder="+91 98765 43210" inputmode="tel"/></div>
-      <div class="field"><label class="flabel">City *</label><input class="finput" id="rg-city" placeholder="Pune, MH"/></div>
+    <div class="auth-body" style="flex:1;">
+      <div class="field"><label class="flabel">Email Address</label><input class="finput" id="li-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
+      <div class="field"><label class="flabel">Password</label><input class="finput" id="li-pass" type="password" placeholder="Your password"/></div>
+      <div class="form-err" id="li-err">Invalid email or password.</div>
+      <button class="btn btn-primary btn-block btn-lg" id="li-btn" onclick="doLogin()" style="margin-top:8px;">Login →</button>
+      <div class="divider">or</div>
+      <p style="text-align:center;font-size:14px;color:var(--s3);">No account? <span style="color:var(--blue2);font-weight:600;cursor:pointer;" onclick="scrollToSection('sec-register')">Register Free</span></p>
+      <p style="text-align:center;font-size:12px;color:var(--s5);margin-top:10px;cursor:pointer;" onclick="scrollToSection('sec-hero')">↑ Back to top</p>
     </div>
-    <div class="field" id="rg-trade-wrap"><label class="flabel">Primary Trade</label>
-      <select class="finput" id="rg-trade"><option value="">Select…</option><option>Plastering</option><option>Flooring</option><option>Painting</option><option>Electrical</option><option>Plumbing</option><option>Masonry</option><option>Carpentry</option><option>Tiling</option><option>Waterproofing</option><option>Civil Work</option></select>
-    </div>
-    <div class="field"><label class="flabel">Email *</label><input class="finput" id="rg-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
-    <div class="field"><label class="flabel">Password *</label><input class="finput" id="rg-pass" type="password" placeholder="Min 6 characters"/></div>
-    <div class="form-err" id="rg-err">Please fill all required fields.</div>
-    <button class="btn btn-primary btn-block btn-lg" id="rg-btn" onclick="doRegister()" style="margin-top:8px;">Create Account →</button>
-    <p style="text-align:center;font-size:13px;color:var(--s4);margin-top:14px;">Already registered? <span style="color:var(--blue2);font-weight:600;cursor:pointer;" onclick="S('s-login')">Login</span></p>
-  </div>
+  </section>
+
 </div>
 
 <!-- ════════════════ HOME (PETTY) ════════════════ -->
@@ -872,17 +857,23 @@ const fbApp=initializeApp(cfg);auth=getAuth(fbApp);db=getFirestore(fbApp);
 onAuthStateChanged(auth,async u=>{
   document.getElementById('loader').classList.add('out');
   if(u){CU=u;try{const s=await getDoc(doc(db,'users',u.uid));if(s.exists())CD=s.data();}catch(e){}routeHome();}
-  else{CU=null;CD=null;S('s-land');}
+  else{CU=null;CD=null;S('s-land');setTimeout(()=>scrollToSection('sec-hero'),100);}
 });
 
 function routeHome(){
-  if(!CD)return S('s-land');
+  if(!CD){S('s-land');return;}
   buildProfileNav();
   if(CD.role==='main'){loadMainHome();S('s-main');}
   else{loadPettyHome();S('s-home');}
 }
 
 // ── SCREEN NAV ──
+
+window.scrollToSection=function(id){
+  const el=document.getElementById(id);
+  if(el)el.scrollIntoView({behavior:'smooth'});
+};
+
 window.S=function(id){
   const cur=document.querySelector('.scr.on');
   if(cur)prevScr=cur.id;
