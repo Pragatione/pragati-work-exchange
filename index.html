@@ -1089,9 +1089,17 @@ const demoApps=[];
 
 // ── INIT ──
 window.addEventListener('DOMContentLoaded',()=>{
-  const saved=localStorage.getItem('fb_cfg');
-  if(saved){try{initFB(JSON.parse(saved));}catch(e){showFBModal();}}
-  else showFBModal();
+  // Firebase config hardcoded — no setup needed
+  const cfg={
+    apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
+    authDomain:"pragati-work-exchange.firebaseapp.com",
+    projectId:"pragati-work-exchange",
+    storageBucket:"pragati-work-exchange.firebasestorage.app",
+    messagingSenderId:"422215240765",
+    appId:"1:422215240765:web:eefb239420262c9d822e54"
+  };
+  document.getElementById('fb-overlay').classList.add('off');
+  initFB(cfg);
 });
 
 function showFBModal(){document.getElementById('loader').classList.add('out');document.getElementById('fb-overlay').classList.remove('off');}
