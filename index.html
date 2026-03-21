@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Pragati Work Exchange</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --blue:#2563EB;--blue2:#3B82F6;--blue3:#60A5FA;--blue-glow:rgba(37,99,235,0.4);
+  --orange:#F97316;--orange2:#FB923C;--orange-glow:rgba(249,115,22,0.35);
+  --green:#10B981;--green-bg:rgba(16,185,129,0.12);
+  --red:#EF4444;--red-bg:rgba(239,68,68,0.12);
+  --yellow:#F59E0B;
+  --bg:#060B18;--bg2:#0D1526;--bg3:#111827;--bg4:#1a2235;
+  --card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#F1F5F9;--text2:#94A3B8;--text3:#4B5563;
+  --h:'Bricolage Grotesque',sans-serif;
+  --b:'Plus Jakarta Sans',sans-serif;
+  --r:16px;--r2:20px;--r3:24px;
+}
+html,body{height:100%;background:var(--bg);font-family:var(--b);color:var(--text);}
+
+/* PHONE SHELL */
+.shell{
+  width:390px;height:844px;margin:0 auto;
+  background:var(--bg);border-radius:48px;
+  overflow:hidden;position:relative;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.1),0 40px 120px rgba(0,0,0,0.8),0 0 80px rgba(37,99,235,0.15);
+}
+@media(max-width:500px){.shell{width:100%;height:100vh;border-radius:0;}}
+.page-wrap{position:relative;width:100%;height:100%;overflow:hidden;}
+
+/* SCREENS */
+.screen{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden;background:var(--bg);animation:slideIn 0.32s cubic-bezier(0.4,0,0.2,1);}
+.screen.active{display:flex;}
+.screen.back-anim{animation:slideBack 0.28s cubic-bezier(0.4,0,0.2,1);}
+@keyframes slideIn{from{transform:translateX(40px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes slideBack{from{transform:translateX(-30px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes fadeUp{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+@keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}  }
+
+/* SCROLL */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:90px;}
+.scroll::-webkit-scrollbar{display:none;}
+
+/* TOP BAR */
+.topbar{
+  padding:52px 20px 16px;
+  display:flex;align-items:center;gap:12px;
+  position:relative;z-index:5;flex-shrink:0;
+}
+.topbar.solid{background:var(--bg);border-bottom:1px solid var(--border);}
+.back-btn{
+  width:38px;height:38px;border-radius:12px;
+  background:var(--card2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:18px;flex-shrink:0;
+  transition:all 0.2s;
+}
+.back-btn:active{transform:scale(0.92);background:var(--border);}
+.topbar h2{font-family:var(--h);font-size:18px;font-weight:700;flex:1;color:var(--text);}
+.icon-btn{
+  width:38px;height:38px;border-radius:12px;
+  background:var(--card2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;transition:all 0.2s;position:relative;
+}
+.icon-btn:active{transform:scale(0.92);}
+.notif-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;background:var(--orange);border-radius:50%;border:1.5px solid var(--bg);}
+
+/* BOTTOM NAV */
+.bnav{
+  position:absolute;bottom:0;left:0;right:0;height:82px;
+  background:rgba(6,11,24,0.9);backdrop-filter:blur(24px);
+  border-top:1px solid var(--border);
+  display:grid;grid-template-columns:repeat(4,1fr);
+  padding:8px 0 20px;z-index:20;
+}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 4px;transition:all 0.2s;}
+.bnav-item .ni{font-size:22px;transition:transform 0.2s;}
+.bnav-item span{font-size:10px;color:var(--text3);font-weight:500;transition:color 0.2s;}
+.bnav-item.on .ni{transform:scale(1.1);}
+.bnav-item.on span{color:var(--blue2);}
+.bnav-act{
+  width:44px;height:44px;border-radius:14px;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  box-shadow:0 4px 20px var(--blue-glow);
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  cursor:pointer;transition:all 0.2s;
+}
+.bnav-act:active{transform:scale(0.92);}
+
+/* ===== HOME SCREEN ===== */
+.home-hero{
+  padding:52px 20px 24px;
+  background:linear-gradient(180deg,#0D1A3A 0%,var(--bg) 100%);
+  position:relative;overflow:hidden;flex-shrink:0;
+}
+.home-hero::before{
+  content:'';position:absolute;top:-60px;right:-40px;
+  width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(37,99,235,0.25) 0%,transparent 70%);
+  pointer-events:none;
+}
+.home-hero::after{
+  content:'';position:absolute;bottom:-30px;left:20px;
+  width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle,rgba(249,115,22,0.15) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;}
+.hero-greet{font-size:13px;color:var(--text2);margin-bottom:4px;font-weight:500;}
+.hero-name{font-family:var(--h);font-size:26px;font-weight:800;line-height:1.2;}
+.hero-name span{
+  background:linear-gradient(90deg,var(--blue3),var(--orange2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-avatar{
+  width:46px;height:46px;border-radius:15px;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--h);font-size:17px;font-weight:700;
+  box-shadow:0 4px 16px var(--blue-glow);flex-shrink:0;
+}
+.search-pill{
+  background:var(--card2);border:1px solid var(--border2);
+  border-radius:14px;padding:12px 16px;
+  display:flex;align-items:center;gap:10px;cursor:pointer;
+  transition:all 0.2s;
+}
+.search-pill:active{transform:scale(0.98);border-color:var(--blue2);}
+.search-pill span{color:var(--text3);font-size:14px;}
+.s-icon{font-size:16px;opacity:0.6;}
+
+/* STATS */
+.stats-strip{
+  display:flex;gap:10px;padding:16px 20px;overflow-x:auto;
+  scrollbar-width:none;flex-shrink:0;
+}
+.stats-strip::-webkit-scrollbar{display:none;}
+.stat-pill{
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:14px;padding:12px 16px;flex-shrink:0;
+  display:flex;flex-direction:column;gap:2px;min-width:90px;
+  position:relative;overflow:hidden;
+}
+.stat-pill::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.03) 0%,transparent 60%);
+}
+.sp-num{font-family:var(--h);font-size:22px;font-weight:800;color:var(--blue3);}
+.sp-num.orange{color:var(--orange2);}
+.sp-num.green{color:var(--green);}
+.sp-lbl{font-size:11px;color:var(--text3);font-weight:500;}
+
+/* ALERT BANNER */
+.alert-banner{
+  margin:0 20px 16px;padding:12px 14px;
+  background:linear-gradient(90deg,rgba(249,115,22,0.12),rgba(249,115,22,0.05));
+  border:1px solid rgba(249,115,22,0.25);border-radius:14px;
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;color:#FB923C;font-weight:500;
+}
+.alert-icon{font-size:16px;animation:pulse 2s infinite;}
+
+/* SECTION */
+.sec{padding:0 20px 16px;}
+.sec-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.sec-h h3{font-family:var(--h);font-size:16px;font-weight:700;}
+.sec-h a{font-size:12px;color:var(--blue3);cursor:pointer;font-weight:600;}
+
+/* WORK CARD */
+.wcard{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r2);overflow:hidden;margin-bottom:12px;
+  cursor:pointer;transition:all 0.25s;position:relative;
+}
+.wcard:active{transform:scale(0.98);border-color:var(--border2);}
+.wcard::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
+}
+.wcard-top{padding:16px 16px 12px;}
+.wcard-bottom{
+  padding:10px 16px;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(0,0,0,0.2);
+}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.tag{font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;letter-spacing:0.02em;}
+.tag.blue{background:rgba(59,130,246,0.15);color:var(--blue3);}
+.tag.orange{background:rgba(249,115,22,0.15);color:var(--orange2);}
+.tag.green{background:rgba(16,185,129,0.15);color:var(--green);}
+.tag.red{background:rgba(239,68,68,0.15);color:#F87171;}
+.wc-title{font-family:var(--h);font-size:15px;font-weight:700;margin-bottom:5px;}
+.wc-co{font-size:12px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:4px;}
+.wc-meta{display:flex;gap:12px;}
+.wc-meta span{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:3px;}
+.budget{font-family:var(--h);font-size:15px;font-weight:700;color:var(--green);}
+.bids{font-size:11px;color:var(--text3);}
+
+/* TRADE CHIPS */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:0 20px 16px;scrollbar-width:none;}
+.chips::-webkit-scrollbar{display:none;}
+.chip{
+  white-space:nowrap;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:600;
+  border:1px solid var(--border);background:var(--card);cursor:pointer;
+  color:var(--text2);transition:all 0.2s;flex-shrink:0;
+}
+.chip:active{transform:scale(0.95);}
+.chip.on{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 4px 16px var(--blue-glow);}
+
+/* ===== FIND WORK ===== */
+.fw-bar{
+  padding:52px 20px 14px;
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.fw-bar h2{font-family:var(--h);font-size:22px;font-weight:800;margin-bottom:14px;}
+.search-box{
+  background:var(--card2);border:1px solid var(--border2);
+  border-radius:14px;padding:11px 16px;
+  display:flex;align-items:center;gap:10px;
+}
+.search-box input{
+  flex:1;background:none;border:none;outline:none;
+  font-family:var(--b);font-size:14px;color:var(--text);
+}
+.search-box input::placeholder{color:var(--text3);}
+
+/* ===== DETAIL SCREEN ===== */
+.detail-hero{
+  padding:52px 20px 24px;
+  background:linear-gradient(180deg,#0D1A3A 0%,var(--bg) 100%);
+  position:relative;overflow:hidden;flex-shrink:0;
+}
+.detail-hero .dh-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.detail-hero h1{font-family:var(--h);font-size:22px;font-weight:800;margin-bottom:8px;}
+.detail-hero .co{font-size:13px;color:var(--text2);}
+.progress-bar{height:3px;background:var(--border);border-radius:99px;margin-top:16px;}
+.progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--orange));animation:shimmer 2s linear infinite;background-size:200% 100%;}
+
+.dsec{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r2);margin:12px 20px;padding:16px;
+}
+.dsec h4{font-family:var(--h);font-size:13px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;}
+.irow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);}
+.irow:last-child{border-bottom:none;}
+.ik{font-size:13px;color:var(--text3);}
+.iv{font-size:13px;font-weight:600;color:var(--text);}
+.bullet-item{display:flex;gap:10px;padding:7px 0;font-size:13px;color:var(--text2);align-items:flex-start;}
+.bdot{width:6px;height:6px;border-radius:50%;background:var(--orange);margin-top:5px;flex-shrink:0;}
+
+/* STICKY CTA */
+.sticky-cta{
+  position:sticky;bottom:0;padding:12px 20px 28px;
+  background:linear-gradient(0deg,rgba(6,11,24,1) 60%,transparent);
+  display:flex;gap:10px;z-index:10;
+}
+
+/* BUTTONS */
+.btn{
+  border:none;border-radius:14px;font-family:var(--b);
+  font-size:15px;font-weight:600;cursor:pointer;padding:14px 20px;
+  transition:all 0.2s;letter-spacing:0.01em;
+}
+.btn:active{transform:scale(0.97);}
+.btn-primary{
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#fff;flex:1;
+  box-shadow:0 4px 20px var(--blue-glow);
+}
+.btn-orange{
+  background:linear-gradient(135deg,var(--orange),var(--orange2));
+  color:#fff;width:100%;
+  box-shadow:0 4px 20px var(--orange-glow);
+}
+.btn-ghost{
+  background:var(--card2);border:1px solid var(--border2);
+  color:var(--text);
+}
+.btn-sm{padding:9px 16px;font-size:12px;border-radius:10px;}
+
+/* ===== QUOTE FORM ===== */
+.form-wrap{padding:16px 20px;}
+.field{margin-bottom:16px;}
+.flabel{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:7px;display:block;}
+.finput{
+  width:100%;background:var(--card2);border:1px solid var(--border2);
+  border-radius:12px;padding:13px 16px;font-size:14px;color:var(--text);
+  font-family:var(--b);outline:none;transition:border 0.2s;
+}
+.finput:focus{border-color:var(--blue2);}
+.finput::placeholder{color:var(--text3);}
+textarea.finput{resize:none;}
+select.finput option{background:var(--bg3);}
+.upload-box{
+  border:1.5px dashed var(--border2);border-radius:14px;
+  padding:24px;text-align:center;cursor:pointer;
+  font-size:13px;color:var(--text3);transition:all 0.2s;
+}
+.upload-box:active{border-color:var(--blue2);background:rgba(59,130,246,0.05);}
+.upload-icon{font-size:28px;display:block;margin-bottom:8px;opacity:0.5;}
+.ref-card{
+  background:linear-gradient(135deg,rgba(37,99,235,0.12),rgba(59,130,246,0.06));
+  border:1px solid rgba(59,130,246,0.2);border-radius:14px;
+  padding:14px;margin-bottom:20px;
+}
+.ref-card .rtitle{font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue3);margin-bottom:6px;}
+.ref-card .rmeta{display:flex;gap:16px;}
+.ref-card .rmeta span{font-size:12px;color:var(--text2);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* ===== DASHBOARD ===== */
+.dash-hero{
+  padding:52px 20px 24px;
+  background:linear-gradient(160deg,#0A1628 0%,#0D1526 60%,var(--bg) 100%);
+  position:relative;overflow:hidden;flex-shrink:0;
+}
+.dash-hero::before{
+  content:'';position:absolute;top:-30px;right:-20px;
+  width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(37,99,235,0.2) 0%,transparent 70%);
+}
+.dh-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;}
+.dh-name{font-family:var(--h);font-size:20px;font-weight:800;}
+.dh-role{font-size:12px;color:var(--text3);margin-top:3px;font-weight:500;}
+.dh-badge{
+  background:linear-gradient(135deg,var(--orange),var(--orange2));
+  color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;
+  box-shadow:0 2px 10px var(--orange-glow);
+}
+.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.metric-card{
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px;position:relative;overflow:hidden;
+}
+.metric-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.02) 0%,transparent);
+}
+.mc-num{font-family:var(--h);font-size:28px;font-weight:800;line-height:1;}
+.mc-num.blue{color:var(--blue3);}
+.mc-num.orange{color:var(--orange2);}
+.mc-num.green{color:var(--green);}
+.mc-num.purple{color:#A78BFA;}
+.mc-lbl{font-size:11px;color:var(--text3);margin-top:4px;font-weight:500;}
+.mc-trend{position:absolute;top:12px;right:12px;font-size:10px;font-weight:700;padding:3px 7px;border-radius:6px;}
+.mc-trend.up{background:rgba(16,185,129,0.15);color:var(--green);}
+.mc-trend.dn{background:rgba(239,68,68,0.12);color:#F87171;}
+
+/* TABS */
+.tabs{display:flex;background:var(--card);border:1px solid var(--border);border-radius:14px;margin:12px 20px;overflow:hidden;}
+.tab{flex:1;padding:10px 6px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;color:var(--text3);transition:all 0.2s;border:none;background:none;font-family:var(--b);}
+.tab.on{background:var(--blue);color:#fff;}
+
+/* APP ROW */
+.arow{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r2);margin:0 20px 10px;padding:14px;cursor:pointer;
+  transition:all 0.2s;
+}
+.arow:active{transform:scale(0.98);border-color:var(--border2);}
+.ar-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;}
+.ar-title{font-family:var(--h);font-size:14px;font-weight:700;}
+.ar-sub{font-size:12px;color:var(--text3);margin-bottom:10px;}
+.ar-foot{display:flex;justify-content:space-between;align-items:center;}
+.status{font-size:10px;font-weight:700;padding:4px 10px;border-radius:8px;letter-spacing:0.04em;}
+.status.pending{background:rgba(245,158,11,0.15);color:#FCD34D;}
+.status.review{background:rgba(59,130,246,0.15);color:var(--blue3);}
+.status.awarded{background:rgba(16,185,129,0.15);color:var(--green);}
+.status.rejected{background:rgba(239,68,68,0.12);color:#F87171;}
+
+/* BID CARD */
+.bidder{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r2);margin:0 20px 10px;padding:14px;
+  transition:all 0.2s;
+}
+.bidder.top{border-color:rgba(249,115,22,0.4);background:linear-gradient(135deg,rgba(249,115,22,0.07),rgba(249,115,22,0.02));}
+.bidder-row{display:flex;gap:12px;align-items:center;}
+.bav{
+  width:44px;height:44px;border-radius:14px;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--h);font-size:15px;font-weight:700;flex-shrink:0;
+}
+.bav.g{background:linear-gradient(135deg,#10B981,#059669);}
+.bav.p{background:linear-gradient(135deg,#8B5CF6,#7C3AED);}
+.bav.o{background:linear-gradient(135deg,var(--orange),#DC2626);}
+.binfo{flex:1;}
+.bname{font-family:var(--h);font-size:14px;font-weight:700;}
+.bsub{font-size:11px;color:var(--text3);}
+.bprice{font-family:var(--h);font-size:16px;font-weight:800;color:var(--green);text-align:right;}
+.award-btn{
+  margin-top:8px;background:linear-gradient(135deg,var(--orange),var(--orange2));
+  color:#fff;border:none;border-radius:10px;padding:7px 16px;
+  font-size:12px;font-weight:700;cursor:pointer;
+  box-shadow:0 3px 12px var(--orange-glow);transition:all 0.2s;font-family:var(--b);
+}
+.award-btn:active{transform:scale(0.95);}
+.best-tag{position:absolute;top:-1px;right:14px;background:linear-gradient(90deg,var(--orange),var(--orange2));color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:0 0 8px 8px;letter-spacing:0.06em;}
+
+/* ===== PROFILE ===== */
+.prof-hero{
+  padding:52px 20px 28px;
+  background:linear-gradient(160deg,#0A1628 0%,var(--bg) 100%);
+  text-align:center;position:relative;overflow:hidden;flex-shrink:0;
+}
+.prof-hero::before{
+  content:'';position:absolute;top:-50px;left:50%;transform:translateX(-50%);
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(37,99,235,0.15) 0%,transparent 70%);
+}
+.p-avatar{
+  width:80px;height:80px;border-radius:24px;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--h);font-size:28px;font-weight:800;
+  margin:0 auto 14px;
+  box-shadow:0 8px 30px var(--blue-glow);
+  position:relative;
+}
+.p-verify{
+  position:absolute;bottom:-4px;right:-4px;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--green);border:2px solid var(--bg);
+  display:flex;align-items:center;justify-content:center;font-size:11px;
+}
+.p-name{font-family:var(--h);font-size:22px;font-weight:800;margin-bottom:4px;}
+.p-role{font-size:13px;color:var(--text2);margin-bottom:8px;}
+.stars{color:var(--yellow);font-size:13px;margin-bottom:12px;}
+.skill-wrap{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
+.skill-tag{background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.2);color:var(--blue3);font-size:11px;font-weight:600;padding:5px 12px;border-radius:8px;}
+
+.psec{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);margin:10px 20px;}
+.prow{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;
+  transition:background 0.2s;
+}
+.prow:last-child{border-bottom:none;}
+.prow:active{background:var(--card2);}
+.prow-icon{width:34px;height:34px;border-radius:10px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.prow-txt{flex:1;font-size:14px;font-weight:500;}
+.prow-arr{font-size:16px;color:var(--text3);}
+.prow-badge{background:rgba(16,185,129,0.15);color:var(--green);font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;}
+
+/* ===== CHAT ===== */
+.cli{
+  display:flex;gap:12px;padding:14px 20px;
+  border-bottom:1px solid var(--border);cursor:pointer;
+  transition:background 0.2s;
+}
+.cli:active{background:var(--card2);}
+.cav{
+  width:46px;height:46px;border-radius:15px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--h);font-size:16px;font-weight:700;flex-shrink:0;
+}
+.cinfo{flex:1;min-width:0;}
+.cn{font-size:14px;font-weight:600;margin-bottom:3px;}
+.cp{font-size:12px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cmeta{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+.ct{font-size:10px;color:var(--text3);}
+.cund{background:var(--blue);color:#fff;font-size:9px;font-weight:800;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+
+/* CHAT WINDOW */
+.cw-bar{
+  padding:52px 16px 14px;
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.cw-av{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:14px;font-weight:700;flex-shrink:0;}
+.cw-n{font-family:var(--h);font-size:15px;font-weight:700;}
+.cw-s{font-size:11px;color:var(--green);font-weight:500;}
+.msgs{padding:16px 20px;display:flex;flex-direction:column;gap:8px;}
+.msg-time{text-align:center;font-size:11px;color:var(--text3);padding:6px 0;}
+.msg{max-width:76%;padding:11px 14px;border-radius:16px;font-size:13px;line-height:1.55;}
+.msg.them{background:var(--card2);border:1px solid var(--border);border-bottom-left-radius:4px;align-self:flex-start;}
+.msg.me{background:linear-gradient(135deg,var(--blue),var(--blue2));border-bottom-right-radius:4px;align-self:flex-end;}
+.ci-bar{
+  padding:10px 16px 28px;background:rgba(6,11,24,0.95);
+  backdrop-filter:blur(20px);border-top:1px solid var(--border);
+  display:flex;gap:10px;align-items:center;flex-shrink:0;
+}
+.ci{
+  flex:1;background:var(--card2);border:1px solid var(--border2);
+  border-radius:25px;padding:11px 16px;font-size:13px;
+  color:var(--text);font-family:var(--b);outline:none;
+}
+.ci::placeholder{color:var(--text3);}
+.send{
+  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 12px var(--blue-glow);transition:all 0.2s;
+}
+.send:active{transform:scale(0.92);}
+
+/* POST WORK */
+.pw-sec h3{font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue3);text-transform:uppercase;letter-spacing:0.08em;padding:16px 20px 10px;display:flex;align-items:center;gap:6px;}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+
+/* SWITCHER */
+.switcher{
+  position:fixed;top:0;left:50%;transform:translateX(-50%);
+  width:390px;max-width:100%;z-index:9999;
+  background:rgba(6,11,24,0.95);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:8px 12px 8px;
+  display:flex;align-items:center;gap:6px;overflow-x:auto;
+  scrollbar-width:none;
+}
+.switcher::-webkit-scrollbar{display:none;}
+.sw-label{font-size:10px;color:var(--text3);font-weight:700;white-space:nowrap;margin-right:2px;}
+.sw-btn{
+  white-space:nowrap;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;
+  background:var(--card2);border:1px solid var(--border);color:var(--text2);
+  cursor:pointer;flex-shrink:0;transition:all 0.2s;
+}
+.sw-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
+.sw-btn.cur{background:var(--blue);color:#fff;border-color:var(--blue);}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:4px 0;}
+
+/* EMPTY */
+.empty{padding:40px;text-align:center;color:var(--text3);}
+.empty-icon{font-size:40px;display:block;margin-bottom:12px;opacity:0.5;}
+
+/* NOTICE */
+.notice{
+  margin:0 20px 14px;padding:12px 14px;
+  background:linear-gradient(90deg,rgba(16,185,129,0.1),rgba(16,185,129,0.04));
+  border:1px solid rgba(16,185,129,0.2);border-radius:14px;
+  font-size:13px;color:var(--green);font-weight:500;
+  display:flex;align-items:center;gap:8px;
+}
+
+/* SCROLL SNAP horizontal for cards */
+.hscroll{display:flex;gap:12px;overflow-x:auto;padding:0 20px 16px;scrollbar-width:none;}
+.hscroll::-webkit-scrollbar{display:none;}
+
+/* FEATURED CARD */
+.feat-card{
+  min-width:260px;border-radius:var(--r2);overflow:hidden;
+  background:linear-gradient(135deg,#0D1A3A,#111827);
+  border:1px solid var(--border2);padding:16px;flex-shrink:0;
+  position:relative;
+}
+.feat-card::before{
+  content:'';position:absolute;top:0;right:0;
+  width:120px;height:120px;
+  background:radial-gradient(circle,rgba(37,99,235,0.2) 0%,transparent 70%);
+}
+.fc-company{font-size:12px;color:var(--text3);margin-bottom:6px;}
+.fc-title{font-family:var(--h);font-size:15px;font-weight:700;margin-bottom:10px;line-height:1.3;}
+.fc-meta{display:flex;gap:8px;margin-bottom:12px;}
+.fc-budget{font-family:var(--h);font-size:18px;font-weight:800;color:var(--green);}
+
+/* LOADING SCREEN */
+.loader{
+  position:absolute;inset:0;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:100;animation:fadeOut 0.5s 1.5s forwards;
+}
+@keyframes fadeOut{to{opacity:0;pointer-events:none;}}
+.loader-logo{font-family:var(--h);font-size:28px;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--blue3),var(--orange2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.loader-sub{font-size:13px;color:var(--text3);}
+.loader-bar{width:120px;height:3px;background:var(--border);border-radius:99px;margin-top:20px;overflow:hidden;}
+.loader-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--orange));border-radius:99px;animation:loadfill 1.4s ease forwards;}
+@keyframes loadfill{from{width:0;}to{width:100%;}}
+</style>
+</head>
+<body>
+
+<!-- SWITCHER BAR -->
+<div class="switcher" id="switcher">
+  <span class="sw-label">Screens:</span>
+  <span class="sw-btn cur" onclick="go('s-home',this)">🏠 Home</span>
+  <span class="sw-btn" onclick="go('s-find',this)">🔍 Find Work</span>
+  <span class="sw-btn" onclick="go('s-detail',this)">📄 Details</span>
+  <span class="sw-btn" onclick="go('s-quote',this)">✍️ Quote</span>
+  <span class="sw-btn" onclick="go('s-post',this)">➕ Post Work</span>
+  <span class="sw-btn" onclick="go('s-main',this)">🏗️ Main Dash</span>
+  <span class="sw-btn" onclick="go('s-petty',this)">👷 My Dash</span>
+  <span class="sw-btn" onclick="go('s-bids',this)">📊 Bids</span>
+  <span class="sw-btn" onclick="go('s-apps',this)">📋 Apps</span>
+  <span class="sw-btn" onclick="go('s-profile',this)">👤 Profile</span>
+  <span class="sw-btn" onclick="go('s-chat',this)">💬 Chat</span>
+</div>
+
+<div style="padding-top:42px;">
+<div class="shell">
+<div class="page-wrap">
+
+<!-- LOADER -->
+<div class="loader">
+  <div class="loader-logo">Pragati</div>
+  <div class="loader-sub">Work Exchange</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<!-- ==================== HOME ==================== -->
+<div class="screen active" id="s-home">
+  <div class="scroll">
+    <div class="home-hero">
+      <div class="hero-top">
+        <div>
+          <div class="hero-greet">Good morning 👋</div>
+          <div class="hero-name">Rajesh <span>Patil</span></div>
+        </div>
+        <div class="hero-avatar">RP</div>
+      </div>
+      <div class="search-pill" onclick="go('s-find',null)">
+        <span class="s-icon">🔍</span>
+        <span>Search work, trade, location…</span>
+      </div>
+    </div>
+
+    <div class="stats-strip">
+      <div class="stat-pill"><div class="sp-num">48</div><div class="sp-lbl">Open Works</div></div>
+      <div class="stat-pill"><div class="sp-num orange">12</div><div class="sp-lbl">Applied</div></div>
+      <div class="stat-pill"><div class="sp-num green">3</div><div class="sp-lbl">Awarded</div></div>
+      <div class="stat-pill"><div class="sp-num" style="color:#A78BFA;">₹18L</div><div class="sp-lbl">Earned</div></div>
+    </div>
+
+    <div class="alert-banner">
+      <div class="alert-icon">⚡</div>
+      5 new works posted near Pune today!
+    </div>
+
+    <div class="sec">
+      <div class="sec-h"><h3>Featured Works</h3><a onclick="go('s-find',null)">View all →</a></div>
+    </div>
+    <div class="hscroll">
+      <div class="feat-card" onclick="go('s-detail',null)">
+        <div class="tags"><span class="tag orange">URGENT</span></div>
+        <div class="fc-company">🏢 Kalpataru Constructions</div>
+        <div class="fc-title">Interior Plastering Work – Phase 2</div>
+        <div class="fc-meta"><span class="tag blue">Plastering</span><span class="tag green">Pune</span></div>
+        <div class="fc-budget">₹2.5L – ₹3L</div>
+      </div>
+      <div class="feat-card" onclick="go('s-detail',null)">
+        <div class="tags"><span class="tag green">NEW</span></div>
+        <div class="fc-company">🏢 Godrej Properties</div>
+        <div class="fc-title">Marble Flooring – Block C Tower</div>
+        <div class="fc-meta"><span class="tag blue">Flooring</span><span class="tag green">Mumbai</span></div>
+        <div class="fc-budget">₹5L – ₹7L</div>
+      </div>
+      <div class="feat-card" onclick="go('s-detail',null)">
+        <div class="tags"><span class="tag blue">HIGH BUDGET</span></div>
+        <div class="fc-company">🏢 Lodha Group</div>
+        <div class="fc-title">Full Electrical Wiring – Tower 2</div>
+        <div class="fc-meta"><span class="tag blue">Electrical</span><span class="tag green">Thane</span></div>
+        <div class="fc-budget">₹8L – ₹10L</div>
+      </div>
+    </div>
+
+    <div class="chips">
+      <div class="chip on">All Trades</div>
+      <div class="chip" onclick="toggleChip(this)">Masonry</div>
+      <div class="chip" onclick="toggleChip(this)">Plastering</div>
+      <div class="chip" onclick="toggleChip(this)">Tiling</div>
+      <div class="chip" onclick="toggleChip(this)">Electrical</div>
+      <div class="chip" onclick="toggleChip(this)">Plumbing</div>
+      <div class="chip" onclick="toggleChip(this)">Painting</div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h"><h3>Recent Works</h3></div>
+      <div class="wcard" onclick="go('s-detail',null)">
+        <div class="wcard-top">
+          <div class="tags"><span class="tag blue">Plastering</span><span class="tag orange">Urgent</span></div>
+          <div class="wc-title">Interior Plastering Work</div>
+          <div class="wc-co">🏢 Kalpataru Constructions</div>
+          <div class="wc-meta">
+            <span>📍 Pune</span><span>⏱ 15 Jan</span><span>👷 5+ yrs</span>
+          </div>
+        </div>
+        <div class="wcard-bottom"><span class="budget">₹2.5L – ₹3L</span><span class="bids">8 bids · 4d left</span></div>
+      </div>
+      <div class="wcard" onclick="go('s-detail',null)">
+        <div class="wcard-top">
+          <div class="tags"><span class="tag blue">Flooring</span><span class="tag green">Open</span></div>
+          <div class="wc-title">Marble Flooring – Block C</div>
+          <div class="wc-co">🏢 Godrej Properties</div>
+          <div class="wc-meta">
+            <span>📍 Mumbai</span><span>⏱ 22 Jan</span><span>👷 3+ yrs</span>
+          </div>
+        </div>
+        <div class="wcard-bottom"><span class="budget">₹5L – ₹7L</span><span class="bids">14 bids · 11d left</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="bnav">
+    <div class="bnav-item on"><div class="ni">🏠</div><span>Home</span></div>
+    <div class="bnav-item" onclick="go('s-find',null)"><div class="ni">🔍</div><span>Find Work</span></div>
+    <div class="bnav-act" onclick="go('s-post',null)">➕</div>
+    <div class="bnav-item" onclick="go('s-petty',null)"><div class="ni">📋</div><span>Dashboard</span></div>
+    <div class="bnav-item" onclick="go('s-profile',null)"><div class="ni">👤</div><span>Profile</span></div>
+  </div>
+</div>
+
+<!-- ==================== FIND WORK ==================== -->
+<div class="screen" id="s-find">
+  <div class="fw-bar">
+    <h2>Find Work</h2>
+    <div class="search-box">
+      <span>🔍</span>
+      <input placeholder="Trade, location, company…" />
+    </div>
+  </div>
+  <div class="chips" style="padding-top:12px;">
+    <div class="chip on">All</div>
+    <div class="chip" onclick="toggleChip(this)">Near Me</div>
+    <div class="chip" onclick="toggleChip(this)">Urgent</div>
+    <div class="chip" onclick="toggleChip(this)">High Budget</div>
+    <div class="chip" onclick="toggleChip(this)">New Today</div>
+  </div>
+  <div class="scroll" style="padding-top:4px;">
+    <div class="wcard" onclick="go('s-detail',null)">
+      <div class="wcard-top">
+        <div class="tags"><span class="tag blue">Plastering</span><span class="tag orange">Urgent</span></div>
+        <div class="wc-title">Interior Plastering Work</div>
+        <div class="wc-co">🏢 Kalpataru Constructions</div>
+        <div class="wc-meta"><span>📍 Pune</span><span>⏱ 15 Jan</span><span>👷 5+ yrs</span></div>
+      </div>
+      <div class="wcard-bottom"><span class="budget">₹2.5L – ₹3L</span><span class="bids">8 bids · 4d left</span></div>
+    </div>
+    <div class="wcard" onclick="go('s-detail',null)">
+      <div class="wcard-top">
+        <div class="tags"><span class="tag blue">Flooring</span><span class="tag green">Open</span></div>
+        <div class="wc-title">Marble Flooring – Block C</div>
+        <div class="wc-co">🏢 Godrej Properties</div>
+        <div class="wc-meta"><span>📍 Mumbai</span><span>⏱ 22 Jan</span><span>👷 3+ yrs</span></div>
+      </div>
+      <div class="wcard-bottom"><span class="budget">₹5L – ₹7L</span><span class="bids">14 bids · 11d left</span></div>
+    </div>
+    <div class="wcard" onclick="go('s-detail',null)">
+      <div class="wcard-top">
+        <div class="tags"><span class="tag blue">Electrical</span><span class="tag green">Open</span></div>
+        <div class="wc-title">Full Electrical Wiring – Tower 2</div>
+        <div class="wc-co">🏢 Lodha Group</div>
+        <div class="wc-meta"><span>📍 Thane</span><span>⏱ 30 Jan</span><span>👷 7+ yrs</span></div>
+      </div>
+      <div class="wcard-bottom"><span class="budget">₹8L – ₹10L</span><span class="bids">6 bids · 19d left</span></div>
+    </div>
+    <div class="wcard" onclick="go('s-detail',null)">
+      <div class="wcard-top">
+        <div class="tags"><span class="tag blue">Painting</span><span class="tag green">Open</span></div>
+        <div class="wc-title">External Painting – Phase 2</div>
+        <div class="wc-co">🏢 Shapoorji Pallonji</div>
+        <div class="wc-meta"><span>📍 Nagpur</span><span>⏱ 5 Feb</span><span>👷 2+ yrs</span></div>
+      </div>
+      <div class="wcard-bottom"><span class="budget">₹4L – ₹6L</span><span class="bids">3 bids · 25d left</span></div>
+    </div>
+    <div class="wcard" onclick="go('s-detail',null)">
+      <div class="wcard-top">
+        <div class="tags"><span class="tag blue">Plumbing</span><span class="tag orange">Urgent</span></div>
+        <div class="wc-title">Sanitary & Plumbing – Phase 3</div>
+        <div class="wc-co">🏢 Prestige Group</div>
+        <div class="wc-meta"><span>📍 Bangalore</span><span>⏱ 10 Feb</span><span>👷 4+ yrs</span></div>
+      </div>
+      <div class="wcard-bottom"><span class="budget">₹3.5L – ₹5L</span><span class="bids">5 bids · 8d left</span></div>
+    </div>
+  </div>
+  <div class="bnav">
+    <div class="bnav-item" onclick="go('s-home',null)"><div class="ni">🏠</div><span>Home</span></div>
+    <div class="bnav-item on"><div class="ni">🔍</div><span>Find Work</span></div>
+    <div class="bnav-act" onclick="go('s-post',null)">➕</div>
+    <div class="bnav-item" onclick="go('s-petty',null)"><div class="ni">📋</div><span>Dashboard</span></div>
+    <div class="bnav-item" onclick="go('s-profile',null)"><div class="ni">👤</div><span>Profile</span></div>
+  </div>
+</div>
+
+<!-- ==================== WORK DETAIL ==================== -->
+<div class="screen" id="s-detail">
+  <div style="position:relative;flex-shrink:0;">
+    <div class="detail-hero">
+      <div class="dh-bar">
+        <div class="back-btn" onclick="go('s-find',null)">←</div>
+        <div style="flex:1;"></div>
+        <div class="icon-btn">🔖</div>
+      </div>
+      <div class="tags"><span class="tag orange">URGENT</span><span class="tag blue">Plastering</span><span class="tag green">Pune</span></div>
+      <h1 style="margin-top:10px;">Interior Plastering Work</h1>
+      <div class="co">🏢 Kalpataru Constructions · Hinjewadi, Pune</div>
+      <div class="progress-bar" style="margin-top:14px;"><div class="progress-fill" style="width:65%;"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;">
+        <span style="font-size:11px;color:var(--text3);">8 of 12 bid slots filled</span>
+        <span style="font-size:11px;color:var(--orange2);">4 days left</span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll" style="padding-bottom:0;">
+    <div class="dsec">
+      <h4>Work Info</h4>
+      <div class="irow"><span class="ik">Budget Range</span><span class="iv" style="color:var(--green);">₹2.5L – ₹3.0L</span></div>
+      <div class="irow"><span class="ik">Location</span><span class="iv">Hinjewadi, Pune</span></div>
+      <div class="irow"><span class="ik">Duration</span><span class="iv">45 Days</span></div>
+      <div class="irow"><span class="ik">Start Date</span><span class="iv">15 January 2025</span></div>
+      <div class="irow"><span class="ik">Experience</span><span class="iv">Min. 5 Years</span></div>
+      <div class="irow"><span class="ik">Labour Required</span><span class="iv">8–10 Workers</span></div>
+    </div>
+    <div class="dsec">
+      <h4>Scope of Work</h4>
+      <div class="bullet-item"><div class="bdot"></div>Internal plastering for 120 flats (3 BHK)</div>
+      <div class="bullet-item"><div class="bdot"></div>Cement mortar ratio 1:4 to be used</div>
+      <div class="bullet-item"><div class="bdot"></div>Chicken mesh on all joints mandatory</div>
+      <div class="bullet-item"><div class="bdot"></div>POP punning over plaster for smooth finish</div>
+      <div class="bullet-item"><div class="bdot"></div>Material supplied by Main Contractor</div>
+    </div>
+    <div class="dsec">
+      <h4>About Contractor</h4>
+      <div class="irow"><span class="ik">Rating</span><span class="iv">⭐ 4.7 (38 reviews)</span></div>
+      <div class="irow"><span class="ik">Projects Done</span><span class="iv">120+ Projects</span></div>
+      <div class="irow"><span class="ik">Member Since</span><span class="iv">2018</span></div>
+      <div class="irow"><span class="ik">Payment Track</span><span class="iv" style="color:var(--green);">Excellent ✓</span></div>
+    </div>
+    <div style="height:100px;"></div>
+  </div>
+  <div class="sticky-cta">
+    <button class="btn btn-ghost" style="width:50px;font-size:20px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="go('s-chat',null)">💬</button>
+    <button class="btn btn-primary" onclick="go('s-quote',null)">Submit Quotation →</button>
+  </div>
+</div>
+
+<!-- ==================== SUBMIT QUOTE ==================== -->
+<div class="screen" id="s-quote">
+  <div class="topbar solid">
+    <div class="back-btn" onclick="go('s-detail',null)">←</div>
+    <h2>Submit Quotation</h2>
+  </div>
+  <div class="scroll">
+    <div style="padding:16px 20px 0;">
+      <div class="ref-card">
+        <div class="rtitle">Interior Plastering Work</div>
+        <div class="rmeta">
+          <span>🏢 Kalpataru</span>
+          <span>📍 Pune</span>
+          <span style="color:var(--green);">₹2.5L–₹3L</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-wrap">
+      <div class="field">
+        <label class="flabel">Your Quote Amount (₹) *</label>
+        <input class="finput" type="number" placeholder="e.g. 275000" />
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label class="flabel">Timeline (Days)</label>
+          <input class="finput" type="number" placeholder="40" />
+        </div>
+        <div class="field">
+          <label class="flabel">Labour Count</label>
+          <input class="finput" type="number" placeholder="9" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="flabel">Your Pitch *</label>
+        <textarea class="finput" rows="4" placeholder="Why are you the best fit? Mention past work, quality standards…"></textarea>
+      </div>
+      <div class="field">
+        <label class="flabel">Payment Terms</label>
+        <select class="finput">
+          <option>30% advance · 40% mid · 30% on completion</option>
+          <option>50% advance · 50% on completion</option>
+          <option>100% on completion</option>
+          <option>Custom terms</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="flabel">Past Work Photos (Optional)</label>
+        <div class="upload-box">
+          <span class="upload-icon">📷</span>
+          Tap to upload photos<br><span style="font-size:11px;opacity:0.6;">Max 5 · JPG or PNG</span>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;" onclick="go('s-petty',null)">Submit Quotation →</button>
+      <div style="height:20px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== POST WORK ==================== -->
+<div class="screen" id="s-post">
+  <div class="topbar solid">
+    <div class="back-btn" onclick="go('s-main',null)">←</div>
+    <h2>Post New Work</h2>
+  </div>
+  <div class="scroll">
+    <div class="pw-sec">
+      <h3><div class="step-num">1</div>Basic Details</h3>
+      <div class="form-wrap" style="padding-top:0;">
+        <div class="field">
+          <label class="flabel">Work Title *</label>
+          <input class="finput" placeholder="e.g. Interior Plastering – Block A" />
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label class="flabel">Trade Type *</label>
+            <select class="finput">
+              <option>Select…</option>
+              <option>Plastering</option>
+              <option>Flooring</option>
+              <option>Painting</option>
+              <option>Electrical</option>
+              <option>Plumbing</option>
+              <option>Masonry</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="flabel">Urgency</label>
+            <select class="finput">
+              <option>Normal</option>
+              <option>Urgent</option>
+              <option>Critical</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="flabel">Project Location *</label>
+          <input class="finput" placeholder="e.g. Hinjewadi, Pune" />
+        </div>
+      </div>
+      <h3><div class="step-num">2</div>Budget & Timeline</h3>
+      <div class="form-wrap" style="padding-top:0;">
+        <div class="grid2">
+          <div class="field">
+            <label class="flabel">Min Budget (₹)</label>
+            <input class="finput" placeholder="250000" />
+          </div>
+          <div class="field">
+            <label class="flabel">Max Budget (₹)</label>
+            <input class="finput" placeholder="300000" />
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label class="flabel">Start Date *</label>
+            <input class="finput" type="date" />
+          </div>
+          <div class="field">
+            <label class="flabel">Duration (Days)</label>
+            <input class="finput" type="number" placeholder="45" />
+          </div>
+        </div>
+      </div>
+      <h3><div class="step-num">3</div>Requirements</h3>
+      <div class="form-wrap" style="padding-top:0;">
+        <div class="grid2">
+          <div class="field">
+            <label class="flabel">Min Experience</label>
+            <input class="finput" placeholder="5 years" />
+          </div>
+          <div class="field">
+            <label class="flabel">Labour Count</label>
+            <input class="finput" placeholder="8–10" />
+          </div>
+        </div>
+        <div class="field">
+          <label class="flabel">Scope of Work *</label>
+          <textarea class="finput" rows="5" placeholder="Describe full scope, materials, standards expected…"></textarea>
+        </div>
+        <div class="field">
+          <label class="flabel">Attachments (BOQ / Drawings)</label>
+          <div class="upload-box"><span class="upload-icon">📎</span>Tap to upload files<br><span style="font-size:11px;opacity:0.6;">PDF, DWG, JPG accepted</span></div>
+        </div>
+        <button class="btn btn-orange" onclick="go('s-main',null)">Post Work →</button>
+        <div style="height:20px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MAIN CONTRACTOR DASHBOARD ==================== -->
+<div class="screen" id="s-main">
+  <div class="scroll">
+    <div class="dash-hero">
+      <div class="dh-row">
+        <div>
+          <div class="dh-name">Kalpataru<br>Constructions</div>
+          <div class="dh-role">Main Contractor · Verified ✓</div>
+        </div>
+        <div class="dh-badge">PRO</div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-card"><div class="mc-num blue">7</div><div class="mc-lbl">Works Posted</div><div class="mc-trend up">+2</div></div>
+        <div class="metric-card"><div class="mc-num orange">38</div><div class="mc-lbl">Total Bids</div><div class="mc-trend up">+8</div></div>
+        <div class="metric-card"><div class="mc-num green">3</div><div class="mc-lbl">Awarded</div></div>
+        <div class="metric-card"><div class="mc-num purple">4</div><div class="mc-lbl">In Progress</div></div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab on" id="mt1" onclick="mTab(1)">Active</button>
+      <button class="tab" id="mt2" onclick="mTab(2)">Pending Bids</button>
+      <button class="tab" id="mt3" onclick="mTab(3)">Completed</button>
+    </div>
+    <div id="mc1">
+      <div class="arow" onclick="go('s-bids',null)">
+        <div class="ar-h"><div class="ar-title">Interior Plastering Work</div></div>
+        <div class="ar-sub">📍 Hinjewadi, Pune · 8 bids received</div>
+        <div class="ar-foot"><span class="status review">Reviewing Bids</span><span style="font-size:13px;font-weight:700;color:var(--green);">₹2.5L–₹3L</span></div>
+      </div>
+      <div class="arow" onclick="go('s-bids',null)">
+        <div class="ar-h"><div class="ar-title">Marble Flooring – Block C</div></div>
+        <div class="ar-sub">📍 Andheri, Mumbai · 14 bids received</div>
+        <div class="ar-foot"><span class="status review">Reviewing Bids</span><span style="font-size:13px;font-weight:700;color:var(--green);">₹5L–₹7L</span></div>
+      </div>
+      <div class="arow" onclick="go('s-bids',null)">
+        <div class="ar-h"><div class="ar-title">Electrical Wiring – Tower 2</div></div>
+        <div class="ar-sub">📍 Thane · Awarded to Vijay Electrical</div>
+        <div class="ar-foot"><span class="status awarded">Awarded ✓</span><span style="font-size:13px;font-weight:700;color:var(--green);">₹9.2L</span></div>
+      </div>
+    </div>
+    <div id="mc2" style="display:none;">
+      <div class="notice">🕒 3 works awaiting your review</div>
+      <div class="arow"><div class="ar-title">External Painting Ph2</div><div class="ar-sub">Nagpur · 3 bids waiting</div><div class="ar-foot"><span class="status pending">Needs Review</span></div></div>
+    </div>
+    <div id="mc3" style="display:none;">
+      <div class="arow"><div class="ar-title">Foundation Work – A Block</div><div class="ar-sub">Completed Jan 2024</div><div class="ar-foot"><span class="status awarded">Completed ✓</span><span style="font-size:13px;font-weight:700;color:var(--text2);">₹14.5L</span></div></div>
+    </div>
+    <div style="padding:12px 20px 24px;">
+      <button class="btn btn-orange" onclick="go('s-post',null)">+ Post New Work</button>
+    </div>
+  </div>
+  <div class="bnav">
+    <div class="bnav-item on"><div class="ni">🏠</div><span>Home</span></div>
+    <div class="bnav-item" onclick="go('s-post',null)"><div class="ni">➕</div><span>Post Work</span></div>
+    <div class="bnav-act" onclick="go('s-post',null)">➕</div>
+    <div class="bnav-item" onclick="go('s-bids',null)"><div class="ni">📊</div><span>Bids</span></div>
+    <div class="bnav-item" onclick="go('s-profile',null)"><div class="ni">👤</div><span>Profile</span></div>
+  </div>
+</div>
+
+<!-- ==================== PETTY DASH ==================== -->
+<div class="screen" id="s-petty">
+  <div class="scroll">
+    <div class="dash-hero">
+      <div class="dh-row">
+        <div>
+          <div class="dh-name">Rajesh Patil</div>
+          <div class="dh-role">Petty Contractor · Plastering</div>
+        </div>
+        <div class="icon-btn" onclick="go('s-chat',null)" style="background:rgba(255,255,255,0.08);">💬<div class="notif-dot"></div></div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-card"><div class="mc-num blue">12</div><div class="mc-lbl">Applied</div></div>
+        <div class="metric-card"><div class="mc-num orange">4</div><div class="mc-lbl">Shortlisted</div></div>
+        <div class="metric-card"><div class="mc-num green">3</div><div class="mc-lbl">Awarded</div></div>
+        <div class="metric-card"><div class="mc-num purple">₹18L</div><div class="mc-lbl">Total Earned</div></div>
+      </div>
+    </div>
+    <div class="notice">🎉 You were shortlisted for "Marble Flooring – Mumbai"!</div>
+    <div style="padding:0 20px 10px;"><div class="sec-h"><h3>My Applications</h3><a onclick="go('s-apps',null)">View all →</a></div></div>
+    <div class="arow" onclick="go('s-apps',null)">
+      <div class="ar-h"><div class="ar-title">Interior Plastering Work</div></div>
+      <div class="ar-sub">Kalpataru Constructions · Pune</div>
+      <div class="ar-foot"><span class="status review">Shortlisted ✓</span><span style="font-size:12px;color:var(--text3);">Quoted ₹2.75L</span></div>
+    </div>
+    <div class="arow" onclick="go('s-apps',null)">
+      <div class="ar-h"><div class="ar-title">Marble Flooring – Block C</div></div>
+      <div class="ar-sub">Godrej Properties · Mumbai</div>
+      <div class="ar-foot"><span class="status pending">Under Review</span><span style="font-size:12px;color:var(--text3);">Quoted ₹6.1L</span></div>
+    </div>
+    <div class="arow" onclick="go('s-apps',null)">
+      <div class="ar-h"><div class="ar-title">External Painting Phase 1</div></div>
+      <div class="ar-sub">Shapoorji Pallonji · Nagpur</div>
+      <div class="ar-foot"><span class="status awarded">Awarded 🎉</span><span style="font-size:12px;color:var(--green);font-weight:700;">₹4.8L</span></div>
+    </div>
+    <div style="padding:12px 20px 24px;">
+      <button class="btn btn-primary" onclick="go('s-find',null)">Browse More Work →</button>
+    </div>
+  </div>
+  <div class="bnav">
+    <div class="bnav-item" onclick="go('s-home',null)"><div class="ni">🏠</div><span>Home</span></div>
+    <div class="bnav-item" onclick="go('s-find',null)"><div class="ni">🔍</div><span>Find Work</span></div>
+    <div class="bnav-act" onclick="go('s-find',null)">🔍</div>
+    <div class="bnav-item on"><div class="ni">📋</div><span>Dashboard</span></div>
+    <div class="bnav-item" onclick="go('s-profile',null)"><div class="ni">👤</div><span>Profile</span></div>
+  </div>
+</div>
+
+<!-- ==================== BID MANAGEMENT ==================== -->
+<div class="screen" id="s-bids">
+  <div class="topbar solid">
+    <div class="back-btn" onclick="go('s-main',null)">←</div>
+    <h2>Bid Management</h2>
+    <div style="background:rgba(249,115,22,0.15);color:var(--orange2);font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;">8 Bids</div>
+  </div>
+  <div style="background:linear-gradient(90deg,rgba(37,99,235,0.1),rgba(37,99,235,0.04));border-bottom:1px solid var(--border);padding:12px 20px;">
+    <div style="font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue3);">Interior Plastering Work</div>
+    <div style="font-size:11px;color:var(--text3);">Budget ₹2.5L–₹3L · Deadline 15 Jan · 8 quotations received</div>
+  </div>
+  <div class="scroll" style="padding-top:12px;">
+    <div style="padding:0 20px 8px;"><span style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;">Ranked by Rating</span></div>
+    <div class="bidder top" style="position:relative;">
+      <div class="best-tag">BEST MATCH</div>
+      <div class="bidder-row">
+        <div class="bav">MK</div>
+        <div class="binfo">
+          <div class="bname">Mohan Kumar</div>
+          <div class="bsub">⭐ 4.8 · 12 projects · Plastering Spec.</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="bprice">₹2.65L</div>
+          <div style="font-size:10px;color:var(--text3);">40 days</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+        <button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)" style="flex:1;">💬 Chat</button>
+        <button class="award-btn" onclick="award('Mohan Kumar')">Award Work</button>
+      </div>
+    </div>
+    <div class="bidder">
+      <div class="bidder-row">
+        <div class="bav g">RP</div>
+        <div class="binfo">
+          <div class="bname">Rajesh Patil</div>
+          <div class="bsub">⭐ 4.7 · 15 projects · Plastering Expert</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="bprice">₹2.75L</div>
+          <div style="font-size:10px;color:var(--text3);">38 days</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+        <button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)" style="flex:1;">💬 Chat</button>
+        <button class="award-btn" onclick="award('Rajesh Patil')">Award Work</button>
+      </div>
+    </div>
+    <div class="bidder">
+      <div class="bidder-row">
+        <div class="bav p">SP</div>
+        <div class="binfo">
+          <div class="bname">Suresh Patil</div>
+          <div class="bsub">⭐ 4.5 · 8 projects · General Contractor</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="bprice">₹2.80L</div>
+          <div style="font-size:10px;color:var(--text3);">45 days</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+        <button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)" style="flex:1;">💬 Chat</button>
+        <button class="award-btn" onclick="award('Suresh Patil')">Award Work</button>
+      </div>
+    </div>
+    <div class="bidder">
+      <div class="bidder-row">
+        <div class="bav o">VD</div>
+        <div class="binfo">
+          <div class="bname">Vijay Deshmukh</div>
+          <div class="bsub">⭐ 4.2 · 5 projects · Contractor</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="bprice">₹2.90L</div>
+          <div style="font-size:10px;color:var(--text3);">50 days</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+        <button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)" style="flex:1;">💬 Chat</button>
+        <button class="award-btn" onclick="award('Vijay Deshmukh')">Award Work</button>
+      </div>
+    </div>
+    <div style="height:20px;"></div>
+  </div>
+</div>
+
+<!-- ==================== MY APPLICATIONS ==================== -->
+<div class="screen" id="s-apps">
+  <div class="topbar solid">
+    <div class="back-btn" onclick="go('s-petty',null)">←</div>
+    <h2>My Applications</h2>
+  </div>
+  <div class="chips" style="padding-top:12px;">
+    <div class="chip on">All (12)</div>
+    <div class="chip" onclick="toggleChip(this)">Shortlisted</div>
+    <div class="chip" onclick="toggleChip(this)">Pending</div>
+    <div class="chip" onclick="toggleChip(this)">Awarded</div>
+    <div class="chip" onclick="toggleChip(this)">Rejected</div>
+  </div>
+  <div class="scroll" style="padding-top:8px;">
+    <div class="arow">
+      <div class="ar-h"><div class="ar-title">Interior Plastering Work</div><span class="status review">Shortlisted</span></div>
+      <div class="ar-sub">Kalpataru Constructions · Pune · Quoted ₹2.75L</div>
+      <div class="ar-foot"><span style="font-size:11px;color:var(--text3);">Applied 3 days ago</span><button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)">💬 Chat</button></div>
+    </div>
+    <div class="arow">
+      <div class="ar-h"><div class="ar-title">Marble Flooring – Block C</div><span class="status pending">Pending</span></div>
+      <div class="ar-sub">Godrej Properties · Mumbai · Quoted ₹6.1L</div>
+      <div class="ar-foot"><span style="font-size:11px;color:var(--text3);">Applied 1 day ago</span><button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)">💬 Chat</button></div>
+    </div>
+    <div class="arow">
+      <div class="ar-h"><div class="ar-title">External Painting Phase 1</div><span class="status awarded">Awarded 🎉</span></div>
+      <div class="ar-sub">Shapoorji Pallonji · Nagpur · ₹4.8L confirmed</div>
+      <div class="ar-foot"><span style="font-size:11px;color:var(--green);font-weight:600;">Work in progress</span><button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)">💬 Chat</button></div>
+    </div>
+    <div class="arow">
+      <div class="ar-h"><div class="ar-title">Electrical Conduit Work</div><span class="status rejected">Not Selected</span></div>
+      <div class="ar-sub">Prestige Group · Bangalore · Quoted ₹3.2L</div>
+      <div class="ar-foot"><span style="font-size:11px;color:var(--text3);">Applied 10 days ago</span></div>
+    </div>
+    <div class="arow">
+      <div class="ar-h"><div class="ar-title">Masonry Work – Phase 2</div><span class="status review">Shortlisted</span></div>
+      <div class="ar-sub">Tata Realty · Pune · Quoted ₹5.5L</div>
+      <div class="ar-foot"><span style="font-size:11px;color:var(--text3);">Applied 5 days ago</span><button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)">💬 Chat</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PROFILE ==================== -->
+<div class="screen" id="s-profile">
+  <div class="scroll">
+    <div class="prof-hero">
+      <div style="display:flex;justify-content:flex-end;padding-bottom:14px;">
+        <div class="icon-btn" style="background:rgba(255,255,255,0.1);">✏️</div>
+      </div>
+      <div class="p-avatar">RP<div class="p-verify">✓</div></div>
+      <div class="p-name">Rajesh Patil</div>
+      <div class="p-role">Plastering Specialist · Pune, Maharashtra</div>
+      <div class="stars">★★★★★ 4.7 <span style="color:var(--text3);font-size:12px;">(23 reviews)</span></div>
+      <div class="skill-wrap">
+        <span class="skill-tag">Plastering</span>
+        <span class="skill-tag">POP Work</span>
+        <span class="skill-tag">Tiling</span>
+        <span class="skill-tag">Waterproofing</span>
+        <span class="skill-tag">Masonry</span>
+      </div>
+    </div>
+    <div class="stats-strip" style="padding:14px 20px;">
+      <div class="stat-pill" style="flex:1;min-width:auto;"><div class="sp-num">15</div><div class="sp-lbl">Projects</div></div>
+      <div class="stat-pill" style="flex:1;min-width:auto;"><div class="sp-num orange">8</div><div class="sp-lbl">Yrs Exp</div></div>
+      <div class="stat-pill" style="flex:1;min-width:auto;"><div class="sp-num green">4.7</div><div class="sp-lbl">Rating</div></div>
+      <div class="stat-pill" style="flex:1;min-width:auto;"><div class="sp-num" style="color:#A78BFA;">₹18L</div><div class="sp-lbl">Earned</div></div>
+    </div>
+    <div class="psec">
+      <div class="prow"><div class="prow-icon">📞</div><div class="prow-txt">+91 98765 43210</div><div class="prow-arr">›</div></div>
+      <div class="prow"><div class="prow-icon">📍</div><div class="prow-txt">Hinjewadi, Pune – 411057</div><div class="prow-arr">›</div></div>
+      <div class="prow"><div class="prow-icon">🪪</div><div class="prow-txt">Aadhaar Verified</div><span class="prow-badge">Verified</span></div>
+      <div class="prow"><div class="prow-icon">🏦</div><div class="prow-txt">Bank Account Linked</div><span class="prow-badge">Active</span></div>
+    </div>
+    <div class="psec" style="margin-top:10px;">
+      <div class="prow"><div class="prow-icon">📁</div><div class="prow-txt">Past Projects (15)</div><div class="prow-arr">›</div></div>
+      <div class="prow"><div class="prow-icon">⭐</div><div class="prow-txt">Reviews & Ratings (23)</div><div class="prow-arr">›</div></div>
+      <div class="prow"><div class="prow-icon">📄</div><div class="prow-txt">Documents & Licenses</div><div class="prow-arr">›</div></div>
+      <div class="prow" onclick="go('s-home',null)"><div class="prow-icon">🚪</div><div class="prow-txt" style="color:var(--red);">Logout</div><div class="prow-arr" style="color:var(--red);">›</div></div>
+    </div>
+    <div style="height:24px;"></div>
+  </div>
+  <div class="bnav">
+    <div class="bnav-item" onclick="go('s-home',null)"><div class="ni">🏠</div><span>Home</span></div>
+    <div class="bnav-item" onclick="go('s-find',null)"><div class="ni">🔍</div><span>Find Work</span></div>
+    <div class="bnav-act" onclick="go('s-find',null)">🔍</div>
+    <div class="bnav-item" onclick="go('s-petty',null)"><div class="ni">📋</div><span>Dashboard</span></div>
+    <div class="bnav-item on"><div class="ni">👤</div><span>Profile</span></div>
+  </div>
+</div>
+
+<!-- ==================== CHAT ==================== -->
+<div class="screen" id="s-chat">
+  <div id="chat-list-view" style="display:flex;flex-direction:column;height:100%;">
+    <div class="topbar solid"><h2>Messages</h2><div class="icon-btn">✏️</div></div>
+    <div style="flex:1;overflow-y:auto;">
+      <div class="cli" onclick="openChat()">
+        <div class="cav" style="background:rgba(37,99,235,0.15);color:var(--blue3);">KP</div>
+        <div class="cinfo"><div class="cn">Kalpataru Projects</div><div class="cp">Please send your availability for site visit</div></div>
+        <div class="cmeta"><div class="ct">2:30 PM</div><div class="cund">2</div></div>
+      </div>
+      <div class="cli" onclick="openChat()">
+        <div class="cav" style="background:rgba(16,185,129,0.12);color:var(--green);">GP</div>
+        <div class="cinfo"><div class="cn">Godrej Properties</div><div class="cp">Your quotation looks good, can we discuss?</div></div>
+        <div class="cmeta"><div class="ct">11:15</div><div class="cund">1</div></div>
+      </div>
+      <div class="cli" onclick="openChat()">
+        <div class="cav" style="background:rgba(249,115,22,0.12);color:var(--orange2);">SP</div>
+        <div class="cinfo"><div class="cn">Shapoorji Pallonji</div><div class="cp">Congratulations! Work has been awarded to you.</div></div>
+        <div class="cmeta"><div class="ct">Yesterday</div></div>
+      </div>
+      <div class="cli" onclick="openChat()">
+        <div class="cav" style="background:rgba(139,92,246,0.12);color:#A78BFA;">LG</div>
+        <div class="cinfo"><div class="cn">Lodha Group</div><div class="cp">Please share your GST certificate at the earliest.</div></div>
+        <div class="cmeta"><div class="ct">Mon</div></div>
+      </div>
+      <div class="cli" onclick="openChat()">
+        <div class="cav" style="background:rgba(239,68,68,0.1);color:#F87171;">TR</div>
+        <div class="cinfo"><div class="cn">Tata Realty</div><div class="cp">Site visit scheduled for this Saturday 10 AM</div></div>
+        <div class="cmeta"><div class="ct">Sun</div></div>
+      </div>
+    </div>
+    <div class="bnav">
+      <div class="bnav-item" onclick="go('s-home',null)"><div class="ni">🏠</div><span>Home</span></div>
+      <div class="bnav-item" onclick="go('s-find',null)"><div class="ni">🔍</div><span>Find Work</span></div>
+      <div class="bnav-act">🔍</div>
+      <div class="bnav-item" onclick="go('s-petty',null)"><div class="ni">📋</div><span>Dashboard</span></div>
+      <div class="bnav-item on"><div class="ni">💬</div><span>Messages</span></div>
+    </div>
+  </div>
+  <div id="chat-window-view" style="display:none;flex-direction:column;height:100%;">
+    <div class="cw-bar">
+      <div class="back-btn" onclick="closeChat()">←</div>
+      <div class="cw-av" style="background:rgba(37,99,235,0.15);color:var(--blue3);">KP</div>
+      <div style="flex:1;"><div class="cw-n">Kalpataru Projects</div><div class="cw-s">● Online</div></div>
+      <div class="icon-btn">📞</div>
+    </div>
+    <div style="flex:1;overflow-y:auto;">
+      <div class="msgs">
+        <div class="msg-time">Today</div>
+        <div class="msg them">Hello Rajesh, we reviewed your quotation for the plastering work.</div>
+        <div class="msg them">Your price is competitive. Can you share site visit availability?</div>
+        <div class="msg me">Thank you! Available Saturday 10 AM or Sunday anytime.</div>
+        <div class="msg them">Saturday 10 AM works. Hinjewadi Phase 2, ask for Mr. Sharma.</div>
+        <div class="msg me">Confirmed! Should I bring any documents?</div>
+        <div class="msg them">Please bring Aadhaar copy + past work photos if any.</div>
+      </div>
+    </div>
+    <div class="ci-bar">
+      <input class="ci" placeholder="Type a message…" />
+      <button class="send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+</div><!-- page-wrap -->
+</div><!-- shell -->
+</div><!-- padding wrap -->
+
+<script>
+function go(id, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active','back-anim'));
+  var el = document.getElementById(id);
+  if(el){ el.classList.add('active'); if(el.querySelector('.scroll')) el.querySelector('.scroll').scrollTop=0; }
+  if(btn){
+    document.querySelectorAll('.sw-btn').forEach(b => b.classList.remove('cur'));
+    btn.classList.add('cur');
+  }
+}
+function toggleChip(el){
+  el.closest('.chips,.filter-row').querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+}
+function mTab(n){
+  [1,2,3].forEach(i=>{
+    document.getElementById('mt'+i).classList.toggle('on',i===n);
+    document.getElementById('mc'+i).style.display=(i===n)?'block':'none';
+  });
+}
+function openChat(){
+  document.getElementById('chat-list-view').style.display='none';
+  document.getElementById('chat-window-view').style.display='flex';
+}
+function closeChat(){
+  document.getElementById('chat-list-view').style.display='flex';
+  document.getElementById('chat-window-view').style.display='none';
+}
+function award(name){
+  if(confirm('Award this work to '+name+'?\n\nThey will be notified immediately.')){
+    go('s-main',null);
+  }
+}
+</script>
+</body>
+</html>
