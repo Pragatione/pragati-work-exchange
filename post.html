@@ -11,7 +11,7 @@
 <div id="loader">
   <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
   <div class="ld-brand">Pragati<span>.</span></div>
-  <div class="ld-sub">Work Exchange</div>
+  <div class="ld-sub">Work Exchange · PragatiOne</div>
   <div class="ld-bar"><div class="ld-fill"></div></div>
 </div>
 <div id="toast"></div>
@@ -19,15 +19,9 @@
 <div style="display:flex;flex-direction:column;min-height:100vh;">
   <div class="tbar"><button class="tbk" onclick="history.back()">←</button><h2>Post New Work</h2></div>
   <div class="pscr" style="padding:14px 16px 100px;">
-    <div style="background:linear-gradient(135deg,var(--blue5),#fff);border:1px solid #BFDBFE;border-radius:14px;padding:16px;margin-bottom:18px;text-align:center;">
-      <svg viewBox="0 0 240 80" width="100%" height="70" fill="none">
-        <rect x="10" y="20" width="35" height="55" rx="2" fill="#1E40AF"/><rect x="16" y="28" width="8" height="7" rx="1" fill="#93C5FD" opacity=".9"/><rect x="30" y="28" width="8" height="7" rx="1" fill="white" opacity=".8"/>
-        <rect x="60" y="35" width="55" height="40" rx="2" fill="#334155"/><rect x="57" y="18" width="3" height="57" rx="1" fill="#64748B"/><rect x="112" y="18" width="3" height="57" rx="1" fill="#64748B"/><rect x="57" y="18" width="58" height="3" rx="1" fill="#64748B"/>
-        <rect x="170" y="5" width="4" height="70" rx="2" fill="#EA580C"/><rect x="148" y="5" width="50" height="4" rx="2" fill="#F97316"/><rect x="188" y="1" width="14" height="11" rx="2" fill="#DC2626"/>
-        <line x1="160" y1="9" x2="160" y2="28" stroke="#94A3B8" stroke-width="1.5"/><rect x="153" y="28" width="14" height="9" rx="2" fill="#F97316"/>
-        <circle cx="130" cy="52" r="5" fill="#FBBF24"/><rect x="125" y="57" width="10" height="11" rx="2" fill="#2563EB"/><path d="M124 52 Q130 44 136 52" fill="#EA580C"/>
-      </svg>
-      <div style="font-family:var(--h);font-size:12px;font-weight:700;color:var(--blue2);margin-top:6px;">Post Work → Get Quotations → Award Best Contractor</div>
+    <div style="background:linear-gradient(135deg,var(--blue5),#fff);border:1px solid #BFDBFE;border-radius:14px;padding:14px;margin-bottom:18px;text-align:center;">
+      <div style="font-size:32px;margin-bottom:6px;">🏗️</div>
+      <div style="font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue2);">Post Work → Get Quotations → Award Best Contractor</div>
     </div>
     <div class="slbl"><div class="snm">1</div>Basic Details</div>
     <div class="field"><label class="flbl">Work Title *</label><input class="fin" id="pw-tit" placeholder="e.g. Interior Plastering – Block A"/></div>
@@ -39,7 +33,7 @@
       </div>
       <div class="field"><label class="flbl">Urgency</label><select class="fin" id="pw-urg"><option value="Normal">Normal</option><option value="Urgent">Urgent</option><option value="Critical">Critical</option></select></div>
     </div>
-    <div class="field" id="pw-other-wrap" style="display:none;"><label class="flbl">Specify Trade *</label><input class="fin" id="pw-other" placeholder="e.g. Guniting, Grouting, Scaffolding…"/></div>
+    <div class="field" id="pw-other-wrap" style="display:none;"><label class="flbl">Specify Trade *</label><input class="fin" id="pw-other" placeholder="e.g. Guniting, Scaffolding…"/></div>
     <div class="field"><label class="flbl">Project Location *</label><input class="fin" id="pw-loc" placeholder="e.g. Hinjewadi, Pune"/></div>
     <div class="slbl"><div class="snm">2</div>Budget & Timeline</div>
     <div class="g2">
@@ -60,64 +54,112 @@
     <div class="field">
       <label class="attach-zone" onclick="document.getElementById('pw-files').click()">
         <span style="font-size:28px;">📎</span>
-        <span id="pw-attach-lbl" style="font-size:13px;font-weight:600;color:var(--s3);">Tap to upload BOQ / Drawings / Photos</span>
-        <span style="font-size:11px;color:var(--s5);">PDF, JPG, PNG, DWG · Max 10MB each</span>
+        <span id="pw-att-lbl" style="font-size:13px;font-weight:600;color:var(--s3);">Tap to upload BOQ / Drawings / Photos</span>
+        <span style="font-size:11px;color:var(--s5);">PDF, JPG, PNG, DWG · Max 10MB</span>
       </label>
-      <input type="file" id="pw-files" multiple accept=".pdf,.jpg,.jpeg,.png,.dwg" style="display:none;" onchange="showFiles(this,'pw-attach-lbl','pw-attach-list')"/>
-      <div id="pw-attach-list" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>
+      <input type="file" id="pw-files" multiple accept=".pdf,.jpg,.jpeg,.png,.dwg" style="display:none;" onchange="showFiles(this,'pw-att-lbl','pw-att-list')"/>
+      <div id="pw-att-list" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>
     </div>
-    <div class="ferr" id="pw-err">Please fill all required fields.</div>
+    <div class="ferr" id="pw-err"></div>
     <button class="btn btn-o btn-bl btn-lg" id="pw-btn" onclick="postWork()" style="margin-top:8px;">Post Work →</button>
   </div>
 </div>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="shared.js"></script>
+<script>
 
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import{getAuth,onAuthStateChanged,signOut,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import{getFirestore,collection,addDoc,getDocs,getDoc,doc,setDoc,updateDoc,query,where,orderBy,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const fbApp=initializeApp(FB_CFG);
-const auth=getAuth(fbApp);
-const db=getFirestore(fbApp);
-
-let CU=null,CD=null;
-onAuthStateChanged(auth,async u=>{
-  if(!u){location.href='index.html';return;}
-  CU=u;
-  const s=await getDoc(doc(db,'users',u.uid));
-  CD=s.exists()?s.data():null;
-  if(CD?.role!=='main'){location.href='home.html';return;}
+const firebase_cfg = {
+  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
+  authDomain:"pragati-work-exchange.firebaseapp.com",
+  projectId:"pragati-work-exchange",
+  storageBucket:"pragati-work-exchange.firebasestorage.app",
+  messagingSenderId:"422215240765",
+  appId:"1:422215240765:web:eefb239420262c9d822e54"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+const FS   = firebase.firestore;
+var CU=null, CD=null;
+auth.onAuthStateChanged(async function(user){
+  if(!user){location.href='index.html';return;}
+  CU=user;
+  try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
+  if(!CD){location.href='index.html';return;}
+  if(!cd || cd.role!=='main'){location.href='home.html';return;}
   document.getElementById('loader').classList.add('out');
+  
 });
-function toggleOther(){document.getElementById('pw-other-wrap').style.display=document.getElementById('pw-tr').value==='Other'?'block':'none';}
-async function postWork(){
-  const rawTrade=document.getElementById('pw-tr').value,trade=rawTrade==='Other'?(document.getElementById('pw-other').value.trim()||'Other'):rawTrade;
-  const title=document.getElementById('pw-tit').value.trim(),loc=document.getElementById('pw-loc').value.trim(),minB=document.getElementById('pw-min').value,maxB=document.getElementById('pw-max').value,scope=document.getElementById('pw-scope').value.trim(),err=document.getElementById('pw-err'),btn=document.getElementById('pw-btn');
-  if(!title||!trade||!loc||!minB||!maxB||!scope){err.classList.add('on');return;}err.classList.remove('on');
-  btn.classList.add('btn-ld');btn.textContent='Posting…';
-  try{
-    await addDoc(collection(db,'works'),{
-      title,trade,location:loc,company:CD?.name||'Main Contractor',postedByName:CD?.name||'',postedBy:CU.uid,
-      minBudget:Number(minB),maxBudget:Number(maxB),duration:document.getElementById('pw-dur').value||'',
-      startDate:document.getElementById('pw-std').value||'',experience:document.getElementById('pw-exp').value||'',
-      labour:document.getElementById('pw-lab').value||'',urgency:document.getElementById('pw-urg').value,
-      scope,bids:0,status:'open',createdAt:serverTimestamp()
-    });
-    toast('Work posted! 🎉','ok');
-    setTimeout(()=>location.href='myworks.html',1200);
-  }catch(e){toast('Error: '+e.message,'err');}
-  btn.classList.remove('btn-ld');btn.textContent='Post Work →';
+
+function toast(msg,type){
+  var el=document.getElementById('toast'); el.textContent=msg;
+  el.className=type?'on '+type:'on'; setTimeout(function(){el.className='';},3000);
 }
-function showFiles(input,lblId,listId){
-  const list=document.getElementById(listId);list.innerHTML='';
-  Array.from(input.files).forEach(f=>{
-    const div=document.createElement('div');div.className='attach-file';
-    const ico=f.type.includes('pdf')?'📄':'🖼️';
-    div.innerHTML=`<span style="font-size:18px;">${ico}</span><div style="flex:1;"><div style="font-weight:600;">${f.name}</div><div style="font-size:11px;color:var(--s4);">${(f.size/1024).toFixed(0)}KB</div></div><span style="color:var(--green2);">✓</span>`;
-    list.appendChild(div);
-  });
-  if(input.files.length)document.getElementById(lblId).textContent=input.files.length+' file(s) selected';
+function getP(k){return new URLSearchParams(window.location.search).get(k);}
+function saveLS(k,v){try{localStorage.setItem('pg_'+k,JSON.stringify(v));}catch(e){}}
+function getLS(k){try{return JSON.parse(localStorage.getItem('pg_'+k));}catch(e){return null;}}
+function clearLS(k){localStorage.removeItem('pg_'+k);}
+function fmtBud(w){
+  var f=function(n){return n>=100000?'₹'+(n/100000).toFixed(1).replace('.0','')+'L':'₹'+n.toLocaleString('en-IN');};
+  return(w.minBudget&&w.maxBudget)?f(w.minBudget)+'–'+f(w.maxBudget):w.minBudget?f(w.minBudget):'TBD';
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).join('').toUpperCase().slice(0,2);}
+function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
+function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
+function mkCard(w){
+  return '<div class="wcard" onclick="location.href='detail.html?id='+w.id+''">'+
+    '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
+    '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
+    '<div class="wt">'+esc(w.title)+'</div>'+
+    '<div class="wco">🏢 '+esc(w.company||w.postedByName||'Main Contractor')+'</div></div>'+
+    '<div class="wb"><div class="wmeta"><span>📍 '+esc(w.location||'—')+'</span>'+
+    '<span>⏱ '+esc(w.startDate||'TBD')+'</span>'+
+    '<span>👷 '+esc(w.experience||'—')+'</span></div></div>'+
+    '<div class="wf"><span class="wbud">'+fmtBud(w)+'</span>'+
+    '<span class="wbids">'+(w.bids||0)+' bids</span></div></div>';
 }
 </script>
-</body>
-</html>
+<script>
+function toggleOther(){document.getElementById('pw-other-wrap').style.display=document.getElementById('pw-tr').value==='Other'?'block':'none';}
+async function postWork(){
+  var rawTr=document.getElementById('pw-tr').value;
+  var trade=rawTr==='Other'?(document.getElementById('pw-other').value.trim()||'Other'):rawTr;
+  var title=document.getElementById('pw-tit').value.trim(), loc=document.getElementById('pw-loc').value.trim(),
+      minB=document.getElementById('pw-min').value, maxB=document.getElementById('pw-max').value,
+      scope=document.getElementById('pw-scope').value.trim();
+  var err=document.getElementById('pw-err'), btn=document.getElementById('pw-btn');
+  err.textContent=''; err.classList.remove('on');
+  if(!title||!trade||!loc||!minB||!maxB||!scope){err.textContent='Please fill all required fields.'; err.classList.add('on');return;}
+  btn.classList.add('btn-ld'); btn.textContent='Posting…';
+  try{
+    await db.collection('works').add({
+      title:title, trade:trade, location:loc,
+      company:CD.name||'Main Contractor', postedByName:CD.name||'', postedBy:CU.uid,
+      minBudget:Number(minB), maxBudget:Number(maxB),
+      duration:document.getElementById('pw-dur').value||'',
+      startDate:document.getElementById('pw-std').value||'',
+      experience:document.getElementById('pw-exp').value||'',
+      labour:document.getElementById('pw-lab').value||'',
+      urgency:document.getElementById('pw-urg').value,
+      scope:scope, bids:0, status:'open',
+      createdAt:FS.FieldValue.serverTimestamp()
+    });
+    toast('Work posted successfully! 🎉','ok');
+    setTimeout(function(){location.href='myworks.html';},1200);
+  }catch(e){err.textContent='Error: '+e.message; err.classList.add('on'); btn.classList.remove('btn-ld'); btn.textContent='Post Work →';}
+}
+function showFiles(input,lblId,listId){
+  var list=document.getElementById(listId); list.innerHTML='';
+  Array.from(input.files).forEach(function(f){
+    var div=document.createElement('div'); div.className='attach-file';
+    var ico=f.type.includes('pdf')?'📄':'🖼️';
+    div.innerHTML='<span style="font-size:18px;">'+ico+'</span><div style="flex:1;"><div style="font-weight:600;">'+esc(f.name)+'</div><div style="font-size:11px;color:var(--s4);">'+(f.size/1024).toFixed(0)+'KB</div></div><span style="color:var(--green2);">✓</span>';
+    list.appendChild(div);
+  });
+  if(input.files.length) document.getElementById(lblId).textContent=input.files.length+' file(s) selected';
+}
+</script>
+</body></html>

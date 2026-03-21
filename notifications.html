@@ -11,38 +11,83 @@
 <div id="loader">
   <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
   <div class="ld-brand">Pragati<span>.</span></div>
-  <div class="ld-sub">Work Exchange</div>
+  <div class="ld-sub">Work Exchange · PragatiOne</div>
   <div class="ld-bar"><div class="ld-fill"></div></div>
 </div>
 <div id="toast"></div>
 
 <div style="display:flex;flex-direction:column;min-height:100vh;">
-  <div class="tbar"><button class="tbk" onclick="history.back()">←</button><h2>Notifications</h2><button class="btn btn-g btn-sm" onclick="markAllRead()">Mark all read</button></div>
+  <div class="tbar"><button class="tbk" onclick="history.back()">←</button><h2>Notifications</h2><button class="btn btn-g btn-sm" onclick="markAll()">Mark all read</button></div>
   <div class="pscr pb90" style="padding:12px 16px 0;" id="notif-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
-  <div class="bnav n4" id="notif-bnav"></div>
+  <nav class="bnav n4" id="notif-bnav"></nav>
 </div>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="shared.js"></script>
+<script>
 
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import{getAuth,onAuthStateChanged,signOut,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import{getFirestore,collection,addDoc,getDocs,getDoc,doc,setDoc,updateDoc,query,where,orderBy,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const fbApp=initializeApp(FB_CFG);
-const auth=getAuth(fbApp);
-const db=getFirestore(fbApp);
-
-onAuthStateChanged(auth,async u=>{
-  if(!u){location.href='index.html';return;}
-  const s=await getDoc(doc(db,'users',u.uid));
-  const cd=s.exists()?s.data():null;
+const firebase_cfg = {
+  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
+  authDomain:"pragati-work-exchange.firebaseapp.com",
+  projectId:"pragati-work-exchange",
+  storageBucket:"pragati-work-exchange.firebasestorage.app",
+  messagingSenderId:"422215240765",
+  appId:"1:422215240765:web:eefb239420262c9d822e54"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+const FS   = firebase.firestore;
+var CU=null, CD=null;
+auth.onAuthStateChanged(async function(user){
+  if(!user){location.href='index.html';return;}
+  CU=user;
+  try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
+  if(!CD){location.href='index.html';return;}
+  
   document.getElementById('loader').classList.add('out');
-  const isMain=cd?.role==='main';
-  document.getElementById('notif-bnav').innerHTML=`
-    <div class="bni" onclick="location.href='${isMain?'main.html':'home.html'}'"><div class="ico">🏠</div><div class="lbl">Home</div></div>
-    <div class="bni" onclick="location.href='${isMain?'post.html':'find.html'}'"><div class="ico">${isMain?'➕':'🔍'}</div><div class="lbl">${isMain?'Post Work':'Find Work'}</div></div>
-    <div class="bni" onclick="location.href='${isMain?'myworks.html':'apps.html'}'"><div class="ico">📋</div><div class="lbl">${isMain?'My Works':'My Bids'}</div></div>
-    <div class="bni" onclick="location.href='profile.html'"><div class="ico">👤</div><div class="lbl">Profile</div></div>`;
-  const notifs=[
+  loadNotifs();
+});
+
+function toast(msg,type){
+  var el=document.getElementById('toast'); el.textContent=msg;
+  el.className=type?'on '+type:'on'; setTimeout(function(){el.className='';},3000);
+}
+function getP(k){return new URLSearchParams(window.location.search).get(k);}
+function saveLS(k,v){try{localStorage.setItem('pg_'+k,JSON.stringify(v));}catch(e){}}
+function getLS(k){try{return JSON.parse(localStorage.getItem('pg_'+k));}catch(e){return null;}}
+function clearLS(k){localStorage.removeItem('pg_'+k);}
+function fmtBud(w){
+  var f=function(n){return n>=100000?'₹'+(n/100000).toFixed(1).replace('.0','')+'L':'₹'+n.toLocaleString('en-IN');};
+  return(w.minBudget&&w.maxBudget)?f(w.minBudget)+'–'+f(w.maxBudget):w.minBudget?f(w.minBudget):'TBD';
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).join('').toUpperCase().slice(0,2);}
+function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
+function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
+function mkCard(w){
+  return '<div class="wcard" onclick="location.href='detail.html?id='+w.id+''">'+
+    '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
+    '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
+    '<div class="wt">'+esc(w.title)+'</div>'+
+    '<div class="wco">🏢 '+esc(w.company||w.postedByName||'Main Contractor')+'</div></div>'+
+    '<div class="wb"><div class="wmeta"><span>📍 '+esc(w.location||'—')+'</span>'+
+    '<span>⏱ '+esc(w.startDate||'TBD')+'</span>'+
+    '<span>👷 '+esc(w.experience||'—')+'</span></div></div>'+
+    '<div class="wf"><span class="wbud">'+fmtBud(w)+'</span>'+
+    '<span class="wbids">'+(w.bids||0)+' bids</span></div></div>';
+}
+</script>
+<script>
+function loadNotifs(){
+  var isMain=CD&&CD.role==='main';
+  document.getElementById('notif-bnav').innerHTML=
+    '<div class="bni" onclick="location.href=''+(isMain?'main.html':'home.html')+''"><div class="ico">🏠</div><div class="lbl">Home</div></div>'+
+    '<div class="bni" onclick="location.href=''+(isMain?'post.html':'find.html')+''"><div class="ico">'+(isMain?'➕':'🔍')+'</div><div class="lbl">'+(isMain?'Post Work':'Find Work')+'</div></div>'+
+    '<div class="bni" onclick="location.href=''+(isMain?'myworks.html':'apps.html')+''"><div class="ico">📋</div><div class="lbl">'+(isMain?'My Works':'My Bids')+'</div></div>'+
+    '<div class="bni" onclick="location.href='profile.html'"><div class="ico">👤</div><div class="lbl">Profile</div></div>';
+  var notifs=[
     {ico:'🎉',bg:'var(--green4)',title:'Work Awarded!',sub:'Congratulations! Shapoorji Pallonji awarded you the External Painting work.',time:'2 hours ago',unread:true},
     {ico:'👁️',bg:'var(--blue4)',title:'Shortlisted',sub:'Kalpataru Constructions shortlisted your bid for Interior Plastering.',time:'5 hours ago',unread:true},
     {ico:'💬',bg:'var(--blue4)',title:'New Message',sub:'Godrej Properties: "Your quotation looks good, can we discuss?"',time:'Yesterday',unread:true},
@@ -50,12 +95,14 @@ onAuthStateChanged(auth,async u=>{
     {ico:'⭐',bg:'var(--yellow4)',title:'Rating Received',sub:'Tata Realty rated you 4.8 stars for the recent Masonry work.',time:'2 days ago',unread:false},
     {ico:'🔔',bg:'var(--s8)',title:'Bid Deadline',sub:'Your application for Marble Flooring – Mumbai closes in 2 days.',time:'3 days ago',unread:false},
   ];
-  document.getElementById('notif-list').innerHTML=notifs.map(n=>`<div class="notif-item ${n.unread?'unread':''}">
-    <div class="ntico" style="background:${n.bg};">${n.ico}</div>
-    <div style="flex:1;"><div style="font-size:13px;font-weight:600;margin-bottom:2px;">${n.title}</div><div style="font-size:12px;color:var(--s4);line-height:1.4;">${n.sub}</div><div style="font-size:10px;color:var(--s5);margin-top:4px;">${n.time}</div></div>
-  </div>`).join('');
-});
-function markAllRead(){document.querySelectorAll('.notif-item.unread').forEach(el=>el.classList.remove('unread'));toast('All marked as read','ok');}
+  document.getElementById('notif-list').innerHTML=notifs.map(function(n){
+    return '<div class="notif-item '+(n.unread?'unread':'')+'" onclick="this.classList.remove('unread')">'+
+      '<div class="ntico" style="background:'+n.bg+';">'+n.ico+'</div>'+
+      '<div style="flex:1;"><div style="font-size:13px;font-weight:600;margin-bottom:2px;">'+n.title+'</div>'+
+      '<div style="font-size:12px;color:var(--s4);line-height:1.4;">'+n.sub+'</div>'+
+      '<div style="font-size:10px;color:var(--s5);margin-top:4px;">'+n.time+'</div></div></div>';
+  }).join('');
+}
+function markAll(){document.querySelectorAll('.notif-item.unread').forEach(function(el){el.classList.remove('unread');});toast('All marked as read','ok');}
 </script>
-</body>
-</html>
+</body></html>

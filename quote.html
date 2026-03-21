@@ -11,7 +11,7 @@
 <div id="loader">
   <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
   <div class="ld-brand">Pragati<span>.</span></div>
-  <div class="ld-sub">Work Exchange</div>
+  <div class="ld-sub">Work Exchange · PragatiOne</div>
   <div class="ld-bar"><div class="ld-fill"></div></div>
 </div>
 <div id="toast"></div>
@@ -20,7 +20,7 @@
   <div class="tbar"><button class="tbk" onclick="history.back()">←</button><h2>Submit Quotation</h2></div>
   <div class="pscr" style="padding:14px 16px 100px;">
     <div id="work-ref" style="background:var(--blue5);border:1px solid #BFDBFE;border-radius:13px;padding:13px;margin-bottom:18px;">
-      <div style="font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue2);margin-bottom:5px;" id="q-wt">Loading work…</div>
+      <div style="font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue2);margin-bottom:5px;" id="q-wt">—</div>
       <div style="display:flex;gap:12px;font-size:12px;color:var(--s3);flex-wrap:wrap;"><span id="q-wco">—</span><span id="q-wloc">—</span><span id="q-wbud" style="color:var(--green2);font-weight:700;">—</span></div>
     </div>
     <div class="slbl"><div class="snm">1</div>Your Price</div>
@@ -37,73 +37,122 @@
     <div class="field">
       <label class="attach-zone" onclick="document.getElementById('q-files').click()">
         <span style="font-size:28px;">📎</span>
-        <span id="attach-lbl" style="font-size:13px;font-weight:600;color:var(--s3);">Tap to upload files</span>
-        <span style="font-size:11px;color:var(--s5);">PDF, JPG, PNG · Max 10MB each</span>
+        <span id="q-att-lbl" style="font-size:13px;font-weight:600;color:var(--s3);">Tap to upload files</span>
+        <span style="font-size:11px;color:var(--s5);">PDF, JPG, PNG · Max 10MB</span>
       </label>
       <input type="file" id="q-files" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="showFiles(this)"/>
-      <div id="attach-list" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>
+      <div id="q-att-list" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>
     </div>
-    <div class="ferr" id="q-err">Please fill all required fields.</div>
+    <div class="ferr" id="q-err"></div>
     <button class="btn btn-p btn-bl btn-lg" id="q-btn" onclick="submitQuote()" style="margin-top:8px;">Submit Quotation →</button>
   </div>
 </div>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="shared.js"></script>
+<script>
 
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import{getAuth,onAuthStateChanged,signOut,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import{getFirestore,collection,addDoc,getDocs,getDoc,doc,setDoc,updateDoc,query,where,orderBy,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const fbApp=initializeApp(FB_CFG);
-const auth=getAuth(fbApp);
-const db=getFirestore(fbApp);
-
-let CU=null,CD=null,CW=null;
-onAuthStateChanged(auth,async u=>{
-  if(!u){location.href='index.html';return;}
-  CU=u;
-  const s=await getDoc(doc(db,'users',u.uid));
-  CD=s.exists()?s.data():null;
+const firebase_cfg = {
+  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
+  authDomain:"pragati-work-exchange.firebaseapp.com",
+  projectId:"pragati-work-exchange",
+  storageBucket:"pragati-work-exchange.firebasestorage.app",
+  messagingSenderId:"422215240765",
+  appId:"1:422215240765:web:eefb239420262c9d822e54"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+const FS   = firebase.firestore;
+var CU=null, CD=null;
+auth.onAuthStateChanged(async function(user){
+  if(!user){location.href='index.html';return;}
+  CU=user;
+  try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
+  if(!CD){location.href='index.html';return;}
+  if(cd && cd.role==='main'){location.href='main.html';return;}
   document.getElementById('loader').classList.add('out');
-  const id=getParam('id');
-  CW=getState('currentWork');
-  if(!CW&&id){
-    try{const ws=await getDoc(doc(db,'works',id));if(ws.exists())CW={id:ws.id,...ws.data()};}
-    catch(e){CW=DEMO_WORKS.find(x=>x.id===id);}
-  }
-  if(CW){
-    document.getElementById('q-wt').textContent=CW.title;
-    document.getElementById('q-wco').textContent='🏢 '+(CW.company||CW.postedByName||'');
-    document.getElementById('q-wloc').textContent='📍 '+(CW.location||'');
-    document.getElementById('q-wbud').textContent=fmtBudget(CW);
-  }
+  loadQuote();
 });
-async function submitQuote(){
-  const amt=document.getElementById('q-amt').value,days=document.getElementById('q-days').value,pitch=document.getElementById('q-pitch').value.trim(),err=document.getElementById('q-err'),btn=document.getElementById('q-btn');
-  if(!amt||!days||!pitch){err.classList.add('on');return;}err.classList.remove('on');
-  btn.classList.add('btn-ld');btn.textContent='Submitting…';
-  try{
-    await addDoc(collection(db,'applications'),{
-      workId:CW.id,workTitle:CW.title,workCompany:CW.company||CW.postedByName||'',workLocation:CW.location||'',
-      applicantId:CU.uid,applicantName:CD?.name||'',applicantPhone:CD?.phone||'',
-      amount:Number(amt),days:Number(days),labour:document.getElementById('q-lab').value||'',
-      pitch,terms:document.getElementById('q-terms').value,status:'pending',createdAt:serverTimestamp()
-    });
-    try{await updateDoc(doc(db,'works',CW.id),{bids:(CW.bids||0)+1});}catch(e){}
-    toast('Quotation submitted! 🎉','ok');
-    setTimeout(()=>location.href='apps.html',1200);
-  }catch(e){toast('Error: '+e.message,'err');}
-  btn.classList.remove('btn-ld');btn.textContent='Submit Quotation →';
+
+function toast(msg,type){
+  var el=document.getElementById('toast'); el.textContent=msg;
+  el.className=type?'on '+type:'on'; setTimeout(function(){el.className='';},3000);
 }
-function showFiles(input){
-  const list=document.getElementById('attach-list');list.innerHTML='';
-  Array.from(input.files).forEach(f=>{
-    const div=document.createElement('div');div.className='attach-file';
-    const ico=f.type.includes('pdf')?'📄':'🖼️';
-    div.innerHTML=`<span style="font-size:18px;">${ico}</span><div style="flex:1;"><div style="font-weight:600;">${f.name}</div><div style="font-size:11px;color:var(--s4);">${(f.size/1024).toFixed(0)}KB</div></div><span style="color:var(--green2);">✓</span>`;
-    list.appendChild(div);
-  });
-  if(input.files.length){document.getElementById('attach-lbl').textContent=input.files.length+' file(s) selected';}
+function getP(k){return new URLSearchParams(window.location.search).get(k);}
+function saveLS(k,v){try{localStorage.setItem('pg_'+k,JSON.stringify(v));}catch(e){}}
+function getLS(k){try{return JSON.parse(localStorage.getItem('pg_'+k));}catch(e){return null;}}
+function clearLS(k){localStorage.removeItem('pg_'+k);}
+function fmtBud(w){
+  var f=function(n){return n>=100000?'₹'+(n/100000).toFixed(1).replace('.0','')+'L':'₹'+n.toLocaleString('en-IN');};
+  return(w.minBudget&&w.maxBudget)?f(w.minBudget)+'–'+f(w.maxBudget):w.minBudget?f(w.minBudget):'TBD';
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).join('').toUpperCase().slice(0,2);}
+function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
+function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
+function mkCard(w){
+  return '<div class="wcard" onclick="location.href='detail.html?id='+w.id+''">'+
+    '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
+    '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
+    '<div class="wt">'+esc(w.title)+'</div>'+
+    '<div class="wco">🏢 '+esc(w.company||w.postedByName||'Main Contractor')+'</div></div>'+
+    '<div class="wb"><div class="wmeta"><span>📍 '+esc(w.location||'—')+'</span>'+
+    '<span>⏱ '+esc(w.startDate||'TBD')+'</span>'+
+    '<span>👷 '+esc(w.experience||'—')+'</span></div></div>'+
+    '<div class="wf"><span class="wbud">'+fmtBud(w)+'</span>'+
+    '<span class="wbids">'+(w.bids||0)+' bids</span></div></div>';
 }
 </script>
-</body>
-</html>
+<script>
+var CW=null;
+async function loadQuote(){
+  CW=getLS('currentWork');
+  var id=getP('id');
+  if(!CW&&id){
+    try{var s=await db.collection('works').doc(id).get();CW=s.exists?Object.assign({id:s.id},s.data()):null;}catch(e){}
+    if(!CW) CW=DEMO_WORKS.find(function(w){return w.id===id;});
+  }
+  if(CW){
+    document.getElementById('q-wt').textContent=CW.title||'—';
+    document.getElementById('q-wco').textContent='🏢 '+(CW.company||CW.postedByName||'');
+    document.getElementById('q-wloc').textContent='📍 '+(CW.location||'');
+    document.getElementById('q-wbud').textContent=fmtBud(CW);
+  }
+}
+async function submitQuote(){
+  var amt=document.getElementById('q-amt').value, days=document.getElementById('q-days').value,
+      pitch=document.getElementById('q-pitch').value.trim();
+  var err=document.getElementById('q-err'), btn=document.getElementById('q-btn');
+  err.textContent=''; err.classList.remove('on');
+  if(!amt||!days||!pitch){err.textContent='Please fill amount, days and pitch.'; err.classList.add('on');return;}
+  if(!CW){err.textContent='Work not found. Please go back.'; err.classList.add('on');return;}
+  btn.classList.add('btn-ld'); btn.textContent='Submitting…';
+  try{
+    await db.collection('applications').add({
+      workId:CW.id, workTitle:CW.title, workCompany:CW.company||CW.postedByName||'',
+      workLocation:CW.location||'', postedBy:CW.postedBy||'',
+      applicantId:CU.uid, applicantName:CD.name||'', applicantPhone:CD.phone||'',
+      amount:Number(amt), days:Number(days), labour:document.getElementById('q-lab').value||'',
+      pitch:pitch, terms:document.getElementById('q-terms').value,
+      status:'pending', createdAt:FS.FieldValue.serverTimestamp()
+    });
+    try{await db.collection('works').doc(CW.id).update({bids:FS.FieldValue.increment(1)});}catch(e){}
+    toast('Quotation submitted! 🎉','ok');
+    clearLS('currentWork');
+    setTimeout(function(){location.href='apps.html';},1200);
+  }catch(e){err.textContent='Error: '+e.message; err.classList.add('on'); btn.classList.remove('btn-ld'); btn.textContent='Submit Quotation →';}
+}
+function showFiles(input){
+  var list=document.getElementById('q-att-list'); list.innerHTML='';
+  Array.from(input.files).forEach(function(f){
+    var div=document.createElement('div'); div.className='attach-file';
+    var ico=f.type.includes('pdf')?'📄':'🖼️';
+    div.innerHTML='<span style="font-size:18px;">'+ico+'</span><div style="flex:1;"><div style="font-weight:600;">'+esc(f.name)+'</div><div style="font-size:11px;color:var(--s4);">'+(f.size/1024).toFixed(0)+'KB</div></div><span style="color:var(--green2);">✓</span>';
+    list.appendChild(div);
+  });
+  if(input.files.length) document.getElementById('q-att-lbl').textContent=input.files.length+' file(s) selected';
+}
+</script>
+</body></html>
