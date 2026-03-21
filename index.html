@@ -3,1376 +3,1459 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Pragati Work Exchange</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<title>Pragati Work Exchange — India's Construction Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+*{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --blue:#2563EB;--blue2:#3B82F6;--blue3:#60A5FA;--blue-glow:rgba(37,99,235,0.4);
-  --orange:#F97316;--orange2:#FB923C;--orange-glow:rgba(249,115,22,0.35);
-  --green:#10B981;--green-bg:rgba(16,185,129,0.12);
-  --red:#EF4444;--red-bg:rgba(239,68,68,0.12);
-  --yellow:#F59E0B;
-  --bg:#060B18;--bg2:#0D1526;--bg3:#111827;--bg4:#1a2235;
-  --card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.07);
-  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
-  --text:#F1F5F9;--text2:#94A3B8;--text3:#4B5563;
+  --blue:#1D4ED8;--blue2:#2563EB;--blue3:#3B82F6;--blue4:#DBEAFE;--blue5:#EFF6FF;
+  --orange:#C2410C;--orange2:#EA580C;--orange3:#F97316;--orange4:#FEE2D5;--orange5:#FFF7ED;
+  --green:#065F46;--green2:#059669;--green3:#10B981;--green4:#D1FAE5;
+  --red:#991B1B;--red2:#DC2626;--red4:#FEE2E2;
+  --yellow:#92400E;--yellow2:#D97706;--yellow4:#FEF3C7;
+  --slate:#0F172A;--slate2:#1E293B;--slate3:#334155;--slate4:#475569;--slate5:#64748B;--slate6:#94A3B8;--slate7:#CBD5E1;--slate8:#E2E8F0;--slate9:#F1F5F9;--slate10:#F8FAFF;
   --h:'Bricolage Grotesque',sans-serif;
-  --b:'Plus Jakarta Sans',sans-serif;
-  --r:16px;--r2:20px;--r3:24px;
+  --b:'Outfit',sans-serif;
+  --nav-w:260px;
+  --topbar-h:64px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow:0 4px 6px rgba(0,0,0,0.05),0 10px 15px rgba(0,0,0,0.04);
+  --shadow-lg:0 10px 25px rgba(0,0,0,0.08),0 20px 40px rgba(0,0,0,0.06);
 }
-html,body{height:100%;background:var(--bg);font-family:var(--b);color:var(--text);}
+html,body{height:100%;background:var(--slate10);font-family:var(--b);color:var(--slate);font-size:15px;line-height:1.6;}
 
-/* PHONE SHELL */
-.shell{
-  width:390px;height:844px;margin:0 auto;
-  background:var(--bg);border-radius:48px;
-  overflow:hidden;position:relative;
-  box-shadow:0 0 0 1px rgba(255,255,255,0.1),0 40px 120px rgba(0,0,0,0.8),0 0 80px rgba(37,99,235,0.15);
+/* ─── LOADER ─── */
+#loader{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s .1s;}
+#loader.out{opacity:0;pointer-events:none;}
+.ld-logo{display:flex;align-items:center;gap:14px;margin-bottom:10px;}
+.ld-icon{width:52px;height:52px;border-radius:14px;background:var(--blue2);display:flex;align-items:center;justify-content:center;}
+.ld-brand{font-family:var(--h);font-size:30px;font-weight:800;color:var(--slate);}
+.ld-brand span{color:var(--orange3);}
+.ld-sub{font-size:14px;color:var(--slate6);margin-bottom:28px;}
+.ld-bar{width:180px;height:3px;background:var(--slate8);border-radius:99px;overflow:hidden;}
+.ld-fill{height:100%;background:linear-gradient(90deg,var(--blue2),var(--orange3));border-radius:99px;animation:ldfill 1.6s ease forwards;}
+@keyframes ldfill{from{width:0}to{width:100%}}
+
+/* ─── TOAST ─── */
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--slate2);color:#fff;padding:12px 22px;border-radius:10px;font-size:14px;font-weight:500;z-index:9998;transition:.3s;box-shadow:var(--shadow-lg);}
+#toast.on{transform:translateX(-50%) translateY(0);}
+#toast.ok{background:var(--green2);}
+#toast.err{background:var(--red2);}
+
+/* ─── MODAL ─── */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadein .2s;}
+.overlay.off{display:none;}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.modal{background:#fff;border-radius:20px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:mslide .25s ease;}
+@keyframes mslide{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-head{padding:24px 28px 0;display:flex;justify-content:space-between;align-items:flex-start;}
+.modal-head h3{font-family:var(--h);font-size:20px;font-weight:700;}
+.modal-close{width:32px;height:32px;border-radius:8px;border:none;background:var(--slate9);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--slate4);}
+.modal-body{padding:20px 28px 28px;}
+
+/* ─── AUTH PAGES ─── */
+.auth-page{min-height:100vh;display:flex;align-items:stretch;}
+.auth-left{width:46%;background:linear-gradient(160deg,#0F172A 0%,#1E3A5F 60%,#0F172A 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 48px;position:relative;overflow:hidden;}
+.auth-left::before{content:'';position:absolute;top:-100px;right:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.2) 0%,transparent 70%);}
+.auth-left::after{content:'';position:absolute;bottom:-80px;left:-60px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,.15) 0%,transparent 70%);}
+.al-brand{display:flex;align-items:center;gap:14px;margin-bottom:40px;position:relative;z-index:1;}
+.al-icon{width:48px;height:48px;border-radius:14px;background:var(--blue2);}
+.al-name{font-family:var(--h);font-size:26px;font-weight:800;color:#fff;}
+.al-name span{color:var(--orange3);}
+.al-heading{font-family:var(--h);font-size:38px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:16px;position:relative;z-index:1;}
+.al-heading span{color:var(--orange3);}
+.al-sub{font-size:16px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:40px;position:relative;z-index:1;}
+.al-stats{display:flex;gap:28px;position:relative;z-index:1;}
+.al-stat .num{font-family:var(--h);font-size:28px;font-weight:800;color:#fff;}
+.al-stat .lbl{font-size:12px;color:rgba(255,255,255,.5);font-weight:500;}
+.auth-right{flex:1;display:flex;align-items:center;justify-content:center;padding:60px 48px;background:#fff;}
+.auth-box{width:100%;max-width:420px;}
+.auth-box h2{font-family:var(--h);font-size:28px;font-weight:800;margin-bottom:6px;}
+.auth-box p{font-size:14px;color:var(--slate5);margin-bottom:28px;}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.role-card{border:2px solid var(--slate8);border-radius:14px;padding:18px 14px;cursor:pointer;text-align:center;transition:.2s;}
+.role-card:hover{border-color:var(--blue3);background:var(--blue5);}
+.role-card.sel{border-color:var(--blue2);background:var(--blue5);}
+.role-card .ri{font-size:30px;margin-bottom:8px;}
+.role-card h4{font-family:var(--h);font-size:14px;font-weight:700;margin-bottom:3px;}
+.role-card p{font-size:11px;color:var(--slate5);}
+.divider{display:flex;align-items:center;gap:12px;color:var(--slate6);font-size:13px;margin:18px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--slate8);}
+.auth-switch{text-align:center;font-size:14px;color:var(--slate5);margin-top:20px;}
+.auth-switch a{color:var(--blue2);font-weight:600;cursor:pointer;}
+@media(max-width:900px){.auth-left{display:none;}.auth-right{padding:40px 24px;}}
+
+/* ─── APP SHELL ─── */
+#app{display:none;min-height:100vh;}
+#app.on{display:block;}
+
+/* ─── SIDEBAR ─── */
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:var(--nav-w);
+  background:#fff;border-right:1px solid var(--slate8);
+  display:flex;flex-direction:column;z-index:100;
+  box-shadow:var(--shadow-sm);
 }
-@media(max-width:500px){.shell{width:100%;height:100vh;border-radius:0;}}
-.page-wrap{position:relative;width:100%;height:100%;overflow:hidden;}
+.sb-brand{padding:22px 24px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--slate8);}
+.sb-icon{width:38px;height:38px;border-radius:11px;background:var(--blue2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-name{font-family:var(--h);font-size:19px;font-weight:800;}
+.sb-name span{color:var(--orange3);}
+.sb-nav{flex:1;padding:16px 12px;overflow-y:auto;}
+.sb-section{font-size:10px;font-weight:700;color:var(--slate6);text-transform:uppercase;letter-spacing:.08em;padding:0 12px;margin:16px 0 6px;}
+.sb-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer;color:var(--slate4);font-weight:500;font-size:14px;transition:.15s;text-decoration:none;margin-bottom:2px;}
+.sb-item:hover{background:var(--slate9);color:var(--slate);}
+.sb-item.on{background:var(--blue5);color:var(--blue2);}
+.sb-item .si{font-size:18px;width:22px;text-align:center;}
+.sb-item .badge{margin-left:auto;background:var(--orange3);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.sb-bottom{padding:16px 12px;border-top:1px solid var(--slate8);}
+.sb-user{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;cursor:pointer;transition:.15s;}
+.sb-user:hover{background:var(--slate9);}
+.sb-ava{width:36px;height:36px;border-radius:11px;background:var(--blue2);display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+.sb-uname{font-size:13px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sb-urole{font-size:11px;color:var(--slate5);}
 
-/* SCREENS */
-.screen{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden;background:var(--bg);animation:slideIn 0.32s cubic-bezier(0.4,0,0.2,1);}
-.screen.active{display:flex;}
-.screen.back-anim{animation:slideBack 0.28s cubic-bezier(0.4,0,0.2,1);}
-@keyframes slideIn{from{transform:translateX(40px);opacity:0;}to{transform:translateX(0);opacity:1;}}
-@keyframes slideBack{from{transform:translateX(-30px);opacity:0;}to{transform:translateX(0);opacity:1;}}
-@keyframes fadeUp{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
-@keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
-@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
-@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}  }
-
-/* SCROLL */
-.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:90px;}
-.scroll::-webkit-scrollbar{display:none;}
-
-/* TOP BAR */
+/* ─── MAIN CONTENT ─── */
+.main{margin-left:var(--nav-w);min-height:100vh;}
 .topbar{
-  padding:52px 20px 16px;
-  display:flex;align-items:center;gap:12px;
-  position:relative;z-index:5;flex-shrink:0;
+  background:#fff;border-bottom:1px solid var(--slate8);
+  height:var(--topbar-h);padding:0 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
 }
-.topbar.solid{background:var(--bg);border-bottom:1px solid var(--border);}
-.back-btn{
-  width:38px;height:38px;border-radius:12px;
-  background:var(--card2);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:18px;flex-shrink:0;
-  transition:all 0.2s;
-}
-.back-btn:active{transform:scale(0.92);background:var(--border);}
-.topbar h2{font-family:var(--h);font-size:18px;font-weight:700;flex:1;color:var(--text);}
-.icon-btn{
-  width:38px;height:38px;border-radius:12px;
-  background:var(--card2);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:16px;transition:all 0.2s;position:relative;
-}
-.icon-btn:active{transform:scale(0.92);}
-.notif-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;background:var(--orange);border-radius:50%;border:1.5px solid var(--bg);}
+.tb-left h1{font-family:var(--h);font-size:20px;font-weight:700;}
+.tb-left p{font-size:13px;color:var(--slate5);}
+.tb-right{display:flex;align-items:center;gap:12px;}
+.icon-btn{width:38px;height:38px;border-radius:10px;border:1px solid var(--slate8);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--slate4);transition:.15s;}
+.icon-btn:hover{background:var(--slate9);}
+.content{padding:32px;}
 
-/* BOTTOM NAV */
-.bnav{
-  position:absolute;bottom:0;left:0;right:0;height:82px;
-  background:rgba(6,11,24,0.9);backdrop-filter:blur(24px);
-  border-top:1px solid var(--border);
-  display:grid;grid-template-columns:repeat(4,1fr);
-  padding:8px 0 20px;z-index:20;
-}
-.bnav-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 4px;transition:all 0.2s;}
-.bnav-item .ni{font-size:22px;transition:transform 0.2s;}
-.bnav-item span{font-size:10px;color:var(--text3);font-weight:500;transition:color 0.2s;}
-.bnav-item.on .ni{transform:scale(1.1);}
-.bnav-item.on span{color:var(--blue2);}
-.bnav-act{
-  width:44px;height:44px;border-radius:14px;
-  background:linear-gradient(135deg,var(--blue),var(--blue2));
-  box-shadow:0 4px 20px var(--blue-glow);
-  display:flex;align-items:center;justify-content:center;font-size:20px;
-  cursor:pointer;transition:all 0.2s;
-}
-.bnav-act:active{transform:scale(0.92);}
+/* ─── BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;font-family:var(--b);font-size:14px;font-weight:600;cursor:pointer;padding:10px 20px;transition:.2s;white-space:nowrap;}
+.btn:hover{filter:brightness(1.05);}
+.btn:active{transform:scale(.98);}
+.btn-primary{background:var(--blue2);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.25);}
+.btn-orange{background:var(--orange2);color:#fff;box-shadow:0 2px 8px rgba(234,88,12,.25);}
+.btn-ghost{background:#fff;color:var(--slate);border:1px solid var(--slate8);}
+.btn-outline{background:#fff;color:var(--blue2);border:1.5px solid var(--blue2);}
+.btn-danger{background:var(--red2);color:#fff;}
+.btn-sm{padding:7px 14px;font-size:13px;border-radius:8px;}
+.btn-lg{padding:13px 28px;font-size:15px;border-radius:12px;}
+.btn-block{width:100%;}
+.btn-loading{opacity:.65;pointer-events:none;}
 
-/* ===== HOME SCREEN ===== */
-.home-hero{
-  padding:52px 20px 24px;
-  background:linear-gradient(180deg,#0D1A3A 0%,var(--bg) 100%);
-  position:relative;overflow:hidden;flex-shrink:0;
-}
-.home-hero::before{
-  content:'';position:absolute;top:-60px;right:-40px;
-  width:220px;height:220px;border-radius:50%;
-  background:radial-gradient(circle,rgba(37,99,235,0.25) 0%,transparent 70%);
-  pointer-events:none;
-}
-.home-hero::after{
-  content:'';position:absolute;bottom:-30px;left:20px;
-  width:140px;height:140px;border-radius:50%;
-  background:radial-gradient(circle,rgba(249,115,22,0.15) 0%,transparent 70%);
-  pointer-events:none;
-}
-.hero-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;}
-.hero-greet{font-size:13px;color:var(--text2);margin-bottom:4px;font-weight:500;}
-.hero-name{font-family:var(--h);font-size:26px;font-weight:800;line-height:1.2;}
-.hero-name span{
-  background:linear-gradient(90deg,var(--blue3),var(--orange2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.hero-avatar{
-  width:46px;height:46px;border-radius:15px;
-  background:linear-gradient(135deg,var(--blue),var(--blue2));
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--h);font-size:17px;font-weight:700;
-  box-shadow:0 4px 16px var(--blue-glow);flex-shrink:0;
-}
-.search-pill{
-  background:var(--card2);border:1px solid var(--border2);
-  border-radius:14px;padding:12px 16px;
-  display:flex;align-items:center;gap:10px;cursor:pointer;
-  transition:all 0.2s;
-}
-.search-pill:active{transform:scale(0.98);border-color:var(--blue2);}
-.search-pill span{color:var(--text3);font-size:14px;}
-.s-icon{font-size:16px;opacity:0.6;}
+/* ─── FORM ─── */
+.field{margin-bottom:18px;}
+.flabel{font-size:12px;font-weight:700;color:var(--slate4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;display:block;}
+.finput{width:100%;background:#fff;border:1.5px solid var(--slate7);border-radius:10px;padding:11px 14px;font-size:14px;color:var(--slate);font-family:var(--b);outline:none;transition:.2s;}
+.finput:focus{border-color:var(--blue2);box-shadow:0 0 0 3px rgba(37,99,235,.08);}
+.finput::placeholder{color:var(--slate6);}
+textarea.finput{resize:vertical;}
+select.finput{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.form-err{color:var(--red2);font-size:13px;margin-top:6px;display:none;}
+.form-err.on{display:block;}
 
-/* STATS */
-.stats-strip{
-  display:flex;gap:10px;padding:16px 20px;overflow-x:auto;
-  scrollbar-width:none;flex-shrink:0;
-}
-.stats-strip::-webkit-scrollbar{display:none;}
-.stat-pill{
-  background:var(--card2);border:1px solid var(--border);
-  border-radius:14px;padding:12px 16px;flex-shrink:0;
-  display:flex;flex-direction:column;gap:2px;min-width:90px;
-  position:relative;overflow:hidden;
-}
-.stat-pill::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,0.03) 0%,transparent 60%);
-}
-.sp-num{font-family:var(--h);font-size:22px;font-weight:800;color:var(--blue3);}
-.sp-num.orange{color:var(--orange2);}
-.sp-num.green{color:var(--green);}
-.sp-lbl{font-size:11px;color:var(--text3);font-weight:500;}
+/* ─── CARDS ─── */
+.card{background:#fff;border:1px solid var(--slate8);border-radius:16px;box-shadow:var(--shadow-sm);}
+.card-pad{padding:24px;}
 
-/* ALERT BANNER */
-.alert-banner{
-  margin:0 20px 16px;padding:12px 14px;
-  background:linear-gradient(90deg,rgba(249,115,22,0.12),rgba(249,115,22,0.05));
-  border:1px solid rgba(249,115,22,0.25);border-radius:14px;
-  display:flex;align-items:center;gap:10px;
-  font-size:13px;color:#FB923C;font-weight:500;
-}
-.alert-icon{font-size:16px;animation:pulse 2s infinite;}
+/* ─── METRIC CARDS ─── */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.metric{background:#fff;border:1px solid var(--slate8);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow-sm);}
+.metric-num{font-family:var(--h);font-size:32px;font-weight:800;line-height:1;margin-bottom:4px;}
+.metric-num.blue{color:var(--blue2);}
+.metric-num.orange{color:var(--orange2);}
+.metric-num.green{color:var(--green2);}
+.metric-num.purple{color:#7C3AED;}
+.metric-lbl{font-size:13px;color:var(--slate5);font-weight:500;}
+.metric-trend{font-size:11px;font-weight:700;margin-top:6px;}
+.metric-trend.up{color:var(--green2);}
+.metric-trend.dn{color:var(--red2);}
 
-/* SECTION */
-.sec{padding:0 20px 16px;}
-.sec-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
-.sec-h h3{font-family:var(--h);font-size:16px;font-weight:700;}
-.sec-h a{font-size:12px;color:var(--blue3);cursor:pointer;font-weight:600;}
+/* ─── WORK CARDS ─── */
+.works-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;}
+.wcard{background:#fff;border:1px solid var(--slate8);border-radius:16px;overflow:hidden;cursor:pointer;transition:.2s;box-shadow:var(--shadow-sm);}
+.wcard:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--blue3);}
+.wcard-hero{background:linear-gradient(135deg,var(--blue5),#fff);padding:20px 20px 14px;border-bottom:1px solid var(--slate8);}
+.wcard-body{padding:16px 20px;}
+.wcard-foot{padding:12px 20px;background:var(--slate10);border-top:1px solid var(--slate8);display:flex;justify-content:space-between;align-items:center;}
+.wc-title{font-family:var(--h);font-size:16px;font-weight:700;margin:10px 0 4px;line-height:1.3;}
+.wc-co{font-size:13px;color:var(--slate5);margin-bottom:10px;display:flex;align-items:center;gap:5px;}
+.wc-meta{display:flex;gap:14px;flex-wrap:wrap;}
+.wc-meta span{font-size:12px;color:var(--slate5);display:flex;align-items:center;gap:4px;}
+.wc-budget{font-family:var(--h);font-size:17px;font-weight:800;color:var(--green2);}
+.wc-bids{font-size:12px;color:var(--slate5);}
 
-/* WORK CARD */
-.wcard{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--r2);overflow:hidden;margin-bottom:12px;
-  cursor:pointer;transition:all 0.25s;position:relative;
-}
-.wcard:active{transform:scale(0.98);border-color:var(--border2);}
-.wcard::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
-}
-.wcard-top{padding:16px 16px 12px;}
-.wcard-bottom{
-  padding:10px 16px;
-  border-top:1px solid var(--border);
-  display:flex;justify-content:space-between;align-items:center;
-  background:rgba(0,0,0,0.2);
-}
-.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
-.tag{font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;letter-spacing:0.02em;}
-.tag.blue{background:rgba(59,130,246,0.15);color:var(--blue3);}
-.tag.orange{background:rgba(249,115,22,0.15);color:var(--orange2);}
-.tag.green{background:rgba(16,185,129,0.15);color:var(--green);}
-.tag.red{background:rgba(239,68,68,0.15);color:#F87171;}
-.wc-title{font-family:var(--h);font-size:15px;font-weight:700;margin-bottom:5px;}
-.wc-co{font-size:12px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:4px;}
-.wc-meta{display:flex;gap:12px;}
-.wc-meta span{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:3px;}
-.budget{font-family:var(--h);font-size:15px;font-weight:700;color:var(--green);}
-.bids{font-size:11px;color:var(--text3);}
+/* ─── TAGS ─── */
+.tag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;letter-spacing:.03em;}
+.tag.blue{background:var(--blue4);color:var(--blue);}
+.tag.orange{background:var(--orange4);color:var(--orange);}
+.tag.green{background:var(--green4);color:var(--green);}
+.tag.red{background:var(--red4);color:var(--red);}
+.tag.yellow{background:var(--yellow4);color:var(--yellow);}
+.tag.slate{background:var(--slate9);color:var(--slate4);}
+.tags{display:flex;gap:6px;flex-wrap:wrap;}
 
-/* TRADE CHIPS */
-.chips{display:flex;gap:8px;overflow-x:auto;padding:0 20px 16px;scrollbar-width:none;}
-.chips::-webkit-scrollbar{display:none;}
-.chip{
-  white-space:nowrap;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:600;
-  border:1px solid var(--border);background:var(--card);cursor:pointer;
-  color:var(--text2);transition:all 0.2s;flex-shrink:0;
-}
-.chip:active{transform:scale(0.95);}
-.chip.on{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 4px 16px var(--blue-glow);}
+/* ─── TABLE ─── */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead tr{border-bottom:2px solid var(--slate8);}
+th{padding:12px 16px;text-align:left;font-size:12px;font-weight:700;color:var(--slate5);text-transform:uppercase;letter-spacing:.06em;}
+tbody tr{border-bottom:1px solid var(--slate9);transition:.15s;}
+tbody tr:hover{background:var(--slate10);}
+tbody tr:last-child{border-bottom:none;}
+td{padding:14px 16px;font-size:14px;}
 
-/* ===== FIND WORK ===== */
-.fw-bar{
-  padding:52px 20px 14px;
-  background:var(--bg2);border-bottom:1px solid var(--border);
-  flex-shrink:0;
-}
-.fw-bar h2{font-family:var(--h);font-size:22px;font-weight:800;margin-bottom:14px;}
-.search-box{
-  background:var(--card2);border:1px solid var(--border2);
-  border-radius:14px;padding:11px 16px;
-  display:flex;align-items:center;gap:10px;
-}
-.search-box input{
-  flex:1;background:none;border:none;outline:none;
-  font-family:var(--b);font-size:14px;color:var(--text);
-}
-.search-box input::placeholder{color:var(--text3);}
+/* ─── STATUS ─── */
+.status{font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;letter-spacing:.04em;}
+.status.open{background:var(--green4);color:var(--green);}
+.status.pending{background:var(--yellow4);color:var(--yellow);}
+.status.review{background:var(--blue4);color:var(--blue);}
+.status.awarded{background:var(--green4);color:var(--green);}
+.status.rejected{background:var(--red4);color:var(--red);}
 
-/* ===== DETAIL SCREEN ===== */
-.detail-hero{
-  padding:52px 20px 24px;
-  background:linear-gradient(180deg,#0D1A3A 0%,var(--bg) 100%);
-  position:relative;overflow:hidden;flex-shrink:0;
-}
-.detail-hero .dh-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
-.detail-hero h1{font-family:var(--h);font-size:22px;font-weight:800;margin-bottom:8px;}
-.detail-hero .co{font-size:13px;color:var(--text2);}
-.progress-bar{height:3px;background:var(--border);border-radius:99px;margin-top:16px;}
-.progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--orange));animation:shimmer 2s linear infinite;background-size:200% 100%;}
+/* ─── SEARCH + FILTER BAR ─── */
+.filter-bar{display:flex;gap:12px;align-items:center;margin-bottom:24px;flex-wrap:wrap;}
+.search-wrap{position:relative;flex:1;min-width:200px;}
+.search-wrap input{width:100%;background:#fff;border:1.5px solid var(--slate7);border-radius:10px;padding:10px 14px 10px 40px;font-size:14px;color:var(--slate);font-family:var(--b);outline:none;transition:.2s;}
+.search-wrap input:focus{border-color:var(--blue2);}
+.search-wrap::before{content:'🔍';position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;}
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;}
+.chip{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--slate8);background:#fff;cursor:pointer;color:var(--slate4);transition:.2s;}
+.chip:hover{border-color:var(--blue3);color:var(--blue2);}
+.chip.on{background:var(--blue2);color:#fff;border-color:var(--blue2);}
 
-.dsec{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--r2);margin:12px 20px;padding:16px;
-}
-.dsec h4{font-family:var(--h);font-size:13px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;}
-.irow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);}
-.irow:last-child{border-bottom:none;}
-.ik{font-size:13px;color:var(--text3);}
-.iv{font-size:13px;font-weight:600;color:var(--text);}
-.bullet-item{display:flex;gap:10px;padding:7px 0;font-size:13px;color:var(--text2);align-items:flex-start;}
-.bdot{width:6px;height:6px;border-radius:50%;background:var(--orange);margin-top:5px;flex-shrink:0;}
+/* ─── DETAIL LAYOUT ─── */
+.detail-grid{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start;}
+.detail-hero{background:linear-gradient(135deg,var(--blue) 0%,#1E40AF 100%);border-radius:16px;padding:32px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden;}
+.detail-hero::after{content:'';position:absolute;bottom:-40px;right:-30px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.06);}
+.detail-hero h1{font-family:var(--h);font-size:26px;font-weight:800;margin:10px 0 6px;}
+.detail-hero .co{font-size:14px;opacity:.8;}
+.det-prog{height:4px;background:rgba(255,255,255,.2);border-radius:99px;margin-top:16px;overflow:hidden;}
+.det-prog-fill{height:100%;background:linear-gradient(90deg,#93C5FD,var(--orange3));border-radius:99px;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.info-row{padding:12px 0;border-bottom:1px solid var(--slate9);}
+.info-row:last-child{border-bottom:none;}
+.info-row .ik{font-size:12px;font-weight:600;color:var(--slate5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;}
+.info-row .iv{font-size:14px;font-weight:600;}
+.bullet{display:flex;gap:10px;padding:6px 0;font-size:14px;color:var(--slate3);}
+.bdot{width:6px;height:6px;border-radius:50%;background:var(--orange2);margin-top:7px;flex-shrink:0;}
+.side-card{background:#fff;border:1px solid var(--slate8);border-radius:16px;padding:22px;box-shadow:var(--shadow-sm);margin-bottom:16px;}
+.side-card h4{font-family:var(--h);font-size:15px;font-weight:700;margin-bottom:14px;}
 
-/* STICKY CTA */
-.sticky-cta{
-  position:sticky;bottom:0;padding:12px 20px 28px;
-  background:linear-gradient(0deg,rgba(6,11,24,1) 60%,transparent);
-  display:flex;gap:10px;z-index:10;
-}
+/* ─── PROFILE ─── */
+.profile-layout{display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start;}
+.prof-card{background:#fff;border:1px solid var(--slate8);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-sm);}
+.prof-hero{background:linear-gradient(135deg,var(--blue),#1E40AF);padding:32px 24px;text-align:center;color:#fff;}
+.p-ava{width:80px;height:80px;border-radius:22px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:26px;font-weight:800;margin:0 auto 14px;position:relative;}
+.p-ver{position:absolute;bottom:-4px;right:-4px;width:22px;height:22px;border-radius:50%;background:var(--green3);border:2px solid #1E40AF;display:flex;align-items:center;justify-content:center;font-size:10px;}
+.p-name{font-family:var(--h);font-size:20px;font-weight:800;margin-bottom:3px;}
+.p-role{font-size:13px;opacity:.8;}
+.p-stars{color:#FCD34D;font-size:14px;margin-top:6px;}
+.prof-stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--slate8);}
+.ps-item{padding:14px 10px;text-align:center;border-right:1px solid var(--slate8);}
+.ps-item:last-child{border-right:none;}
+.ps-num{font-family:var(--h);font-size:20px;font-weight:800;color:var(--blue2);}
+.ps-lbl{font-size:11px;color:var(--slate5);}
+.prof-nav .prow{display:flex;align-items:center;gap:12px;padding:13px 20px;border-bottom:1px solid var(--slate9);cursor:pointer;transition:.15s;font-size:14px;font-weight:500;}
+.prof-nav .prow:last-child{border-bottom:none;}
+.prof-nav .prow:hover{background:var(--slate9);}
+.prof-nav .prow .pi{font-size:18px;width:22px;text-align:center;}
+.skill-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px;}
+.skill-tag{background:rgba(255,255,255,.15);color:#fff;font-size:11px;font-weight:600;padding:4px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.25);}
 
-/* BUTTONS */
-.btn{
-  border:none;border-radius:14px;font-family:var(--b);
-  font-size:15px;font-weight:600;cursor:pointer;padding:14px 20px;
-  transition:all 0.2s;letter-spacing:0.01em;
-}
-.btn:active{transform:scale(0.97);}
-.btn-primary{
-  background:linear-gradient(135deg,var(--blue),var(--blue2));
-  color:#fff;flex:1;
-  box-shadow:0 4px 20px var(--blue-glow);
-}
-.btn-orange{
-  background:linear-gradient(135deg,var(--orange),var(--orange2));
-  color:#fff;width:100%;
-  box-shadow:0 4px 20px var(--orange-glow);
-}
-.btn-ghost{
-  background:var(--card2);border:1px solid var(--border2);
-  color:var(--text);
-}
-.btn-sm{padding:9px 16px;font-size:12px;border-radius:10px;}
+/* ─── HERO LANDING ─── */
+.land-hero{background:linear-gradient(160deg,#0F172A 0%,#1E3A5F 50%,#0F172A 100%);min-height:100vh;display:flex;flex-direction:column;}
+.land-nav{padding:20px 48px;display:flex;align-items:center;justify-content:space-between;}
+.land-nav-brand{display:flex;align-items:center;gap:12px;}
+.ln-icon{width:40px;height:40px;border-radius:12px;background:var(--blue2);}
+.ln-name{font-family:var(--h);font-size:22px;font-weight:800;color:#fff;}
+.ln-name span{color:var(--orange3);}
+.land-nav-links{display:flex;align-items:center;gap:12px;}
+.land-content{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;padding:60px 48px 80px;max-width:1200px;margin:0 auto;width:100%;}
+.lc-copy h1{font-family:var(--h);font-size:52px;font-weight:800;color:#fff;line-height:1.1;margin-bottom:18px;}
+.lc-copy h1 span{color:var(--orange3);}
+.lc-copy p{font-size:17px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:32px;}
+.lc-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.lc-stats{display:flex;gap:32px;margin-top:36px;}
+.lc-stat .n{font-family:var(--h);font-size:28px;font-weight:800;color:#fff;}
+.lc-stat .l{font-size:12px;color:rgba(255,255,255,.5);font-weight:500;}
+.land-features{background:var(--slate10);padding:80px 48px;}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1100px;margin:0 auto;}
+.feat-card{background:#fff;border:1px solid var(--slate8);border-radius:16px;padding:28px 24px;box-shadow:var(--shadow-sm);}
+.feat-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px;}
+.feat-card h3{font-family:var(--h);font-size:17px;font-weight:700;margin-bottom:8px;}
+.feat-card p{font-size:14px;color:var(--slate5);line-height:1.6;}
+.section-tag{display:inline-block;background:var(--blue4);color:var(--blue2);font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;margin-bottom:14px;letter-spacing:.04em;}
+.section-title{font-family:var(--h);font-size:36px;font-weight:800;margin-bottom:12px;}
+.section-sub{font-size:16px;color:var(--slate5);max-width:500px;}
 
-/* ===== QUOTE FORM ===== */
-.form-wrap{padding:16px 20px;}
-.field{margin-bottom:16px;}
-.flabel{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:7px;display:block;}
-.finput{
-  width:100%;background:var(--card2);border:1px solid var(--border2);
-  border-radius:12px;padding:13px 16px;font-size:14px;color:var(--text);
-  font-family:var(--b);outline:none;transition:border 0.2s;
-}
-.finput:focus{border-color:var(--blue2);}
-.finput::placeholder{color:var(--text3);}
-textarea.finput{resize:none;}
-select.finput option{background:var(--bg3);}
-.upload-box{
-  border:1.5px dashed var(--border2);border-radius:14px;
-  padding:24px;text-align:center;cursor:pointer;
-  font-size:13px;color:var(--text3);transition:all 0.2s;
-}
-.upload-box:active{border-color:var(--blue2);background:rgba(59,130,246,0.05);}
-.upload-icon{font-size:28px;display:block;margin-bottom:8px;opacity:0.5;}
-.ref-card{
-  background:linear-gradient(135deg,rgba(37,99,235,0.12),rgba(59,130,246,0.06));
-  border:1px solid rgba(59,130,246,0.2);border-radius:14px;
-  padding:14px;margin-bottom:20px;
-}
-.ref-card .rtitle{font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue3);margin-bottom:6px;}
-.ref-card .rmeta{display:flex;gap:16px;}
-.ref-card .rmeta span{font-size:12px;color:var(--text2);}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+/* ─── BIDS ─── */
+.bids-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+.bid-card{background:#fff;border:1.5px solid var(--slate8);border-radius:14px;padding:20px;transition:.2s;position:relative;}
+.bid-card:hover{border-color:var(--blue3);box-shadow:var(--shadow);}
+.bid-card.top{border-color:var(--orange3);background:linear-gradient(135deg,#FFF7ED,#fff);}
+.bid-badge{position:absolute;top:-1px;right:16px;background:linear-gradient(90deg,var(--orange2),var(--orange3));color:#fff;font-size:9px;font-weight:800;padding:3px 10px;border-radius:0 0 8px 8px;letter-spacing:.06em;}
+.bid-ava{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:16px;font-weight:700;color:#fff;flex-shrink:0;}
+.bid-name{font-family:var(--h);font-size:15px;font-weight:700;}
+.bid-sub{font-size:12px;color:var(--slate5);}
+.bid-price{font-family:var(--h);font-size:18px;font-weight:800;color:var(--green2);}
+.bid-pitch{font-size:13px;color:var(--slate3);background:var(--slate10);border-radius:8px;padding:10px 12px;margin:12px 0;line-height:1.55;font-style:italic;}
 
-/* ===== DASHBOARD ===== */
-.dash-hero{
-  padding:52px 20px 24px;
-  background:linear-gradient(160deg,#0A1628 0%,#0D1526 60%,var(--bg) 100%);
-  position:relative;overflow:hidden;flex-shrink:0;
-}
-.dash-hero::before{
-  content:'';position:absolute;top:-30px;right:-20px;
-  width:180px;height:180px;border-radius:50%;
-  background:radial-gradient(circle,rgba(37,99,235,0.2) 0%,transparent 70%);
-}
-.dh-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;}
-.dh-name{font-family:var(--h);font-size:20px;font-weight:800;}
-.dh-role{font-size:12px;color:var(--text3);margin-top:3px;font-weight:500;}
-.dh-badge{
-  background:linear-gradient(135deg,var(--orange),var(--orange2));
-  color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;
-  box-shadow:0 2px 10px var(--orange-glow);
-}
-.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.metric-card{
-  background:var(--card2);border:1px solid var(--border);
-  border-radius:var(--r);padding:14px;position:relative;overflow:hidden;
-}
-.metric-card::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,0.02) 0%,transparent);
-}
-.mc-num{font-family:var(--h);font-size:28px;font-weight:800;line-height:1;}
-.mc-num.blue{color:var(--blue3);}
-.mc-num.orange{color:var(--orange2);}
-.mc-num.green{color:var(--green);}
-.mc-num.purple{color:#A78BFA;}
-.mc-lbl{font-size:11px;color:var(--text3);margin-top:4px;font-weight:500;}
-.mc-trend{position:absolute;top:12px;right:12px;font-size:10px;font-weight:700;padding:3px 7px;border-radius:6px;}
-.mc-trend.up{background:rgba(16,185,129,0.15);color:var(--green);}
-.mc-trend.dn{background:rgba(239,68,68,0.12);color:#F87171;}
+/* ─── EMPTY ─── */
+.empty{padding:60px 24px;text-align:center;}
+.empty .ei{font-size:52px;margin-bottom:14px;opacity:.4;}
+.empty h3{font-family:var(--h);font-size:20px;font-weight:700;color:var(--slate3);margin-bottom:6px;}
+.empty p{font-size:14px;color:var(--slate5);}
 
-/* TABS */
-.tabs{display:flex;background:var(--card);border:1px solid var(--border);border-radius:14px;margin:12px 20px;overflow:hidden;}
-.tab{flex:1;padding:10px 6px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;color:var(--text3);transition:all 0.2s;border:none;background:none;font-family:var(--b);}
-.tab.on{background:var(--blue);color:#fff;}
+/* ─── STEPS ─── */
+.step-label{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;color:var(--blue2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px;margin-top:8px;}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--blue2);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
-/* APP ROW */
-.arow{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--r2);margin:0 20px 10px;padding:14px;cursor:pointer;
-  transition:all 0.2s;
-}
-.arow:active{transform:scale(0.98);border-color:var(--border2);}
-.ar-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;}
-.ar-title{font-family:var(--h);font-size:14px;font-weight:700;}
-.ar-sub{font-size:12px;color:var(--text3);margin-bottom:10px;}
-.ar-foot{display:flex;justify-content:space-between;align-items:center;}
-.status{font-size:10px;font-weight:700;padding:4px 10px;border-radius:8px;letter-spacing:0.04em;}
-.status.pending{background:rgba(245,158,11,0.15);color:#FCD34D;}
-.status.review{background:rgba(59,130,246,0.15);color:var(--blue3);}
-.status.awarded{background:rgba(16,185,129,0.15);color:var(--green);}
-.status.rejected{background:rgba(239,68,68,0.12);color:#F87171;}
+/* ─── PAGE SCREENS ─── */
+.page{display:none;}
+.page.on{display:block;}
 
-/* BID CARD */
-.bidder{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--r2);margin:0 20px 10px;padding:14px;
-  transition:all 0.2s;
+/* ─── RESPONSIVE ─── */
+@media(max-width:1100px){.metrics{grid-template-columns:repeat(2,1fr);}.detail-grid{grid-template-columns:1fr;}.profile-layout{grid-template-columns:1fr;}}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:.3s;}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .content{padding:20px;}
+  .land-content{grid-template-columns:1fr;padding:40px 24px;}
+  .lc-copy h1{font-size:36px;}
+  .features-grid{grid-template-columns:1fr;}
+  .land-nav{padding:16px 24px;}
+  .auth-left{display:none;}
+  .works-grid{grid-template-columns:1fr;}
+  .metrics{grid-template-columns:1fr 1fr;}
+  .bids-grid{grid-template-columns:1fr;}
 }
-.bidder.top{border-color:rgba(249,115,22,0.4);background:linear-gradient(135deg,rgba(249,115,22,0.07),rgba(249,115,22,0.02));}
-.bidder-row{display:flex;gap:12px;align-items:center;}
-.bav{
-  width:44px;height:44px;border-radius:14px;
-  background:linear-gradient(135deg,var(--blue),var(--blue2));
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--h);font-size:15px;font-weight:700;flex-shrink:0;
-}
-.bav.g{background:linear-gradient(135deg,#10B981,#059669);}
-.bav.p{background:linear-gradient(135deg,#8B5CF6,#7C3AED);}
-.bav.o{background:linear-gradient(135deg,var(--orange),#DC2626);}
-.binfo{flex:1;}
-.bname{font-family:var(--h);font-size:14px;font-weight:700;}
-.bsub{font-size:11px;color:var(--text3);}
-.bprice{font-family:var(--h);font-size:16px;font-weight:800;color:var(--green);text-align:right;}
-.award-btn{
-  margin-top:8px;background:linear-gradient(135deg,var(--orange),var(--orange2));
-  color:#fff;border:none;border-radius:10px;padding:7px 16px;
-  font-size:12px;font-weight:700;cursor:pointer;
-  box-shadow:0 3px 12px var(--orange-glow);transition:all 0.2s;font-family:var(--b);
-}
-.award-btn:active{transform:scale(0.95);}
-.best-tag{position:absolute;top:-1px;right:14px;background:linear-gradient(90deg,var(--orange),var(--orange2));color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:0 0 8px 8px;letter-spacing:0.06em;}
-
-/* ===== PROFILE ===== */
-.prof-hero{
-  padding:52px 20px 28px;
-  background:linear-gradient(160deg,#0A1628 0%,var(--bg) 100%);
-  text-align:center;position:relative;overflow:hidden;flex-shrink:0;
-}
-.prof-hero::before{
-  content:'';position:absolute;top:-50px;left:50%;transform:translateX(-50%);
-  width:300px;height:300px;border-radius:50%;
-  background:radial-gradient(circle,rgba(37,99,235,0.15) 0%,transparent 70%);
-}
-.p-avatar{
-  width:80px;height:80px;border-radius:24px;
-  background:linear-gradient(135deg,var(--blue),var(--blue2));
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--h);font-size:28px;font-weight:800;
-  margin:0 auto 14px;
-  box-shadow:0 8px 30px var(--blue-glow);
-  position:relative;
-}
-.p-verify{
-  position:absolute;bottom:-4px;right:-4px;
-  width:22px;height:22px;border-radius:50%;
-  background:var(--green);border:2px solid var(--bg);
-  display:flex;align-items:center;justify-content:center;font-size:11px;
-}
-.p-name{font-family:var(--h);font-size:22px;font-weight:800;margin-bottom:4px;}
-.p-role{font-size:13px;color:var(--text2);margin-bottom:8px;}
-.stars{color:var(--yellow);font-size:13px;margin-bottom:12px;}
-.skill-wrap{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
-.skill-tag{background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.2);color:var(--blue3);font-size:11px;font-weight:600;padding:5px 12px;border-radius:8px;}
-
-.psec{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);margin:10px 20px;}
-.prow{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;
-  transition:background 0.2s;
-}
-.prow:last-child{border-bottom:none;}
-.prow:active{background:var(--card2);}
-.prow-icon{width:34px;height:34px;border-radius:10px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.prow-txt{flex:1;font-size:14px;font-weight:500;}
-.prow-arr{font-size:16px;color:var(--text3);}
-.prow-badge{background:rgba(16,185,129,0.15);color:var(--green);font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;}
-
-/* ===== CHAT ===== */
-.cli{
-  display:flex;gap:12px;padding:14px 20px;
-  border-bottom:1px solid var(--border);cursor:pointer;
-  transition:background 0.2s;
-}
-.cli:active{background:var(--card2);}
-.cav{
-  width:46px;height:46px;border-radius:15px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--h);font-size:16px;font-weight:700;flex-shrink:0;
-}
-.cinfo{flex:1;min-width:0;}
-.cn{font-size:14px;font-weight:600;margin-bottom:3px;}
-.cp{font-size:12px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.cmeta{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
-.ct{font-size:10px;color:var(--text3);}
-.cund{background:var(--blue);color:#fff;font-size:9px;font-weight:800;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-
-/* CHAT WINDOW */
-.cw-bar{
-  padding:52px 16px 14px;
-  background:var(--bg2);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:10px;flex-shrink:0;
-}
-.cw-av{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:14px;font-weight:700;flex-shrink:0;}
-.cw-n{font-family:var(--h);font-size:15px;font-weight:700;}
-.cw-s{font-size:11px;color:var(--green);font-weight:500;}
-.msgs{padding:16px 20px;display:flex;flex-direction:column;gap:8px;}
-.msg-time{text-align:center;font-size:11px;color:var(--text3);padding:6px 0;}
-.msg{max-width:76%;padding:11px 14px;border-radius:16px;font-size:13px;line-height:1.55;}
-.msg.them{background:var(--card2);border:1px solid var(--border);border-bottom-left-radius:4px;align-self:flex-start;}
-.msg.me{background:linear-gradient(135deg,var(--blue),var(--blue2));border-bottom-right-radius:4px;align-self:flex-end;}
-.ci-bar{
-  padding:10px 16px 28px;background:rgba(6,11,24,0.95);
-  backdrop-filter:blur(20px);border-top:1px solid var(--border);
-  display:flex;gap:10px;align-items:center;flex-shrink:0;
-}
-.ci{
-  flex:1;background:var(--card2);border:1px solid var(--border2);
-  border-radius:25px;padding:11px 16px;font-size:13px;
-  color:var(--text);font-family:var(--b);outline:none;
-}
-.ci::placeholder{color:var(--text3);}
-.send{
-  width:42px;height:42px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,var(--blue),var(--blue2));
-  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 3px 12px var(--blue-glow);transition:all 0.2s;
-}
-.send:active{transform:scale(0.92);}
-
-/* POST WORK */
-.pw-sec h3{font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue3);text-transform:uppercase;letter-spacing:0.08em;padding:16px 20px 10px;display:flex;align-items:center;gap:6px;}
-.step-num{width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;}
-
-/* SWITCHER */
-.switcher{
-  position:fixed;top:0;left:50%;transform:translateX(-50%);
-  width:390px;max-width:100%;z-index:9999;
-  background:rgba(6,11,24,0.95);backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-  padding:8px 12px 8px;
-  display:flex;align-items:center;gap:6px;overflow-x:auto;
-  scrollbar-width:none;
-}
-.switcher::-webkit-scrollbar{display:none;}
-.sw-label{font-size:10px;color:var(--text3);font-weight:700;white-space:nowrap;margin-right:2px;}
-.sw-btn{
-  white-space:nowrap;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;
-  background:var(--card2);border:1px solid var(--border);color:var(--text2);
-  cursor:pointer;flex-shrink:0;transition:all 0.2s;
-}
-.sw-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
-.sw-btn.cur{background:var(--blue);color:#fff;border-color:var(--blue);}
-
-/* DIVIDER */
-.divider{height:1px;background:var(--border);margin:4px 0;}
-
-/* EMPTY */
-.empty{padding:40px;text-align:center;color:var(--text3);}
-.empty-icon{font-size:40px;display:block;margin-bottom:12px;opacity:0.5;}
-
-/* NOTICE */
-.notice{
-  margin:0 20px 14px;padding:12px 14px;
-  background:linear-gradient(90deg,rgba(16,185,129,0.1),rgba(16,185,129,0.04));
-  border:1px solid rgba(16,185,129,0.2);border-radius:14px;
-  font-size:13px;color:var(--green);font-weight:500;
-  display:flex;align-items:center;gap:8px;
-}
-
-/* SCROLL SNAP horizontal for cards */
-.hscroll{display:flex;gap:12px;overflow-x:auto;padding:0 20px 16px;scrollbar-width:none;}
-.hscroll::-webkit-scrollbar{display:none;}
-
-/* FEATURED CARD */
-.feat-card{
-  min-width:260px;border-radius:var(--r2);overflow:hidden;
-  background:linear-gradient(135deg,#0D1A3A,#111827);
-  border:1px solid var(--border2);padding:16px;flex-shrink:0;
-  position:relative;
-}
-.feat-card::before{
-  content:'';position:absolute;top:0;right:0;
-  width:120px;height:120px;
-  background:radial-gradient(circle,rgba(37,99,235,0.2) 0%,transparent 70%);
-}
-.fc-company{font-size:12px;color:var(--text3);margin-bottom:6px;}
-.fc-title{font-family:var(--h);font-size:15px;font-weight:700;margin-bottom:10px;line-height:1.3;}
-.fc-meta{display:flex;gap:8px;margin-bottom:12px;}
-.fc-budget{font-family:var(--h);font-size:18px;font-weight:800;color:var(--green);}
-
-/* LOADING SCREEN */
-.loader{
-  position:absolute;inset:0;background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:100;animation:fadeOut 0.5s 1.5s forwards;
-}
-@keyframes fadeOut{to{opacity:0;pointer-events:none;}}
-.loader-logo{font-family:var(--h);font-size:28px;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--blue3),var(--orange2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.loader-sub{font-size:13px;color:var(--text3);}
-.loader-bar{width:120px;height:3px;background:var(--border);border-radius:99px;margin-top:20px;overflow:hidden;}
-.loader-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--orange));border-radius:99px;animation:loadfill 1.4s ease forwards;}
-@keyframes loadfill{from{width:0;}to{width:100%;}}
 </style>
 </head>
 <body>
 
-<!-- SWITCHER BAR -->
-<div class="switcher" id="switcher">
-  <span class="sw-label">Screens:</span>
-  <span class="sw-btn cur" onclick="go('s-home',this)">🏠 Home</span>
-  <span class="sw-btn" onclick="go('s-find',this)">🔍 Find Work</span>
-  <span class="sw-btn" onclick="go('s-detail',this)">📄 Details</span>
-  <span class="sw-btn" onclick="go('s-quote',this)">✍️ Quote</span>
-  <span class="sw-btn" onclick="go('s-post',this)">➕ Post Work</span>
-  <span class="sw-btn" onclick="go('s-main',this)">🏗️ Main Dash</span>
-  <span class="sw-btn" onclick="go('s-petty',this)">👷 My Dash</span>
-  <span class="sw-btn" onclick="go('s-bids',this)">📊 Bids</span>
-  <span class="sw-btn" onclick="go('s-apps',this)">📋 Apps</span>
-  <span class="sw-btn" onclick="go('s-profile',this)">👤 Profile</span>
-  <span class="sw-btn" onclick="go('s-chat',this)">💬 Chat</span>
-</div>
-
-<div style="padding-top:42px;">
-<div class="shell">
-<div class="page-wrap">
-
 <!-- LOADER -->
-<div class="loader">
-  <div class="loader-logo">Pragati</div>
-  <div class="loader-sub">Work Exchange</div>
-  <div class="loader-bar"><div class="loader-fill"></div></div>
+<div id="loader">
+  <div class="ld-logo">
+    <div class="ld-icon">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg>
+    </div>
+    <div class="ld-brand">Pragati<span>.</span></div>
+  </div>
+  <div class="ld-sub">Work Exchange — India's Construction Marketplace</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
 </div>
 
-<!-- ==================== HOME ==================== -->
-<div class="screen active" id="s-home">
-  <div class="scroll">
-    <div class="home-hero">
-      <div class="hero-top">
-        <div>
-          <div class="hero-greet">Good morning 👋</div>
-          <div class="hero-name">Rajesh <span>Patil</span></div>
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ═══════════════════════ LANDING PAGE ═══════════════════════ -->
+<div id="s-landing" style="display:none;">
+  <div class="land-hero">
+    <nav class="land-nav">
+      <div class="land-nav-brand">
+        <div class="ln-icon">
+          <svg width="22" height="22" viewBox="0 0 28 28" fill="none" style="margin:9px;"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg>
         </div>
-        <div class="hero-avatar">RP</div>
+        <div class="ln-name">Pragati<span>.</span></div>
       </div>
-      <div class="search-pill" onclick="go('s-find',null)">
-        <span class="s-icon">🔍</span>
-        <span>Search work, trade, location…</span>
+      <div class="land-nav-links">
+        <button class="btn btn-ghost" style="color:#fff;border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.08);" onclick="showLogin()">Login</button>
+        <button class="btn btn-orange btn-lg" onclick="showRegister()">Get Started Free →</button>
       </div>
-    </div>
-
-    <div class="stats-strip">
-      <div class="stat-pill"><div class="sp-num">48</div><div class="sp-lbl">Open Works</div></div>
-      <div class="stat-pill"><div class="sp-num orange">12</div><div class="sp-lbl">Applied</div></div>
-      <div class="stat-pill"><div class="sp-num green">3</div><div class="sp-lbl">Awarded</div></div>
-      <div class="stat-pill"><div class="sp-num" style="color:#A78BFA;">₹18L</div><div class="sp-lbl">Earned</div></div>
-    </div>
-
-    <div class="alert-banner">
-      <div class="alert-icon">⚡</div>
-      5 new works posted near Pune today!
-    </div>
-
-    <div class="sec">
-      <div class="sec-h"><h3>Featured Works</h3><a onclick="go('s-find',null)">View all →</a></div>
-    </div>
-    <div class="hscroll">
-      <div class="feat-card" onclick="go('s-detail',null)">
-        <div class="tags"><span class="tag orange">URGENT</span></div>
-        <div class="fc-company">🏢 Kalpataru Constructions</div>
-        <div class="fc-title">Interior Plastering Work – Phase 2</div>
-        <div class="fc-meta"><span class="tag blue">Plastering</span><span class="tag green">Pune</span></div>
-        <div class="fc-budget">₹2.5L – ₹3L</div>
-      </div>
-      <div class="feat-card" onclick="go('s-detail',null)">
-        <div class="tags"><span class="tag green">NEW</span></div>
-        <div class="fc-company">🏢 Godrej Properties</div>
-        <div class="fc-title">Marble Flooring – Block C Tower</div>
-        <div class="fc-meta"><span class="tag blue">Flooring</span><span class="tag green">Mumbai</span></div>
-        <div class="fc-budget">₹5L – ₹7L</div>
-      </div>
-      <div class="feat-card" onclick="go('s-detail',null)">
-        <div class="tags"><span class="tag blue">HIGH BUDGET</span></div>
-        <div class="fc-company">🏢 Lodha Group</div>
-        <div class="fc-title">Full Electrical Wiring – Tower 2</div>
-        <div class="fc-meta"><span class="tag blue">Electrical</span><span class="tag green">Thane</span></div>
-        <div class="fc-budget">₹8L – ₹10L</div>
-      </div>
-    </div>
-
-    <div class="chips">
-      <div class="chip on">All Trades</div>
-      <div class="chip" onclick="toggleChip(this)">Masonry</div>
-      <div class="chip" onclick="toggleChip(this)">Plastering</div>
-      <div class="chip" onclick="toggleChip(this)">Tiling</div>
-      <div class="chip" onclick="toggleChip(this)">Electrical</div>
-      <div class="chip" onclick="toggleChip(this)">Plumbing</div>
-      <div class="chip" onclick="toggleChip(this)">Painting</div>
-    </div>
-
-    <div class="sec">
-      <div class="sec-h"><h3>Recent Works</h3></div>
-      <div class="wcard" onclick="go('s-detail',null)">
-        <div class="wcard-top">
-          <div class="tags"><span class="tag blue">Plastering</span><span class="tag orange">Urgent</span></div>
-          <div class="wc-title">Interior Plastering Work</div>
-          <div class="wc-co">🏢 Kalpataru Constructions</div>
-          <div class="wc-meta">
-            <span>📍 Pune</span><span>⏱ 15 Jan</span><span>👷 5+ yrs</span>
-          </div>
+    </nav>
+    <div class="land-content">
+      <div class="lc-copy">
+        <div class="section-tag" style="margin-bottom:20px;">🏗️ #1 Construction Marketplace in India</div>
+        <h1>Find <span>Subcontract Work</span> That Pays Well</h1>
+        <p>Main contractors post requirements. Petty contractors browse, bid, and win jobs. Pragati connects 10,000+ contractors across India in real time.</p>
+        <div class="lc-btns">
+          <button class="btn btn-orange btn-lg" onclick="showRegister()">Start Bidding Free →</button>
+          <button class="btn btn-lg" style="background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25);" onclick="showRegister()">Post Your Work</button>
         </div>
-        <div class="wcard-bottom"><span class="budget">₹2.5L – ₹3L</span><span class="bids">8 bids · 4d left</span></div>
-      </div>
-      <div class="wcard" onclick="go('s-detail',null)">
-        <div class="wcard-top">
-          <div class="tags"><span class="tag blue">Flooring</span><span class="tag green">Open</span></div>
-          <div class="wc-title">Marble Flooring – Block C</div>
-          <div class="wc-co">🏢 Godrej Properties</div>
-          <div class="wc-meta">
-            <span>📍 Mumbai</span><span>⏱ 22 Jan</span><span>👷 3+ yrs</span>
-          </div>
+        <div class="lc-stats">
+          <div class="lc-stat"><div class="n">10K+</div><div class="l">Contractors</div></div>
+          <div class="lc-stat"><div class="n">₹200Cr+</div><div class="l">Work Awarded</div></div>
+          <div class="lc-stat"><div class="n">28</div><div class="l">States Covered</div></div>
         </div>
-        <div class="wcard-bottom"><span class="budget">₹5L – ₹7L</span><span class="bids">14 bids · 11d left</span></div>
+      </div>
+      <div>
+        <!-- Big Construction Illustration -->
+        <svg viewBox="0 0 460 360" width="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Sky gradient -->
+          <rect width="460" height="300" fill="#0F172A" opacity=".5"/>
+          <!-- Stars -->
+          <circle cx="50" cy="25" r="2" fill="white" opacity=".5"/>
+          <circle cx="120" cy="45" r="1.5" fill="white" opacity=".4"/>
+          <circle cx="200" cy="18" r="2" fill="white" opacity=".6"/>
+          <circle cx="320" cy="35" r="1.5" fill="white" opacity=".5"/>
+          <circle cx="410" cy="22" r="2" fill="white" opacity=".4"/>
+          <circle cx="380" cy="60" r="1" fill="white" opacity=".6"/>
+          <circle cx="70" cy="65" r="1" fill="white" opacity=".4"/>
+          <!-- Building 1 - completed tall -->
+          <rect x="20" y="60" width="70" height="250" rx="4" fill="#1E3A5F"/>
+          <rect x="20" y="60" width="70" height="8" rx="2" fill="#2563EB"/>
+          <!-- Windows B1 -->
+          <rect x="30" y="75" width="14" height="11" rx="2" fill="#93C5FD" opacity=".9"/>
+          <rect x="50" y="75" width="14" height="11" rx="2" fill="#93C5FD" opacity=".7"/>
+          <rect x="66" y="75" width="14" height="11" rx="2" fill="white" opacity=".8"/>
+          <rect x="30" y="95" width="14" height="11" rx="2" fill="white" opacity=".9"/>
+          <rect x="50" y="95" width="14" height="11" rx="2" fill="#93C5FD" opacity=".6"/>
+          <rect x="66" y="95" width="14" height="11" rx="2" fill="#93C5FD" opacity=".8"/>
+          <rect x="30" y="115" width="14" height="11" rx="2" fill="#93C5FD" opacity=".5"/>
+          <rect x="50" y="115" width="14" height="11" rx="2" fill="white" opacity=".7"/>
+          <rect x="66" y="115" width="14" height="11" rx="2" fill="#93C5FD" opacity=".9"/>
+          <rect x="30" y="135" width="14" height="11" rx="2" fill="white" opacity=".6"/>
+          <rect x="50" y="135" width="14" height="11" rx="2" fill="#93C5FD" opacity=".8"/>
+          <rect x="66" y="135" width="14" height="11" rx="2" fill="white" opacity=".5"/>
+          <rect x="30" y="155" width="14" height="11" rx="2" fill="#93C5FD" opacity=".7"/>
+          <rect x="50" y="155" width="14" height="11" rx="2" fill="#93C5FD" opacity=".4"/>
+          <rect x="66" y="155" width="14" height="11" rx="2" fill="white" opacity=".8"/>
+          <!-- Building 2 - medium -->
+          <rect x="110" y="110" width="80" height="200" rx="4" fill="#1E3A5F"/>
+          <rect x="110" y="110" width="80" height="8" rx="2" fill="#1D4ED8"/>
+          <!-- Windows B2 -->
+          <rect x="122" y="126" width="16" height="13" rx="2" fill="#93C5FD" opacity=".8"/>
+          <rect x="146" y="126" width="16" height="13" rx="2" fill="white" opacity=".9"/>
+          <rect x="166" y="126" width="14" height="13" rx="2" fill="#93C5FD" opacity=".6"/>
+          <rect x="122" y="148" width="16" height="13" rx="2" fill="white" opacity=".7"/>
+          <rect x="146" y="148" width="16" height="13" rx="2" fill="#93C5FD" opacity=".5"/>
+          <rect x="166" y="148" width="14" height="13" rx="2" fill="white" opacity=".8"/>
+          <rect x="122" y="170" width="16" height="13" rx="2" fill="#93C5FD" opacity=".6"/>
+          <rect x="146" y="170" width="16" height="13" rx="2" fill="white" opacity=".4"/>
+          <rect x="166" y="170" width="14" height="13" rx="2" fill="#93C5FD" opacity=".9"/>
+          <rect x="122" y="192" width="16" height="13" rx="2" fill="white" opacity=".5"/>
+          <rect x="146" y="192" width="16" height="13" rx="2" fill="#93C5FD" opacity=".7"/>
+          <rect x="166" y="192" width="14" height="13" rx="2" fill="white" opacity=".6"/>
+          <!-- Under Construction Building -->
+          <rect x="220" y="150" width="110" height="160" rx="4" fill="#334155"/>
+          <!-- Scaffolding -->
+          <rect x="215" y="90" width="6" height="220" rx="2" fill="#64748B"/>
+          <rect x="324" y="90" width="6" height="220" rx="2" fill="#64748B"/>
+          <rect x="215" y="90" width="115" height="6" rx="2" fill="#64748B"/>
+          <rect x="215" y="120" width="115" height="4" rx="1" fill="#94A3B8" opacity=".5"/>
+          <rect x="215" y="150" width="115" height="4" rx="1" fill="#94A3B8" opacity=".5"/>
+          <rect x="215" y="180" width="115" height="4" rx="1" fill="#94A3B8" opacity=".5"/>
+          <rect x="215" y="210" width="115" height="4" rx="1" fill="#94A3B8" opacity=".5"/>
+          <rect x="215" y="240" width="115" height="4" rx="1" fill="#94A3B8" opacity=".5"/>
+          <!-- Cross braces -->
+          <line x1="221" y1="90" x2="329" y2="155" stroke="#475569" stroke-width="1.5" opacity=".4"/>
+          <line x1="329" y1="90" x2="221" y2="155" stroke="#475569" stroke-width="1.5" opacity=".4"/>
+          <!-- Windows UC -->
+          <rect x="234" y="165" width="18" height="15" rx="2" fill="#1D4ED8" opacity=".6"/>
+          <rect x="260" y="165" width="18" height="15" rx="2" fill="#1D4ED8" opacity=".4"/>
+          <rect x="286" y="165" width="18" height="15" rx="2" fill="#1D4ED8" opacity=".5"/>
+          <rect x="312" y="165" width="10" height="15" rx="2" fill="#1D4ED8" opacity=".3"/>
+          <rect x="234" y="190" width="18" height="15" rx="2" fill="#93C5FD" opacity=".3"/>
+          <rect x="260" y="190" width="18" height="15" rx="2" fill="white" opacity=".2"/>
+          <rect x="286" y="190" width="18" height="15" rx="2" fill="#93C5FD" opacity=".4"/>
+          <!-- Crane Tower -->
+          <rect x="374" y="20" width="8" height="290" rx="3" fill="#EA580C"/>
+          <!-- Crane Jib arm -->
+          <rect x="300" y="20" width="130" height="7" rx="3" fill="#F97316"/>
+          <!-- Counterweight -->
+          <rect x="396" y="14" width="34" height="20" rx="4" fill="#DC2626"/>
+          <!-- Crane cable 1 -->
+          <line x1="330" y1="27" x2="330" y2="80" stroke="#94A3B8" stroke-width="2"/>
+          <rect x="320" y="80" width="20" height="14" rx="4" fill="#F97316"/>
+          <!-- Crane cable 2 -->
+          <line x1="360" y1="27" x2="360" y2="95" stroke="#94A3B8" stroke-width="1.5" opacity=".6"/>
+          <!-- Crane cabin -->
+          <rect x="367" y="130" width="22" height="18" rx="3" fill="#1E3A5F"/>
+          <rect x="370" y="133" width="8" height="6" rx="1" fill="#93C5FD" opacity=".8"/>
+          <!-- Building 3 small right -->
+          <rect x="360" y="190" width="55" height="120" rx="4" fill="#1E3A5F"/>
+          <rect x="368" y="202" width="12" height="10" rx="1" fill="#93C5FD" opacity=".7"/>
+          <rect x="386" y="202" width="12" height="10" rx="1" fill="white" opacity=".8"/>
+          <rect x="368" y="220" width="12" height="10" rx="1" fill="white" opacity=".6"/>
+          <rect x="386" y="220" width="12" height="10" rx="1" fill="#93C5FD" opacity=".9"/>
+          <rect x="368" y="238" width="12" height="10" rx="1" fill="#93C5FD" opacity=".5"/>
+          <rect x="386" y="238" width="12" height="10" rx="1" fill="white" opacity=".7"/>
+          <!-- Ground -->
+          <rect y="300" width="460" height="60" fill="#0F172A"/>
+          <rect y="300" width="460" height="5" fill="#1E293B"/>
+          <!-- Road -->
+          <rect x="80" y="302" width="300" height="2" rx="1" fill="#334155"/>
+          <rect x="160" y="302" width="60" height="2" rx="1" fill="#64748B" opacity=".5"/>
+          <rect x="250" y="302" width="60" height="2" rx="1" fill="#64748B" opacity=".5"/>
+          <!-- Workers on scaffold -->
+          <circle cx="238" cy="107" r="7" fill="#FBBF24"/>
+          <rect x="232" y="114" width="12" height="15" rx="2" fill="#F97316"/>
+          <path d="M231 107 Q238 97 245 107" fill="#EA580C"/>
+          <circle cx="310" cy="125" r="7" fill="#FCD34D"/>
+          <rect x="304" y="132" width="12" height="15" rx="2" fill="#2563EB"/>
+          <path d="M303 125 Q310 115 317 125" fill="#F59E0B"/>
+          <!-- Worker ground -->
+          <circle cx="175" cy="285" r="7" fill="#FBBF24"/>
+          <rect x="169" y="292" width="12" height="14" rx="2" fill="#1D4ED8"/>
+          <path d="M168 285 Q175 275 182 285" fill="#EA580C"/>
+          <!-- Pragati label -->
+          <rect x="160" y="318" width="140" height="28" rx="14" fill="white" opacity=".07"/>
+          <text x="230" y="336" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="800" fill="white" opacity=".7">PRAGATI WORK EXCHANGE</text>
+        </svg>
       </div>
     </div>
   </div>
-  <div class="bnav">
-    <div class="bnav-item on"><div class="ni">🏠</div><span>Home</span></div>
-    <div class="bnav-item" onclick="go('s-find',null)"><div class="ni">🔍</div><span>Find Work</span></div>
-    <div class="bnav-act" onclick="go('s-post',null)">➕</div>
-    <div class="bnav-item" onclick="go('s-petty',null)"><div class="ni">📋</div><span>Dashboard</span></div>
-    <div class="bnav-item" onclick="go('s-profile',null)"><div class="ni">👤</div><span>Profile</span></div>
-  </div>
-</div>
 
-<!-- ==================== FIND WORK ==================== -->
-<div class="screen" id="s-find">
-  <div class="fw-bar">
-    <h2>Find Work</h2>
-    <div class="search-box">
-      <span>🔍</span>
-      <input placeholder="Trade, location, company…" />
+  <!-- Features Section -->
+  <div class="land-features">
+    <div style="text-align:center;margin-bottom:48px;">
+      <div class="section-tag">WHY PRAGATI</div>
+      <div class="section-title">Everything You Need to <br>Win More Work</div>
+      <div class="section-sub" style="margin:0 auto;">Built specifically for India's construction industry. Fast, simple, and trusted.</div>
     </div>
-  </div>
-  <div class="chips" style="padding-top:12px;">
-    <div class="chip on">All</div>
-    <div class="chip" onclick="toggleChip(this)">Near Me</div>
-    <div class="chip" onclick="toggleChip(this)">Urgent</div>
-    <div class="chip" onclick="toggleChip(this)">High Budget</div>
-    <div class="chip" onclick="toggleChip(this)">New Today</div>
-  </div>
-  <div class="scroll" style="padding-top:4px;">
-    <div class="wcard" onclick="go('s-detail',null)">
-      <div class="wcard-top">
-        <div class="tags"><span class="tag blue">Plastering</span><span class="tag orange">Urgent</span></div>
-        <div class="wc-title">Interior Plastering Work</div>
-        <div class="wc-co">🏢 Kalpataru Constructions</div>
-        <div class="wc-meta"><span>📍 Pune</span><span>⏱ 15 Jan</span><span>👷 5+ yrs</span></div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#DBEAFE;">🔍</div>
+        <h3>Discover Work Instantly</h3>
+        <p>Browse hundreds of subcontract opportunities filtered by trade, location, and budget. New works posted daily.</p>
       </div>
-      <div class="wcard-bottom"><span class="budget">₹2.5L – ₹3L</span><span class="bids">8 bids · 4d left</span></div>
-    </div>
-    <div class="wcard" onclick="go('s-detail',null)">
-      <div class="wcard-top">
-        <div class="tags"><span class="tag blue">Flooring</span><span class="tag green">Open</span></div>
-        <div class="wc-title">Marble Flooring – Block C</div>
-        <div class="wc-co">🏢 Godrej Properties</div>
-        <div class="wc-meta"><span>📍 Mumbai</span><span>⏱ 22 Jan</span><span>👷 3+ yrs</span></div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#D1FAE5;">📊</div>
+        <h3>Compare & Award Bids</h3>
+        <p>Main contractors receive ranked quotations with ratings. Award work in one click. Full bid history maintained.</p>
       </div>
-      <div class="wcard-bottom"><span class="budget">₹5L – ₹7L</span><span class="bids">14 bids · 11d left</span></div>
-    </div>
-    <div class="wcard" onclick="go('s-detail',null)">
-      <div class="wcard-top">
-        <div class="tags"><span class="tag blue">Electrical</span><span class="tag green">Open</span></div>
-        <div class="wc-title">Full Electrical Wiring – Tower 2</div>
-        <div class="wc-co">🏢 Lodha Group</div>
-        <div class="wc-meta"><span>📍 Thane</span><span>⏱ 30 Jan</span><span>👷 7+ yrs</span></div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#FEE2D5;">🏆</div>
+        <h3>Build Your Reputation</h3>
+        <p>Get rated after each project. Build a verified profile that wins you more work and higher-paying contracts.</p>
       </div>
-      <div class="wcard-bottom"><span class="budget">₹8L – ₹10L</span><span class="bids">6 bids · 19d left</span></div>
-    </div>
-    <div class="wcard" onclick="go('s-detail',null)">
-      <div class="wcard-top">
-        <div class="tags"><span class="tag blue">Painting</span><span class="tag green">Open</span></div>
-        <div class="wc-title">External Painting – Phase 2</div>
-        <div class="wc-co">🏢 Shapoorji Pallonji</div>
-        <div class="wc-meta"><span>📍 Nagpur</span><span>⏱ 5 Feb</span><span>👷 2+ yrs</span></div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#EDE9FE;">💬</div>
+        <h3>Direct Communication</h3>
+        <p>Chat directly with contractors. Share documents, discuss scope, and close deals without leaving the platform.</p>
       </div>
-      <div class="wcard-bottom"><span class="budget">₹4L – ₹6L</span><span class="bids">3 bids · 25d left</span></div>
-    </div>
-    <div class="wcard" onclick="go('s-detail',null)">
-      <div class="wcard-top">
-        <div class="tags"><span class="tag blue">Plumbing</span><span class="tag orange">Urgent</span></div>
-        <div class="wc-title">Sanitary & Plumbing – Phase 3</div>
-        <div class="wc-co">🏢 Prestige Group</div>
-        <div class="wc-meta"><span>📍 Bangalore</span><span>⏱ 10 Feb</span><span>👷 4+ yrs</span></div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#FEF3C7;">📍</div>
+        <h3>Location-Based Matching</h3>
+        <p>Works are matched to contractors in your region first. Less travel, faster response, better results.</p>
       </div>
-      <div class="wcard-bottom"><span class="budget">₹3.5L – ₹5L</span><span class="bids">5 bids · 8d left</span></div>
-    </div>
-  </div>
-  <div class="bnav">
-    <div class="bnav-item" onclick="go('s-home',null)"><div class="ni">🏠</div><span>Home</span></div>
-    <div class="bnav-item on"><div class="ni">🔍</div><span>Find Work</span></div>
-    <div class="bnav-act" onclick="go('s-post',null)">➕</div>
-    <div class="bnav-item" onclick="go('s-petty',null)"><div class="ni">📋</div><span>Dashboard</span></div>
-    <div class="bnav-item" onclick="go('s-profile',null)"><div class="ni">👤</div><span>Profile</span></div>
-  </div>
-</div>
-
-<!-- ==================== WORK DETAIL ==================== -->
-<div class="screen" id="s-detail">
-  <div style="position:relative;flex-shrink:0;">
-    <div class="detail-hero">
-      <div class="dh-bar">
-        <div class="back-btn" onclick="go('s-find',null)">←</div>
-        <div style="flex:1;"></div>
-        <div class="icon-btn">🔖</div>
-      </div>
-      <div class="tags"><span class="tag orange">URGENT</span><span class="tag blue">Plastering</span><span class="tag green">Pune</span></div>
-      <h1 style="margin-top:10px;">Interior Plastering Work</h1>
-      <div class="co">🏢 Kalpataru Constructions · Hinjewadi, Pune</div>
-      <div class="progress-bar" style="margin-top:14px;"><div class="progress-fill" style="width:65%;"></div></div>
-      <div style="display:flex;justify-content:space-between;margin-top:6px;">
-        <span style="font-size:11px;color:var(--text3);">8 of 12 bid slots filled</span>
-        <span style="font-size:11px;color:var(--orange2);">4 days left</span>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#D1FAE5;">🔐</div>
+        <h3>Verified Profiles</h3>
+        <p>Aadhaar and GST verification for all contractors. Know who you're hiring before you award any work.</p>
       </div>
     </div>
-  </div>
-  <div class="scroll" style="padding-bottom:0;">
-    <div class="dsec">
-      <h4>Work Info</h4>
-      <div class="irow"><span class="ik">Budget Range</span><span class="iv" style="color:var(--green);">₹2.5L – ₹3.0L</span></div>
-      <div class="irow"><span class="ik">Location</span><span class="iv">Hinjewadi, Pune</span></div>
-      <div class="irow"><span class="ik">Duration</span><span class="iv">45 Days</span></div>
-      <div class="irow"><span class="ik">Start Date</span><span class="iv">15 January 2025</span></div>
-      <div class="irow"><span class="ik">Experience</span><span class="iv">Min. 5 Years</span></div>
-      <div class="irow"><span class="ik">Labour Required</span><span class="iv">8–10 Workers</span></div>
+    <div style="text-align:center;margin-top:48px;">
+      <button class="btn btn-primary btn-lg" onclick="showRegister()">Join Pragati for Free →</button>
+      <p style="font-size:13px;color:var(--slate5);margin-top:12px;">No credit card needed · Free forever for basic use</p>
     </div>
-    <div class="dsec">
-      <h4>Scope of Work</h4>
-      <div class="bullet-item"><div class="bdot"></div>Internal plastering for 120 flats (3 BHK)</div>
-      <div class="bullet-item"><div class="bdot"></div>Cement mortar ratio 1:4 to be used</div>
-      <div class="bullet-item"><div class="bdot"></div>Chicken mesh on all joints mandatory</div>
-      <div class="bullet-item"><div class="bdot"></div>POP punning over plaster for smooth finish</div>
-      <div class="bullet-item"><div class="bdot"></div>Material supplied by Main Contractor</div>
-    </div>
-    <div class="dsec">
-      <h4>About Contractor</h4>
-      <div class="irow"><span class="ik">Rating</span><span class="iv">⭐ 4.7 (38 reviews)</span></div>
-      <div class="irow"><span class="ik">Projects Done</span><span class="iv">120+ Projects</span></div>
-      <div class="irow"><span class="ik">Member Since</span><span class="iv">2018</span></div>
-      <div class="irow"><span class="ik">Payment Track</span><span class="iv" style="color:var(--green);">Excellent ✓</span></div>
-    </div>
-    <div style="height:100px;"></div>
-  </div>
-  <div class="sticky-cta">
-    <button class="btn btn-ghost" style="width:50px;font-size:20px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="go('s-chat',null)">💬</button>
-    <button class="btn btn-primary" onclick="go('s-quote',null)">Submit Quotation →</button>
   </div>
 </div>
 
-<!-- ==================== SUBMIT QUOTE ==================== -->
-<div class="screen" id="s-quote">
-  <div class="topbar solid">
-    <div class="back-btn" onclick="go('s-detail',null)">←</div>
-    <h2>Submit Quotation</h2>
-  </div>
-  <div class="scroll">
-    <div style="padding:16px 20px 0;">
-      <div class="ref-card">
-        <div class="rtitle">Interior Plastering Work</div>
-        <div class="rmeta">
-          <span>🏢 Kalpataru</span>
-          <span>📍 Pune</span>
-          <span style="color:var(--green);">₹2.5L–₹3L</span>
-        </div>
-      </div>
+<!-- ═══════════════════════ LOGIN PAGE ═══════════════════════ -->
+<div id="s-login" style="display:none;" class="auth-page">
+  <div class="auth-left">
+    <div class="al-brand">
+      <div class="ln-icon" style="width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 28 28" fill="none"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg></div>
+      <div class="al-name">Pragati<span>.</span></div>
     </div>
-    <div class="form-wrap">
+    <div class="al-heading">Welcome<br>Back to<br><span>Pragati</span></div>
+    <div class="al-sub">India's most trusted platform for construction subcontract work.</div>
+    <div class="al-stats">
+      <div class="al-stat"><div class="num">10K+</div><div class="lbl">Contractors</div></div>
+      <div class="al-stat"><div class="num">₹200Cr</div><div class="lbl">Work Value</div></div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-box">
+      <h2>Login to your account</h2>
+      <p>Enter your credentials to continue</p>
       <div class="field">
-        <label class="flabel">Your Quote Amount (₹) *</label>
-        <input class="finput" type="number" placeholder="e.g. 275000" />
+        <label class="flabel">Email Address</label>
+        <input class="finput" id="login-email" type="email" placeholder="you@example.com"/>
       </div>
+      <div class="field">
+        <label class="flabel">Password</label>
+        <input class="finput" id="login-pass" type="password" placeholder="Your password"/>
+      </div>
+      <div class="form-err" id="login-err">Invalid credentials. Please try again.</div>
+      <button class="btn btn-primary btn-block btn-lg" id="login-btn" onclick="doLogin()" style="margin-top:8px;">Login to Pragati →</button>
+      <div class="divider">or</div>
+      <div class="auth-switch">Don't have an account? <a onclick="showRegister()">Register Free</a></div>
+      <div class="auth-switch" style="margin-top:10px;"><a onclick="show('s-landing')" style="color:var(--slate5);">← Back to home</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ REGISTER PAGE ═══════════════════════ -->
+<div id="s-register" style="display:none;" class="auth-page">
+  <div class="auth-left">
+    <div class="al-brand">
+      <div class="ln-icon" style="width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 28 28" fill="none"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg></div>
+      <div class="al-name">Pragati<span>.</span></div>
+    </div>
+    <div class="al-heading">Join <span>10,000+</span><br>Contractors<br>Today</div>
+    <div class="al-sub">Post work, find subcontractors, win jobs. It's completely free to get started.</div>
+    <div class="al-stats">
+      <div class="al-stat"><div class="num">2 min</div><div class="lbl">to Register</div></div>
+      <div class="al-stat"><div class="num">Free</div><div class="lbl">Forever</div></div>
+    </div>
+  </div>
+  <div class="auth-right" style="overflow-y:auto;">
+    <div class="auth-box">
+      <h2>Create your account</h2>
+      <p>Start winning construction work today</p>
+      <div class="role-grid">
+        <div class="role-card sel" id="rc-petty" onclick="selectRole('petty')">
+          <div class="ri">👷</div>
+          <h4>Petty Contractor</h4>
+          <p>Browse & apply for subcontract work</p>
+        </div>
+        <div class="role-card" id="rc-main" onclick="selectRole('main')">
+          <div class="ri">🏗️</div>
+          <h4>Main Contractor</h4>
+          <p>Post work & hire subcontractors</p>
+        </div>
+      </div>
+      <input type="hidden" id="reg-role" value="petty"/>
       <div class="grid2">
         <div class="field">
-          <label class="flabel">Timeline (Days)</label>
-          <input class="finput" type="number" placeholder="40" />
+          <label class="flabel">Full Name *</label>
+          <input class="finput" id="reg-name" placeholder="Rajesh Patil"/>
         </div>
         <div class="field">
-          <label class="flabel">Labour Count</label>
-          <input class="finput" type="number" placeholder="9" />
+          <label class="flabel">Phone *</label>
+          <input class="finput" id="reg-phone" type="tel" placeholder="+91 98765 43210"/>
         </div>
       </div>
       <div class="field">
-        <label class="flabel">Your Pitch *</label>
-        <textarea class="finput" rows="4" placeholder="Why are you the best fit? Mention past work, quality standards…"></textarea>
+        <label class="flabel">Email Address *</label>
+        <input class="finput" id="reg-email" type="email" placeholder="you@example.com"/>
       </div>
-      <div class="field">
-        <label class="flabel">Payment Terms</label>
-        <select class="finput">
-          <option>30% advance · 40% mid · 30% on completion</option>
-          <option>50% advance · 50% on completion</option>
-          <option>100% on completion</option>
-          <option>Custom terms</option>
-        </select>
-      </div>
-      <div class="field">
-        <label class="flabel">Past Work Photos (Optional)</label>
-        <div class="upload-box">
-          <span class="upload-icon">📷</span>
-          Tap to upload photos<br><span style="font-size:11px;opacity:0.6;">Max 5 · JPG or PNG</span>
+      <div class="grid2">
+        <div class="field" id="trade-field">
+          <label class="flabel">Primary Trade</label>
+          <select class="finput" id="reg-trade">
+            <option value="">Select trade…</option>
+            <option>Plastering</option><option>Flooring</option><option>Painting</option>
+            <option>Electrical</option><option>Plumbing</option><option>Masonry</option>
+            <option>Carpentry</option><option>Tiling</option><option>Waterproofing</option><option>Civil Work</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="flabel">City / State *</label>
+          <input class="finput" id="reg-city" placeholder="Pune, Maharashtra"/>
         </div>
       </div>
-      <button class="btn btn-primary" style="width:100%;" onclick="go('s-petty',null)">Submit Quotation →</button>
-      <div style="height:20px;"></div>
+      <div class="field">
+        <label class="flabel">Password *</label>
+        <input class="finput" id="reg-pass" type="password" placeholder="Min 6 characters"/>
+      </div>
+      <div class="form-err" id="reg-err">Please fill all required fields correctly.</div>
+      <button class="btn btn-primary btn-block btn-lg" id="reg-btn" onclick="doRegister()" style="margin-top:8px;">Create My Account →</button>
+      <div class="auth-switch" style="margin-top:16px;">Already registered? <a onclick="showLogin()">Login</a></div>
     </div>
   </div>
 </div>
 
-<!-- ==================== POST WORK ==================== -->
-<div class="screen" id="s-post">
-  <div class="topbar solid">
-    <div class="back-btn" onclick="go('s-main',null)">←</div>
-    <h2>Post New Work</h2>
-  </div>
-  <div class="scroll">
-    <div class="pw-sec">
-      <h3><div class="step-num">1</div>Basic Details</h3>
-      <div class="form-wrap" style="padding-top:0;">
-        <div class="field">
-          <label class="flabel">Work Title *</label>
-          <input class="finput" placeholder="e.g. Interior Plastering – Block A" />
-        </div>
-        <div class="grid2">
-          <div class="field">
-            <label class="flabel">Trade Type *</label>
-            <select class="finput">
-              <option>Select…</option>
-              <option>Plastering</option>
-              <option>Flooring</option>
-              <option>Painting</option>
-              <option>Electrical</option>
-              <option>Plumbing</option>
-              <option>Masonry</option>
-            </select>
-          </div>
-          <div class="field">
-            <label class="flabel">Urgency</label>
-            <select class="finput">
-              <option>Normal</option>
-              <option>Urgent</option>
-              <option>Critical</option>
-            </select>
-          </div>
-        </div>
-        <div class="field">
-          <label class="flabel">Project Location *</label>
-          <input class="finput" placeholder="e.g. Hinjewadi, Pune" />
-        </div>
-      </div>
-      <h3><div class="step-num">2</div>Budget & Timeline</h3>
-      <div class="form-wrap" style="padding-top:0;">
-        <div class="grid2">
-          <div class="field">
-            <label class="flabel">Min Budget (₹)</label>
-            <input class="finput" placeholder="250000" />
-          </div>
-          <div class="field">
-            <label class="flabel">Max Budget (₹)</label>
-            <input class="finput" placeholder="300000" />
-          </div>
-        </div>
-        <div class="grid2">
-          <div class="field">
-            <label class="flabel">Start Date *</label>
-            <input class="finput" type="date" />
-          </div>
-          <div class="field">
-            <label class="flabel">Duration (Days)</label>
-            <input class="finput" type="number" placeholder="45" />
-          </div>
-        </div>
-      </div>
-      <h3><div class="step-num">3</div>Requirements</h3>
-      <div class="form-wrap" style="padding-top:0;">
-        <div class="grid2">
-          <div class="field">
-            <label class="flabel">Min Experience</label>
-            <input class="finput" placeholder="5 years" />
-          </div>
-          <div class="field">
-            <label class="flabel">Labour Count</label>
-            <input class="finput" placeholder="8–10" />
-          </div>
-        </div>
-        <div class="field">
-          <label class="flabel">Scope of Work *</label>
-          <textarea class="finput" rows="5" placeholder="Describe full scope, materials, standards expected…"></textarea>
-        </div>
-        <div class="field">
-          <label class="flabel">Attachments (BOQ / Drawings)</label>
-          <div class="upload-box"><span class="upload-icon">📎</span>Tap to upload files<br><span style="font-size:11px;opacity:0.6;">PDF, DWG, JPG accepted</span></div>
-        </div>
-        <button class="btn btn-orange" onclick="go('s-main',null)">Post Work →</button>
-        <div style="height:20px;"></div>
-      </div>
+<!-- ═══════════════════════ MAIN APP SHELL ═══════════════════════ -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-icon"><svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg></div>
+      <div class="sb-name">Pragati<span>.</span></div>
     </div>
-  </div>
-</div>
-
-<!-- ==================== MAIN CONTRACTOR DASHBOARD ==================== -->
-<div class="screen" id="s-main">
-  <div class="scroll">
-    <div class="dash-hero">
-      <div class="dh-row">
+    <nav class="sb-nav" id="sb-nav">
+      <!-- rendered by JS based on role -->
+    </nav>
+    <div class="sb-bottom">
+      <div class="sb-user" onclick="showPage('profile')">
+        <div class="sb-ava" id="sb-ava">RP</div>
         <div>
-          <div class="dh-name">Kalpataru<br>Constructions</div>
-          <div class="dh-role">Main Contractor · Verified ✓</div>
+          <div class="sb-uname" id="sb-name">Loading…</div>
+          <div class="sb-urole" id="sb-role">—</div>
         </div>
-        <div class="dh-badge">PRO</div>
-      </div>
-      <div class="metric-grid">
-        <div class="metric-card"><div class="mc-num blue">7</div><div class="mc-lbl">Works Posted</div><div class="mc-trend up">+2</div></div>
-        <div class="metric-card"><div class="mc-num orange">38</div><div class="mc-lbl">Total Bids</div><div class="mc-trend up">+8</div></div>
-        <div class="metric-card"><div class="mc-num green">3</div><div class="mc-lbl">Awarded</div></div>
-        <div class="metric-card"><div class="mc-num purple">4</div><div class="mc-lbl">In Progress</div></div>
       </div>
     </div>
-    <div class="tabs">
-      <button class="tab on" id="mt1" onclick="mTab(1)">Active</button>
-      <button class="tab" id="mt2" onclick="mTab(2)">Pending Bids</button>
-      <button class="tab" id="mt3" onclick="mTab(3)">Completed</button>
-    </div>
-    <div id="mc1">
-      <div class="arow" onclick="go('s-bids',null)">
-        <div class="ar-h"><div class="ar-title">Interior Plastering Work</div></div>
-        <div class="ar-sub">📍 Hinjewadi, Pune · 8 bids received</div>
-        <div class="ar-foot"><span class="status review">Reviewing Bids</span><span style="font-size:13px;font-weight:700;color:var(--green);">₹2.5L–₹3L</span></div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="tb-left">
+        <h1 id="tb-title">Dashboard</h1>
+        <p id="tb-sub">Welcome back</p>
       </div>
-      <div class="arow" onclick="go('s-bids',null)">
-        <div class="ar-h"><div class="ar-title">Marble Flooring – Block C</div></div>
-        <div class="ar-sub">📍 Andheri, Mumbai · 14 bids received</div>
-        <div class="ar-foot"><span class="status review">Reviewing Bids</span><span style="font-size:13px;font-weight:700;color:var(--green);">₹5L–₹7L</span></div>
+      <div class="tb-right">
+        <div class="icon-btn" title="Notifications">🔔</div>
+        <div class="icon-btn" title="Settings">⚙️</div>
+        <button class="btn btn-ghost btn-sm" onclick="doLogout()">Logout</button>
       </div>
-      <div class="arow" onclick="go('s-bids',null)">
-        <div class="ar-h"><div class="ar-title">Electrical Wiring – Tower 2</div></div>
-        <div class="ar-sub">📍 Thane · Awarded to Vijay Electrical</div>
-        <div class="ar-foot"><span class="status awarded">Awarded ✓</span><span style="font-size:13px;font-weight:700;color:var(--green);">₹9.2L</span></div>
+    </header>
+
+    <!-- PAGES -->
+    <div class="content">
+
+      <!-- ── HOME / DASHBOARD ── -->
+      <div class="page" id="page-home">
+        <div class="metrics" id="metrics-row"></div>
+        <div style="display:grid;grid-template-columns:1fr 380px;gap:24px;" id="home-grid">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+              <h2 style="font-family:var(--h);font-size:18px;font-weight:700;">Latest Works</h2>
+              <button class="btn btn-ghost btn-sm" onclick="showPage('find')">View all →</button>
+            </div>
+            <div id="home-works" class="works-grid"></div>
+          </div>
+          <div>
+            <div style="margin-bottom:20px;">
+              <h2 style="font-family:var(--h);font-size:18px;font-weight:700;margin-bottom:14px;">Quick Actions</h2>
+              <div style="display:flex;flex-direction:column;gap:10px;" id="quick-actions"></div>
+            </div>
+            <div class="side-card">
+              <h4>Browse by Trade</h4>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                <span class="chip" onclick="filterByTrade('Plastering')">🧱 Plastering</span>
+                <span class="chip" onclick="filterByTrade('Flooring')">⬜ Flooring</span>
+                <span class="chip" onclick="filterByTrade('Electrical')">⚡ Electrical</span>
+                <span class="chip" onclick="filterByTrade('Painting')">🎨 Painting</span>
+                <span class="chip" onclick="filterByTrade('Plumbing')">🔧 Plumbing</span>
+                <span class="chip" onclick="filterByTrade('Masonry')">🏗️ Masonry</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- ── FIND WORK ── -->
+      <div class="page" id="page-find">
+        <div class="filter-bar">
+          <div class="search-wrap" style="max-width:380px;">
+            <input id="search-input" placeholder="Search trade, company, city…" oninput="filterWorks()"/>
+          </div>
+          <div class="chip-row" id="trade-chips">
+            <span class="chip on" onclick="setChip(this,'')">All</span>
+            <span class="chip" onclick="setChip(this,'Plastering')">Plastering</span>
+            <span class="chip" onclick="setChip(this,'Flooring')">Flooring</span>
+            <span class="chip" onclick="setChip(this,'Electrical')">Electrical</span>
+            <span class="chip" onclick="setChip(this,'Painting')">Painting</span>
+            <span class="chip" onclick="setChip(this,'Plumbing')">Plumbing</span>
+            <span class="chip" onclick="setChip(this,'Masonry')">Masonry</span>
+          </div>
+          <span id="find-count" class="tag blue" style="margin-left:auto;">0 works</span>
+        </div>
+        <div class="works-grid" id="find-works"></div>
+      </div>
+
+      <!-- ── WORK DETAIL ── -->
+      <div class="page" id="page-detail">
+        <button class="btn btn-ghost btn-sm" onclick="goBack()" style="margin-bottom:20px;">← Back</button>
+        <div class="detail-hero" id="det-hero">
+          <div class="tags" id="det-tags"></div>
+          <h1 id="det-title">Loading…</h1>
+          <div class="co" id="det-co"></div>
+          <div class="det-prog"><div class="det-prog-fill" id="det-prog" style="width:50%;"></div></div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;opacity:.75;">
+            <span id="det-bids-txt"></span><span id="det-deadline"></span>
+          </div>
+        </div>
+        <div class="detail-grid">
+          <div>
+            <div class="card card-pad" style="margin-bottom:16px;">
+              <h4 style="font-family:var(--h);font-size:14px;font-weight:700;color:var(--slate5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px;">Work Details</h4>
+              <div class="info-grid">
+                <div class="info-row"><div class="ik">Budget</div><div class="iv" style="color:var(--green2);" id="det-budget">—</div></div>
+                <div class="info-row"><div class="ik">Location</div><div class="iv" id="det-loc">—</div></div>
+                <div class="info-row"><div class="ik">Duration</div><div class="iv" id="det-dur">—</div></div>
+                <div class="info-row"><div class="ik">Start Date</div><div class="iv" id="det-start">—</div></div>
+                <div class="info-row"><div class="ik">Experience</div><div class="iv" id="det-exp">—</div></div>
+                <div class="info-row"><div class="ik">Labour</div><div class="iv" id="det-labour">—</div></div>
+              </div>
+            </div>
+            <div class="card card-pad">
+              <h4 style="font-family:var(--h);font-size:14px;font-weight:700;color:var(--slate5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;">Scope of Work</h4>
+              <div id="det-scope"></div>
+            </div>
+          </div>
+          <div>
+            <div class="side-card" id="det-apply-card">
+              <h4>Submit Your Quotation</h4>
+              <p style="font-size:13px;color:var(--slate5);margin-bottom:16px;">Bid on this work and get shortlisted.</p>
+              <button class="btn btn-primary btn-block btn-lg" onclick="showPage('quote')">Submit Quotation →</button>
+              <button class="btn btn-ghost btn-block" style="margin-top:10px;">💬 Message Contractor</button>
+            </div>
+            <div class="side-card" id="det-applied-card" style="display:none;">
+              <div style="text-align:center;padding:8px;">
+                <div style="font-size:36px;margin-bottom:10px;">✅</div>
+                <div style="font-family:var(--h);font-size:16px;font-weight:700;color:var(--green2);">Already Applied!</div>
+                <div style="font-size:13px;color:var(--slate5);margin-top:6px;">You'll be notified when the status changes.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SUBMIT QUOTE ── -->
+      <div class="page" id="page-quote">
+        <button class="btn btn-ghost btn-sm" onclick="showPage('detail')" style="margin-bottom:20px;">← Back to Work Details</button>
+        <div style="display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start;">
+          <div class="card card-pad">
+            <h2 style="font-family:var(--h);font-size:20px;font-weight:800;margin-bottom:6px;">Submit Your Quotation</h2>
+            <p style="font-size:14px;color:var(--slate5);margin-bottom:22px;">Fill out all details to submit a competitive bid.</p>
+            <div class="step-label"><div class="step-num">1</div>Pricing</div>
+            <div class="grid3">
+              <div class="field">
+                <label class="flabel">Quote Amount (₹) *</label>
+                <input class="finput" id="q-amount" type="number" placeholder="275000"/>
+              </div>
+              <div class="field">
+                <label class="flabel">Timeline (Days) *</label>
+                <input class="finput" id="q-days" type="number" placeholder="40"/>
+              </div>
+              <div class="field">
+                <label class="flabel">Labour Count</label>
+                <input class="finput" id="q-labour" type="number" placeholder="9"/>
+              </div>
+            </div>
+            <div class="step-label"><div class="step-num">2</div>Your Pitch</div>
+            <div class="field">
+              <label class="flabel">Why should they choose you? *</label>
+              <textarea class="finput" id="q-pitch" rows="5" placeholder="Describe your experience, past similar projects, quality standards you follow, and what makes you the best fit for this work…"></textarea>
+            </div>
+            <div class="step-label"><div class="step-num">3</div>Terms</div>
+            <div class="field">
+              <label class="flabel">Payment Terms</label>
+              <select class="finput" id="q-terms">
+                <option>30% advance · 40% mid · 30% completion</option>
+                <option>50% advance · 50% completion</option>
+                <option>100% on completion</option>
+                <option>Custom terms</option>
+              </select>
+            </div>
+            <div class="form-err" id="q-err">Please fill all required fields.</div>
+            <button class="btn btn-primary btn-lg" id="q-btn" onclick="submitQuote()" style="margin-top:8px;">Submit Quotation →</button>
+          </div>
+          <div>
+            <div class="side-card" id="q-ref">
+              <h4>Work Reference</h4>
+              <div id="q-ref-content"></div>
+            </div>
+            <div class="side-card">
+              <h4>💡 Tips for Winning</h4>
+              <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+                <li style="font-size:13px;color:var(--slate4);display:flex;gap:8px;"><span>✓</span>Be competitive but realistic on price</li>
+                <li style="font-size:13px;color:var(--slate4);display:flex;gap:8px;"><span>✓</span>Mention specific past projects</li>
+                <li style="font-size:13px;color:var(--slate4);display:flex;gap:8px;"><span>✓</span>Promise quality standards clearly</li>
+                <li style="font-size:13px;color:var(--slate4);display:flex;gap:8px;"><span>✓</span>Propose a realistic timeline</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── POST WORK ── -->
+      <div class="page" id="page-post">
+        <div style="display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;">
+          <div class="card card-pad">
+            <h2 style="font-family:var(--h);font-size:20px;font-weight:800;margin-bottom:6px;">Post New Work Requirement</h2>
+            <p style="font-size:14px;color:var(--slate5);margin-bottom:24px;">Describe your requirement and receive quotations from verified contractors.</p>
+            <div class="step-label"><div class="step-num">1</div>Basic Details</div>
+            <div class="field">
+              <label class="flabel">Work Title *</label>
+              <input class="finput" id="pw-title" placeholder="e.g. Interior Plastering Work – Block A, Tower 2"/>
+            </div>
+            <div class="grid3">
+              <div class="field">
+                <label class="flabel">Trade Type *</label>
+                <select class="finput" id="pw-trade">
+                  <option value="">Select…</option>
+                  <option>Plastering</option><option>Flooring</option><option>Painting</option>
+                  <option>Electrical</option><option>Plumbing</option><option>Masonry</option>
+                  <option>Carpentry</option><option>Tiling</option><option>Waterproofing</option><option>Civil Work</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="flabel">Urgency</label>
+                <select class="finput" id="pw-urgency">
+                  <option value="Normal">Normal</option>
+                  <option value="Urgent">Urgent</option>
+                  <option value="Critical">Critical</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="flabel">Project Location *</label>
+                <input class="finput" id="pw-location" placeholder="Hinjewadi, Pune"/>
+              </div>
+            </div>
+            <div class="step-label"><div class="step-num">2</div>Budget & Timeline</div>
+            <div class="grid3">
+              <div class="field">
+                <label class="flabel">Min Budget (₹) *</label>
+                <input class="finput" id="pw-min" type="number" placeholder="250000"/>
+              </div>
+              <div class="field">
+                <label class="flabel">Max Budget (₹) *</label>
+                <input class="finput" id="pw-max" type="number" placeholder="300000"/>
+              </div>
+              <div class="field">
+                <label class="flabel">Duration (Days)</label>
+                <input class="finput" id="pw-duration" type="number" placeholder="45"/>
+              </div>
+            </div>
+            <div class="grid2">
+              <div class="field">
+                <label class="flabel">Start Date</label>
+                <input class="finput" id="pw-start" type="date"/>
+              </div>
+              <div class="field">
+                <label class="flabel">Labour Required</label>
+                <input class="finput" id="pw-labour" placeholder="8–10 workers"/>
+              </div>
+            </div>
+            <div class="step-label"><div class="step-num">3</div>Requirements</div>
+            <div class="field">
+              <label class="flabel">Minimum Experience</label>
+              <input class="finput" id="pw-exp" placeholder="e.g. 5 years"/>
+            </div>
+            <div class="field">
+              <label class="flabel">Scope of Work *</label>
+              <textarea class="finput" id="pw-scope" rows="6" placeholder="Describe the full scope of work, quality standards, materials to be used, measurement basis, etc."></textarea>
+            </div>
+            <div class="form-err" id="pw-err">Please fill all required fields.</div>
+            <div style="display:flex;gap:12px;margin-top:8px;">
+              <button class="btn btn-orange btn-lg" id="pw-btn" onclick="postWork()">Post Work Requirement →</button>
+              <button class="btn btn-ghost btn-lg" onclick="showPage('home')">Cancel</button>
+            </div>
+          </div>
+          <div>
+            <div class="side-card">
+              <h4 style="margin-bottom:10px;">📋 What happens next?</h4>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:var(--blue2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">1</div><div style="font-size:13px;color:var(--slate4);">Your work gets listed on the marketplace immediately</div></div>
+                <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:var(--blue2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">2</div><div style="font-size:13px;color:var(--slate4);">Verified contractors in your region are notified</div></div>
+                <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:var(--blue2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">3</div><div style="font-size:13px;color:var(--slate4);">Quotations arrive in your dashboard — compare and award</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MY APPLICATIONS ── -->
+      <div class="page" id="page-apps">
+        <div class="card">
+          <div style="padding:20px 24px;border-bottom:1px solid var(--slate8);display:flex;justify-content:space-between;align-items:center;">
+            <h3 style="font-family:var(--h);font-size:17px;font-weight:700;">My Applications</h3>
+            <button class="btn btn-primary btn-sm" onclick="showPage('find')">Browse More Work</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Work</th><th>Company</th><th>Location</th><th>My Quote</th><th>Timeline</th><th>Status</th><th>Date</th></tr></thead>
+              <tbody id="apps-tbody"></tbody>
+            </table>
+          </div>
+          <div id="apps-empty" class="empty hidden"><div class="ei">📋</div><h3>No applications yet</h3><p>Browse available works and submit your first quotation!</p><button class="btn btn-primary" style="margin-top:16px;" onclick="showPage('find')">Browse Works →</button></div>
+        </div>
+      </div>
+
+      <!-- ── MY WORKS (MAIN) ── -->
+      <div class="page" id="page-myworks">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h2 style="font-family:var(--h);font-size:18px;font-weight:700;">My Posted Works</h2>
+          <button class="btn btn-orange" onclick="showPage('post')">+ Post New Work</button>
+        </div>
+        <div id="myworks-list"></div>
+      </div>
+
+      <!-- ── BID MANAGEMENT ── -->
+      <div class="page" id="page-bids">
+        <button class="btn btn-ghost btn-sm" onclick="showPage('myworks')" style="margin-bottom:16px;">← Back to My Works</button>
+        <div class="card card-pad" style="margin-bottom:20px;background:linear-gradient(135deg,var(--blue5),#fff);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <div class="tags" style="margin-bottom:8px;" id="bw-tags"></div>
+              <h2 style="font-family:var(--h);font-size:20px;font-weight:800;" id="bw-title">—</h2>
+              <div style="font-size:13px;color:var(--slate5);margin-top:4px;" id="bw-meta">—</div>
+            </div>
+            <div style="text-align:right;"><div style="font-family:var(--h);font-size:24px;font-weight:800;color:var(--green2);" id="bw-budget">—</div><div style="font-size:12px;color:var(--slate5);" id="bw-bids">—</div></div>
+          </div>
+        </div>
+        <h3 style="font-family:var(--h);font-size:16px;font-weight:700;margin-bottom:16px;">Received Quotations</h3>
+        <div class="bids-grid" id="bids-grid"></div>
+      </div>
+
+      <!-- ── PROFILE ── -->
+      <div class="page" id="page-profile">
+        <div class="profile-layout">
+          <div class="prof-card">
+            <div class="prof-hero">
+              <div class="p-ava" id="prof-ava">RP<div class="p-ver">✓</div></div>
+              <div class="p-name" id="prof-name">—</div>
+              <div class="p-role" id="prof-role">—</div>
+              <div class="p-stars">★★★★★</div>
+              <div class="skill-tags" id="prof-skills"></div>
+            </div>
+            <div class="prof-stats">
+              <div class="ps-item"><div class="ps-num" id="ps-projects">0</div><div class="ps-lbl">Projects</div></div>
+              <div class="ps-item"><div class="ps-num" id="ps-exp">—</div><div class="ps-lbl">Yrs Exp</div></div>
+              <div class="ps-item"><div class="ps-num">4.8</div><div class="ps-lbl">Rating</div></div>
+            </div>
+            <div class="prof-nav">
+              <div class="prow"><div class="pi">📞</div><span id="p-phone">—</span></div>
+              <div class="prow"><div class="pi">📍</div><span id="p-city">—</span></div>
+              <div class="prow"><div class="pi">📧</div><span id="p-email">—</span></div>
+              <div class="prow" onclick="doLogout()" style="color:var(--red2);"><div class="pi">🚪</div><span>Logout</span></div>
+            </div>
+          </div>
+          <div class="card card-pad">
+            <h3 style="font-family:var(--h);font-size:17px;font-weight:700;margin-bottom:20px;">Edit Profile</h3>
+            <div class="grid2">
+              <div class="field"><label class="flabel">Full Name</label><input class="finput" id="edit-name"/></div>
+              <div class="field"><label class="flabel">Phone</label><input class="finput" id="edit-phone" type="tel"/></div>
+            </div>
+            <div class="grid2">
+              <div class="field"><label class="flabel">City / Location</label><input class="finput" id="edit-city"/></div>
+              <div class="field" id="edit-trade-wrap"><label class="flabel">Primary Trade</label>
+                <select class="finput" id="edit-trade">
+                  <option value="">—</option>
+                  <option>Plastering</option><option>Flooring</option><option>Painting</option>
+                  <option>Electrical</option><option>Plumbing</option><option>Masonry</option>
+                  <option>Carpentry</option><option>Tiling</option><option>Waterproofing</option><option>Civil Work</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid2">
+              <div class="field"><label class="flabel">Years of Experience</label><input class="finput" id="edit-exp" type="number"/></div>
+              <div class="field"><label class="flabel">Company / Firm Name</label><input class="finput" id="edit-company"/></div>
+            </div>
+            <div class="field"><label class="flabel">About You / Bio</label><textarea class="finput" id="edit-bio" rows="4"></textarea></div>
+            <button class="btn btn-primary btn-lg" onclick="saveProfile()">Save Profile Changes</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- AWARD MODAL -->
+<div class="overlay off" id="award-overlay">
+  <div class="modal">
+    <div class="modal-head"><h3>Award This Work 🏆</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <p style="font-size:14px;color:var(--slate4);margin-bottom:20px;" id="award-text">—</p>
+      <button class="btn btn-orange btn-block btn-lg" onclick="confirmAward()">Yes, Award Work →</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:10px;" onclick="closeModal()">Cancel</button>
     </div>
-    <div id="mc2" style="display:none;">
-      <div class="notice">🕒 3 works awaiting your review</div>
-      <div class="arow"><div class="ar-title">External Painting Ph2</div><div class="ar-sub">Nagpur · 3 bids waiting</div><div class="ar-foot"><span class="status pending">Needs Review</span></div></div>
-    </div>
-    <div id="mc3" style="display:none;">
-      <div class="arow"><div class="ar-title">Foundation Work – A Block</div><div class="ar-sub">Completed Jan 2024</div><div class="ar-foot"><span class="status awarded">Completed ✓</span><span style="font-size:13px;font-weight:700;color:var(--text2);">₹14.5L</span></div></div>
-    </div>
-    <div style="padding:12px 20px 24px;">
-      <button class="btn btn-orange" onclick="go('s-post',null)">+ Post New Work</button>
-    </div>
-  </div>
-  <div class="bnav">
-    <div class="bnav-item on"><div class="ni">🏠</div><span>Home</span></div>
-    <div class="bnav-item" onclick="go('s-post',null)"><div class="ni">➕</div><span>Post Work</span></div>
-    <div class="bnav-act" onclick="go('s-post',null)">➕</div>
-    <div class="bnav-item" onclick="go('s-bids',null)"><div class="ni">📊</div><span>Bids</span></div>
-    <div class="bnav-item" onclick="go('s-profile',null)"><div class="ni">👤</div><span>Profile</span></div>
   </div>
 </div>
 
-<!-- ==================== PETTY DASH ==================== -->
-<div class="screen" id="s-petty">
-  <div class="scroll">
-    <div class="dash-hero">
-      <div class="dh-row">
-        <div>
-          <div class="dh-name">Rajesh Patil</div>
-          <div class="dh-role">Petty Contractor · Plastering</div>
-        </div>
-        <div class="icon-btn" onclick="go('s-chat',null)" style="background:rgba(255,255,255,0.08);">💬<div class="notif-dot"></div></div>
+<!-- FIREBASE SETUP MODAL -->
+<div class="overlay" id="fb-overlay">
+  <div class="modal" style="max-width:600px;">
+    <div class="modal-head">
+      <h3>🔥 Connect Firebase</h3>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:14px;color:var(--slate4);margin-bottom:20px;line-height:1.7;">Connect your Firebase project to enable real user accounts, live data, and full functionality. Follow these 4 steps:</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+        <div style="background:var(--slate10);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.6;"><strong style="color:var(--blue2);">Step 1</strong> — Go to <strong>console.firebase.google.com</strong> → Create project → name it <code style="background:#fff;padding:2px 6px;border-radius:4px;font-size:12px;">pragati-work-exchange</code></div>
+        <div style="background:var(--slate10);border-radius:10px;padding:12px 14px;font-size:13px;"><strong style="color:var(--blue2);">Step 2</strong> — Enable <strong>Authentication</strong> → Email/Password sign-in method → Save</div>
+        <div style="background:var(--slate10);border-radius:10px;padding:12px 14px;font-size:13px;"><strong style="color:var(--blue2);">Step 3</strong> — Enable <strong>Firestore Database</strong> → Create → Start in test mode → Select region</div>
+        <div style="background:var(--slate10);border-radius:10px;padding:12px 14px;font-size:13px;"><strong style="color:var(--blue2);">Step 4</strong> — Project Settings → Add Web App → Copy config values below</div>
       </div>
-      <div class="metric-grid">
-        <div class="metric-card"><div class="mc-num blue">12</div><div class="mc-lbl">Applied</div></div>
-        <div class="metric-card"><div class="mc-num orange">4</div><div class="mc-lbl">Shortlisted</div></div>
-        <div class="metric-card"><div class="mc-num green">3</div><div class="mc-lbl">Awarded</div></div>
-        <div class="metric-card"><div class="mc-num purple">₹18L</div><div class="mc-lbl">Total Earned</div></div>
+      <div class="grid2">
+        <div class="field"><label class="flabel">API Key</label><input class="finput" id="fb-apikey" placeholder="AIzaSy…"/></div>
+        <div class="field"><label class="flabel">Auth Domain</label><input class="finput" id="fb-authdomain" placeholder="app.firebaseapp.com"/></div>
       </div>
-    </div>
-    <div class="notice">🎉 You were shortlisted for "Marble Flooring – Mumbai"!</div>
-    <div style="padding:0 20px 10px;"><div class="sec-h"><h3>My Applications</h3><a onclick="go('s-apps',null)">View all →</a></div></div>
-    <div class="arow" onclick="go('s-apps',null)">
-      <div class="ar-h"><div class="ar-title">Interior Plastering Work</div></div>
-      <div class="ar-sub">Kalpataru Constructions · Pune</div>
-      <div class="ar-foot"><span class="status review">Shortlisted ✓</span><span style="font-size:12px;color:var(--text3);">Quoted ₹2.75L</span></div>
-    </div>
-    <div class="arow" onclick="go('s-apps',null)">
-      <div class="ar-h"><div class="ar-title">Marble Flooring – Block C</div></div>
-      <div class="ar-sub">Godrej Properties · Mumbai</div>
-      <div class="ar-foot"><span class="status pending">Under Review</span><span style="font-size:12px;color:var(--text3);">Quoted ₹6.1L</span></div>
-    </div>
-    <div class="arow" onclick="go('s-apps',null)">
-      <div class="ar-h"><div class="ar-title">External Painting Phase 1</div></div>
-      <div class="ar-sub">Shapoorji Pallonji · Nagpur</div>
-      <div class="ar-foot"><span class="status awarded">Awarded 🎉</span><span style="font-size:12px;color:var(--green);font-weight:700;">₹4.8L</span></div>
-    </div>
-    <div style="padding:12px 20px 24px;">
-      <button class="btn btn-primary" onclick="go('s-find',null)">Browse More Work →</button>
-    </div>
-  </div>
-  <div class="bnav">
-    <div class="bnav-item" onclick="go('s-home',null)"><div class="ni">🏠</div><span>Home</span></div>
-    <div class="bnav-item" onclick="go('s-find',null)"><div class="ni">🔍</div><span>Find Work</span></div>
-    <div class="bnav-act" onclick="go('s-find',null)">🔍</div>
-    <div class="bnav-item on"><div class="ni">📋</div><span>Dashboard</span></div>
-    <div class="bnav-item" onclick="go('s-profile',null)"><div class="ni">👤</div><span>Profile</span></div>
-  </div>
-</div>
-
-<!-- ==================== BID MANAGEMENT ==================== -->
-<div class="screen" id="s-bids">
-  <div class="topbar solid">
-    <div class="back-btn" onclick="go('s-main',null)">←</div>
-    <h2>Bid Management</h2>
-    <div style="background:rgba(249,115,22,0.15);color:var(--orange2);font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;">8 Bids</div>
-  </div>
-  <div style="background:linear-gradient(90deg,rgba(37,99,235,0.1),rgba(37,99,235,0.04));border-bottom:1px solid var(--border);padding:12px 20px;">
-    <div style="font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue3);">Interior Plastering Work</div>
-    <div style="font-size:11px;color:var(--text3);">Budget ₹2.5L–₹3L · Deadline 15 Jan · 8 quotations received</div>
-  </div>
-  <div class="scroll" style="padding-top:12px;">
-    <div style="padding:0 20px 8px;"><span style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;">Ranked by Rating</span></div>
-    <div class="bidder top" style="position:relative;">
-      <div class="best-tag">BEST MATCH</div>
-      <div class="bidder-row">
-        <div class="bav">MK</div>
-        <div class="binfo">
-          <div class="bname">Mohan Kumar</div>
-          <div class="bsub">⭐ 4.8 · 12 projects · Plastering Spec.</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="bprice">₹2.65L</div>
-          <div style="font-size:10px;color:var(--text3);">40 days</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-        <button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)" style="flex:1;">💬 Chat</button>
-        <button class="award-btn" onclick="award('Mohan Kumar')">Award Work</button>
-      </div>
-    </div>
-    <div class="bidder">
-      <div class="bidder-row">
-        <div class="bav g">RP</div>
-        <div class="binfo">
-          <div class="bname">Rajesh Patil</div>
-          <div class="bsub">⭐ 4.7 · 15 projects · Plastering Expert</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="bprice">₹2.75L</div>
-          <div style="font-size:10px;color:var(--text3);">38 days</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-        <button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)" style="flex:1;">💬 Chat</button>
-        <button class="award-btn" onclick="award('Rajesh Patil')">Award Work</button>
-      </div>
-    </div>
-    <div class="bidder">
-      <div class="bidder-row">
-        <div class="bav p">SP</div>
-        <div class="binfo">
-          <div class="bname">Suresh Patil</div>
-          <div class="bsub">⭐ 4.5 · 8 projects · General Contractor</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="bprice">₹2.80L</div>
-          <div style="font-size:10px;color:var(--text3);">45 days</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-        <button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)" style="flex:1;">💬 Chat</button>
-        <button class="award-btn" onclick="award('Suresh Patil')">Award Work</button>
-      </div>
-    </div>
-    <div class="bidder">
-      <div class="bidder-row">
-        <div class="bav o">VD</div>
-        <div class="binfo">
-          <div class="bname">Vijay Deshmukh</div>
-          <div class="bsub">⭐ 4.2 · 5 projects · Contractor</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="bprice">₹2.90L</div>
-          <div style="font-size:10px;color:var(--text3);">50 days</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-        <button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)" style="flex:1;">💬 Chat</button>
-        <button class="award-btn" onclick="award('Vijay Deshmukh')">Award Work</button>
-      </div>
-    </div>
-    <div style="height:20px;"></div>
-  </div>
-</div>
-
-<!-- ==================== MY APPLICATIONS ==================== -->
-<div class="screen" id="s-apps">
-  <div class="topbar solid">
-    <div class="back-btn" onclick="go('s-petty',null)">←</div>
-    <h2>My Applications</h2>
-  </div>
-  <div class="chips" style="padding-top:12px;">
-    <div class="chip on">All (12)</div>
-    <div class="chip" onclick="toggleChip(this)">Shortlisted</div>
-    <div class="chip" onclick="toggleChip(this)">Pending</div>
-    <div class="chip" onclick="toggleChip(this)">Awarded</div>
-    <div class="chip" onclick="toggleChip(this)">Rejected</div>
-  </div>
-  <div class="scroll" style="padding-top:8px;">
-    <div class="arow">
-      <div class="ar-h"><div class="ar-title">Interior Plastering Work</div><span class="status review">Shortlisted</span></div>
-      <div class="ar-sub">Kalpataru Constructions · Pune · Quoted ₹2.75L</div>
-      <div class="ar-foot"><span style="font-size:11px;color:var(--text3);">Applied 3 days ago</span><button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)">💬 Chat</button></div>
-    </div>
-    <div class="arow">
-      <div class="ar-h"><div class="ar-title">Marble Flooring – Block C</div><span class="status pending">Pending</span></div>
-      <div class="ar-sub">Godrej Properties · Mumbai · Quoted ₹6.1L</div>
-      <div class="ar-foot"><span style="font-size:11px;color:var(--text3);">Applied 1 day ago</span><button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)">💬 Chat</button></div>
-    </div>
-    <div class="arow">
-      <div class="ar-h"><div class="ar-title">External Painting Phase 1</div><span class="status awarded">Awarded 🎉</span></div>
-      <div class="ar-sub">Shapoorji Pallonji · Nagpur · ₹4.8L confirmed</div>
-      <div class="ar-foot"><span style="font-size:11px;color:var(--green);font-weight:600;">Work in progress</span><button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)">💬 Chat</button></div>
-    </div>
-    <div class="arow">
-      <div class="ar-h"><div class="ar-title">Electrical Conduit Work</div><span class="status rejected">Not Selected</span></div>
-      <div class="ar-sub">Prestige Group · Bangalore · Quoted ₹3.2L</div>
-      <div class="ar-foot"><span style="font-size:11px;color:var(--text3);">Applied 10 days ago</span></div>
-    </div>
-    <div class="arow">
-      <div class="ar-h"><div class="ar-title">Masonry Work – Phase 2</div><span class="status review">Shortlisted</span></div>
-      <div class="ar-sub">Tata Realty · Pune · Quoted ₹5.5L</div>
-      <div class="ar-foot"><span style="font-size:11px;color:var(--text3);">Applied 5 days ago</span><button class="btn btn-ghost btn-sm" onclick="go('s-chat',null)">💬 Chat</button></div>
+      <div class="field"><label class="flabel">Project ID</label><input class="finput" id="fb-projectid" placeholder="your-project-id"/></div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="saveFirebaseConfig()">Connect Firebase →</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:10px;" onclick="useDemoMode()">Use Demo Mode (sample data, no backend)</button>
     </div>
   </div>
 </div>
 
-<!-- ==================== PROFILE ==================== -->
-<div class="screen" id="s-profile">
-  <div class="scroll">
-    <div class="prof-hero">
-      <div style="display:flex;justify-content:flex-end;padding-bottom:14px;">
-        <div class="icon-btn" style="background:rgba(255,255,255,0.1);">✏️</div>
-      </div>
-      <div class="p-avatar">RP<div class="p-verify">✓</div></div>
-      <div class="p-name">Rajesh Patil</div>
-      <div class="p-role">Plastering Specialist · Pune, Maharashtra</div>
-      <div class="stars">★★★★★ 4.7 <span style="color:var(--text3);font-size:12px;">(23 reviews)</span></div>
-      <div class="skill-wrap">
-        <span class="skill-tag">Plastering</span>
-        <span class="skill-tag">POP Work</span>
-        <span class="skill-tag">Tiling</span>
-        <span class="skill-tag">Waterproofing</span>
-        <span class="skill-tag">Masonry</span>
-      </div>
-    </div>
-    <div class="stats-strip" style="padding:14px 20px;">
-      <div class="stat-pill" style="flex:1;min-width:auto;"><div class="sp-num">15</div><div class="sp-lbl">Projects</div></div>
-      <div class="stat-pill" style="flex:1;min-width:auto;"><div class="sp-num orange">8</div><div class="sp-lbl">Yrs Exp</div></div>
-      <div class="stat-pill" style="flex:1;min-width:auto;"><div class="sp-num green">4.7</div><div class="sp-lbl">Rating</div></div>
-      <div class="stat-pill" style="flex:1;min-width:auto;"><div class="sp-num" style="color:#A78BFA;">₹18L</div><div class="sp-lbl">Earned</div></div>
-    </div>
-    <div class="psec">
-      <div class="prow"><div class="prow-icon">📞</div><div class="prow-txt">+91 98765 43210</div><div class="prow-arr">›</div></div>
-      <div class="prow"><div class="prow-icon">📍</div><div class="prow-txt">Hinjewadi, Pune – 411057</div><div class="prow-arr">›</div></div>
-      <div class="prow"><div class="prow-icon">🪪</div><div class="prow-txt">Aadhaar Verified</div><span class="prow-badge">Verified</span></div>
-      <div class="prow"><div class="prow-icon">🏦</div><div class="prow-txt">Bank Account Linked</div><span class="prow-badge">Active</span></div>
-    </div>
-    <div class="psec" style="margin-top:10px;">
-      <div class="prow"><div class="prow-icon">📁</div><div class="prow-txt">Past Projects (15)</div><div class="prow-arr">›</div></div>
-      <div class="prow"><div class="prow-icon">⭐</div><div class="prow-txt">Reviews & Ratings (23)</div><div class="prow-arr">›</div></div>
-      <div class="prow"><div class="prow-icon">📄</div><div class="prow-txt">Documents & Licenses</div><div class="prow-arr">›</div></div>
-      <div class="prow" onclick="go('s-home',null)"><div class="prow-icon">🚪</div><div class="prow-txt" style="color:var(--red);">Logout</div><div class="prow-arr" style="color:var(--red);">›</div></div>
-    </div>
-    <div style="height:24px;"></div>
-  </div>
-  <div class="bnav">
-    <div class="bnav-item" onclick="go('s-home',null)"><div class="ni">🏠</div><span>Home</span></div>
-    <div class="bnav-item" onclick="go('s-find',null)"><div class="ni">🔍</div><span>Find Work</span></div>
-    <div class="bnav-act" onclick="go('s-find',null)">🔍</div>
-    <div class="bnav-item" onclick="go('s-petty',null)"><div class="ni">📋</div><span>Dashboard</span></div>
-    <div class="bnav-item on"><div class="ni">👤</div><span>Profile</span></div>
-  </div>
-</div>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getFirestore,collection,addDoc,getDocs,getDoc,doc,setDoc,updateDoc,query,where,orderBy,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-<!-- ==================== CHAT ==================== -->
-<div class="screen" id="s-chat">
-  <div id="chat-list-view" style="display:flex;flex-direction:column;height:100%;">
-    <div class="topbar solid"><h2>Messages</h2><div class="icon-btn">✏️</div></div>
-    <div style="flex:1;overflow-y:auto;">
-      <div class="cli" onclick="openChat()">
-        <div class="cav" style="background:rgba(37,99,235,0.15);color:var(--blue3);">KP</div>
-        <div class="cinfo"><div class="cn">Kalpataru Projects</div><div class="cp">Please send your availability for site visit</div></div>
-        <div class="cmeta"><div class="ct">2:30 PM</div><div class="cund">2</div></div>
-      </div>
-      <div class="cli" onclick="openChat()">
-        <div class="cav" style="background:rgba(16,185,129,0.12);color:var(--green);">GP</div>
-        <div class="cinfo"><div class="cn">Godrej Properties</div><div class="cp">Your quotation looks good, can we discuss?</div></div>
-        <div class="cmeta"><div class="ct">11:15</div><div class="cund">1</div></div>
-      </div>
-      <div class="cli" onclick="openChat()">
-        <div class="cav" style="background:rgba(249,115,22,0.12);color:var(--orange2);">SP</div>
-        <div class="cinfo"><div class="cn">Shapoorji Pallonji</div><div class="cp">Congratulations! Work has been awarded to you.</div></div>
-        <div class="cmeta"><div class="ct">Yesterday</div></div>
-      </div>
-      <div class="cli" onclick="openChat()">
-        <div class="cav" style="background:rgba(139,92,246,0.12);color:#A78BFA;">LG</div>
-        <div class="cinfo"><div class="cn">Lodha Group</div><div class="cp">Please share your GST certificate at the earliest.</div></div>
-        <div class="cmeta"><div class="ct">Mon</div></div>
-      </div>
-      <div class="cli" onclick="openChat()">
-        <div class="cav" style="background:rgba(239,68,68,0.1);color:#F87171;">TR</div>
-        <div class="cinfo"><div class="cn">Tata Realty</div><div class="cp">Site visit scheduled for this Saturday 10 AM</div></div>
-        <div class="cmeta"><div class="ct">Sun</div></div>
-      </div>
-    </div>
-    <div class="bnav">
-      <div class="bnav-item" onclick="go('s-home',null)"><div class="ni">🏠</div><span>Home</span></div>
-      <div class="bnav-item" onclick="go('s-find',null)"><div class="ni">🔍</div><span>Find Work</span></div>
-      <div class="bnav-act">🔍</div>
-      <div class="bnav-item" onclick="go('s-petty',null)"><div class="ni">📋</div><span>Dashboard</span></div>
-      <div class="bnav-item on"><div class="ni">💬</div><span>Messages</span></div>
-    </div>
-  </div>
-  <div id="chat-window-view" style="display:none;flex-direction:column;height:100%;">
-    <div class="cw-bar">
-      <div class="back-btn" onclick="closeChat()">←</div>
-      <div class="cw-av" style="background:rgba(37,99,235,0.15);color:var(--blue3);">KP</div>
-      <div style="flex:1;"><div class="cw-n">Kalpataru Projects</div><div class="cw-s">● Online</div></div>
-      <div class="icon-btn">📞</div>
-    </div>
-    <div style="flex:1;overflow-y:auto;">
-      <div class="msgs">
-        <div class="msg-time">Today</div>
-        <div class="msg them">Hello Rajesh, we reviewed your quotation for the plastering work.</div>
-        <div class="msg them">Your price is competitive. Can you share site visit availability?</div>
-        <div class="msg me">Thank you! Available Saturday 10 AM or Sunday anytime.</div>
-        <div class="msg them">Saturday 10 AM works. Hinjewadi Phase 2, ask for Mr. Sharma.</div>
-        <div class="msg me">Confirmed! Should I bring any documents?</div>
-        <div class="msg them">Please bring Aadhaar copy + past work photos if any.</div>
-      </div>
-    </div>
-    <div class="ci-bar">
-      <input class="ci" placeholder="Type a message…" />
-      <button class="send">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-</div>
+let app,auth,db;
+let CU=null,CD=null,CW=null,prevPage='home',pendingAward=null,filterTrade='',demoMode=false;
+const demoWorks=[
+  {id:'d1',title:'Interior Plastering Work – Phase 2',company:'Kalpataru Constructions',trade:'Plastering',location:'Hinjewadi, Pune',minBudget:250000,maxBudget:300000,duration:45,startDate:'2025-01-15',experience:'5 years',labour:'8–10 workers',urgency:'Urgent',scope:'Internal plastering for 120 flats (3 BHK). Cement mortar ratio 1:4.\nChicken mesh on all joints mandatory.\nPOP punning over plaster for smooth finish.\nMaterial supplied by Main Contractor.',bids:8,postedBy:'main1',postedByName:'Kalpataru Constructions',createdAt:Date.now()-86400000},
+  {id:'d2',title:'Marble Flooring – Block C Tower',company:'Godrej Properties',trade:'Flooring',location:'Andheri, Mumbai',minBudget:500000,maxBudget:700000,duration:60,startDate:'2025-01-22',experience:'3 years',labour:'12–15 workers',urgency:'Normal',scope:'Italian marble flooring for 80 apartments.\nGrouting with white cement.\nPolishing and final sealing included.\nQuality checks after each floor.',bids:14,postedBy:'main2',postedByName:'Godrej Properties',createdAt:Date.now()-172800000},
+  {id:'d3',title:'Full Electrical Wiring – Tower 2',company:'Lodha Group',trade:'Electrical',location:'Thane, Mumbai',minBudget:800000,maxBudget:1000000,duration:90,startDate:'2025-01-30',experience:'7 years',labour:'15–20 workers',urgency:'Normal',scope:'Complete electrical wiring for 200 residential units.\nISI certified conduit wiring throughout.\nDB boards and MCB fitting.\nTesting and commissioning at end.',bids:6,postedBy:'main3',postedByName:'Lodha Group',createdAt:Date.now()-259200000},
+  {id:'d4',title:'External Painting – Phase 2',company:'Shapoorji Pallonji',trade:'Painting',location:'Nagpur, MH',minBudget:400000,maxBudget:600000,duration:30,startDate:'2025-02-05',experience:'2 years',labour:'10–12 workers',urgency:'Normal',scope:'External texture painting for 4 residential towers.\nAsian Paints Apex Weather Proof.\nTwo coats required on all external surfaces.\nScaffolding and safety equipment by contractor.',bids:3,postedBy:'main4',postedByName:'Shapoorji Pallonji',createdAt:Date.now()-345600000},
+  {id:'d5',title:'Sanitary & Plumbing – Phase 3',company:'Prestige Group',trade:'Plumbing',location:'Koramangala, Bangalore',minBudget:350000,maxBudget:500000,duration:45,startDate:'2025-02-10',experience:'4 years',labour:'6–8 workers',urgency:'Urgent',scope:'Complete sanitary and plumbing work for 60-unit residential complex.\nCP fittings by Jaquar.\nHDPE piping for drainage.\nWater testing on completion.',bids:5,postedBy:'main5',postedByName:'Prestige Group',createdAt:Date.now()-432000000},
+  {id:'d6',title:'Masonry & Brickwork – Block D',company:'Tata Realty',trade:'Masonry',location:'Wakad, Pune',minBudget:600000,maxBudget:800000,duration:70,startDate:'2025-02-20',experience:'6 years',labour:'20–25 workers',urgency:'Normal',scope:'Brick masonry for Block D including internal and external walls.\nM20 grade concrete for all columns.\nSand-faced plaster on external walls.\nQuality inspections at DPC and lintel levels.',bids:4,postedBy:'main6',postedByName:'Tata Realty',createdAt:Date.now()-518400000},
+];
+const demoApps=[];
 
-</div><!-- page-wrap -->
-</div><!-- shell -->
-</div><!-- padding wrap -->
+// ── INIT ──
+window.addEventListener('DOMContentLoaded',()=>{
+  const saved=localStorage.getItem('fb_cfg');
+  if(saved){try{initFB(JSON.parse(saved));}catch(e){showFBModal();}}
+  else showFBModal();
+});
 
-<script>
-function go(id, btn) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active','back-anim'));
-  var el = document.getElementById(id);
-  if(el){ el.classList.add('active'); if(el.querySelector('.scroll')) el.querySelector('.scroll').scrollTop=0; }
-  if(btn){
-    document.querySelectorAll('.sw-btn').forEach(b => b.classList.remove('cur'));
-    btn.classList.add('cur');
-  }
-}
-function toggleChip(el){
-  el.closest('.chips,.filter-row').querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');
-}
-function mTab(n){
-  [1,2,3].forEach(i=>{
-    document.getElementById('mt'+i).classList.toggle('on',i===n);
-    document.getElementById('mc'+i).style.display=(i===n)?'block':'none';
+function showFBModal(){document.getElementById('loader').classList.add('out');document.getElementById('fb-overlay').classList.remove('off');}
+
+window.saveFirebaseConfig=function(){
+  const k=document.getElementById('fb-apikey').value.trim(),a=document.getElementById('fb-authdomain').value.trim(),p=document.getElementById('fb-projectid').value.trim();
+  if(!k||!a||!p){toast('Fill all Firebase fields','err');return;}
+  const cfg={apiKey:k,authDomain:a,projectId:p,storageBucket:p+'.appspot.com',messagingSenderId:'0',appId:'0'};
+  localStorage.setItem('fb_cfg',JSON.stringify(cfg));
+  document.getElementById('fb-overlay').classList.add('off');
+  try{initFB(cfg);}catch(e){toast('Firebase error: '+e.message,'err');}
+};
+
+window.useDemoMode=function(){
+  demoMode=true;
+  document.getElementById('fb-overlay').classList.add('off');
+  document.getElementById('loader').classList.add('out');
+  show('s-landing');
+  toast('Running in Demo Mode','');
+};
+
+function initFB(cfg){
+  app=initializeApp(cfg);auth=getAuth(app);db=getFirestore(app);
+  onAuthStateChanged(auth,async u=>{
+    document.getElementById('loader').classList.add('out');
+    if(u){CU=u;await loadCD(u.uid);routeHome();}
+    else{CU=null;CD=null;show('s-landing');}
   });
 }
-function openChat(){
-  document.getElementById('chat-list-view').style.display='none';
-  document.getElementById('chat-window-view').style.display='flex';
+
+async function loadCD(uid){const s=await getDoc(doc(db,'users',uid));if(s.exists())CD=s.data();}
+
+function routeHome(){
+  if(!CD)return show('s-landing');
+  buildSidebar();
+  document.getElementById('s-landing').style.display='none';
+  document.getElementById('s-login').style.display='none';
+  document.getElementById('s-register').style.display='none';
+  document.getElementById('app').style.display='block';
+  const n=CD.name||'User',ini=n.split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('sb-ava').textContent=ini;
+  document.getElementById('sb-name').textContent=n;
+  document.getElementById('sb-role').textContent=CD.role==='main'?'Main Contractor':'Petty Contractor';
+  showPage(CD.role==='main'?'home':'home');
 }
-function closeChat(){
-  document.getElementById('chat-list-view').style.display='flex';
-  document.getElementById('chat-window-view').style.display='none';
+
+// ── NAV ──
+function buildSidebar(){
+  const nav=document.getElementById('sb-nav');
+  const isMain=CD?.role==='main';
+  nav.innerHTML=`
+  <div class="sb-section">Main</div>
+  <div class="sb-item on" onclick="showPage('home')" id="sbi-home"><span class="si">🏠</span>Dashboard</div>
+  ${!isMain?`<div class="sb-item" onclick="showPage('find')" id="sbi-find"><span class="si">🔍</span>Find Work</div>`:''}
+  ${isMain?`<div class="sb-item" onclick="showPage('post')" id="sbi-post"><span class="si">➕</span>Post Work</div>`:''}
+  ${isMain?`<div class="sb-item" onclick="showPage('myworks')" id="sbi-myworks"><span class="si">📋</span>My Works</div>`:''}
+  ${!isMain?`<div class="sb-item" onclick="showPage('apps')" id="sbi-apps"><span class="si">📋</span>My Applications</div>`:''}
+  <div class="sb-section">Account</div>
+  <div class="sb-item" onclick="showPage('profile')" id="sbi-profile"><span class="si">👤</span>Profile</div>
+  `;
 }
-function award(name){
-  if(confirm('Award this work to '+name+'?\n\nThey will be notified immediately.')){
-    go('s-main',null);
+
+window.showPage=function(page){
+  prevPage=document.querySelector('.page.on')?.id?.replace('page-','') ||'home';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('page-'+page)?.classList.add('on');
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));
+  document.getElementById('sbi-'+page)?.classList.add('on');
+  const titles={home:'Dashboard',find:'Find Work',detail:'Work Details',quote:'Submit Quotation',post:'Post New Work',apps:'My Applications',myworks:'My Works',bids:'Bid Management',profile:'My Profile'};
+  document.getElementById('tb-title').textContent=titles[page]||'Pragati';
+  document.getElementById('tb-sub').textContent=`Welcome back, ${CD?.name?.split(' ')[0]||''}`;
+  if(page==='home')loadHome();
+  if(page==='find')loadFind();
+  if(page==='apps')loadApps();
+  if(page==='myworks')loadMyWorks();
+  if(page==='profile')loadProfile();
+};
+
+window.goBack=function(){showPage(prevPage);};
+window.show=function(id){
+  ['s-landing','s-login','s-register'].forEach(s=>document.getElementById(s).style.display='none');
+  document.getElementById(id).style.display='flex';
+};
+window.showLogin=function(){show('s-login');};
+window.showRegister=function(){show('s-register');};
+
+// ── AUTH ──
+window.selectRole=function(r){
+  document.getElementById('reg-role').value=r;
+  document.getElementById('rc-petty').classList.toggle('sel',r==='petty');
+  document.getElementById('rc-main').classList.toggle('sel',r==='main');
+  document.getElementById('trade-field').style.display=r==='petty'?'block':'none';
+};
+
+window.doLogin=async function(){
+  if(demoMode){demoLogin();return;}
+  const e=document.getElementById('login-email').value.trim(),p=document.getElementById('login-pass').value,err=document.getElementById('login-err'),btn=document.getElementById('login-btn');
+  if(!e||!p){err.classList.add('on');return;}
+  btn.classList.add('btn-loading');btn.textContent='Logging in…';
+  try{await signInWithEmailAndPassword(auth,e,p);err.classList.remove('on');}
+  catch(ex){err.textContent=ex.code==='auth/user-not-found'?'No account with this email.':ex.code==='auth/wrong-password'?'Incorrect password.':'Login failed.';err.classList.add('on');}
+  btn.classList.remove('btn-loading');btn.textContent='Login to Pragati →';
+};
+
+window.doRegister=async function(){
+  if(demoMode){demoReg();return;}
+  const name=document.getElementById('reg-name').value.trim(),email=document.getElementById('reg-email').value.trim(),phone=document.getElementById('reg-phone').value.trim(),city=document.getElementById('reg-city').value.trim(),pass=document.getElementById('reg-pass').value,role=document.getElementById('reg-role').value,trade=document.getElementById('reg-trade').value,err=document.getElementById('reg-err'),btn=document.getElementById('reg-btn');
+  if(!name||!email||!city||pass.length<6){err.classList.add('on');return;}
+  btn.classList.add('btn-loading');btn.textContent='Creating…';
+  try{
+    const uc=await createUserWithEmailAndPassword(auth,email,pass);
+    const ud={name,email,phone,city,role,trade,exp:'',bio:'',company:role==='main'?name:'',createdAt:serverTimestamp()};
+    await setDoc(doc(db,'users',uc.user.uid),ud);CD=ud;
+    toast('Welcome to Pragati! 🎉','ok');
+  }catch(ex){err.textContent=ex.code==='auth/email-already-in-use'?'Email already registered.':'Error: '+ex.message;err.classList.add('on');}
+  btn.classList.remove('btn-loading');btn.textContent='Create My Account →';
+};
+
+window.doLogout=async function(){
+  if(demoMode){CU=null;CD=null;document.getElementById('app').style.display='none';show('s-landing');return;}
+  await signOut(auth);
+};
+
+function demoLogin(){const e=document.getElementById('login-email').value.trim()||'demo@pragati.in';const isMain=e.includes('main');CD={name:isMain?'Kalpataru Constructions':'Rajesh Patil',email:e,phone:'+91 98765 43210',city:'Pune, MH',role:isMain?'main':'petty',trade:'Plastering',exp:'8',bio:'Experienced contractor'};CU={uid:'demo'};document.getElementById('s-login').style.display='none';routeHome();}
+function demoReg(){const name=document.getElementById('reg-name').value.trim()||'Demo User';const role=document.getElementById('reg-role').value;CD={name,email:document.getElementById('reg-email').value.trim()||'demo@pragati.in',phone:document.getElementById('reg-phone').value.trim(),city:document.getElementById('reg-city').value.trim()||'Pune',role,trade:document.getElementById('reg-trade').value,exp:'',bio:''};CU={uid:'demo-'+Date.now()};document.getElementById('s-register').style.display='none';routeHome();}
+
+// ── DATA ──
+async function getWorks(){
+  if(demoMode)return demoWorks;
+  const s=await getDocs(query(collection(db,'works'),orderBy('createdAt','desc')));
+  return s.docs.map(d=>({id:d.id,...d.data()}));
+}
+async function getMyWorks(){
+  if(demoMode)return demoWorks.slice(0,3);
+  const s=await getDocs(query(collection(db,'works'),where('postedBy','==',CU.uid)));
+  return s.docs.map(d=>({id:d.id,...d.data()}));
+}
+
+function fmtB(w){const f=n=>n>=100000?'₹'+(n/100000).toFixed(1).replace('.0','')+'L':'₹'+n.toLocaleString('en-IN');return(w.minBudget&&w.maxBudget)?f(w.minBudget)+'–'+f(w.maxBudget):w.minBudget?f(w.minBudget):'TBD';}
+function tagColor(u){return u==='Urgent'?'orange':u==='Critical'?'red':'green';}
+
+function makeCard(w){
+  return`<div class="wcard" onclick="openWork('${w.id}')">
+    <div class="wcard-hero">
+      <div class="tags"><span class="tag blue">${w.trade||'General'}</span><span class="tag ${tagColor(w.urgency)}">${w.urgency||'Normal'}</span></div>
+      <div class="wc-title">${w.title}</div>
+      <div class="wc-co">🏢 ${w.company||w.postedByName||'Main Contractor'}</div>
+    </div>
+    <div class="wcard-body">
+      <div class="wc-meta">
+        <span>📍 ${w.location||'—'}</span>
+        <span>⏱ ${w.startDate||'TBD'}</span>
+        <span>👷 ${w.experience||'—'}</span>
+        <span>👥 ${w.labour||'—'}</span>
+      </div>
+    </div>
+    <div class="wcard-foot"><span class="wc-budget">${fmtB(w)}</span><span class="wc-bids">${w.bids||0} bids received</span></div>
+  </div>`;
+}
+
+// HOME
+async function loadHome(){
+  const isMain=CD?.role==='main';
+  let works=await getWorks();
+  // metrics
+  let mHTML='';
+  if(isMain){
+    const mine=await getMyWorks();const totalBids=mine.reduce((s,w)=>s+(w.bids||0),0);
+    mHTML=`<div class="metric"><div class="metric-num blue">${mine.length}</div><div class="metric-lbl">Works Posted</div></div>
+    <div class="metric"><div class="metric-num orange">${totalBids}</div><div class="metric-lbl">Bids Received</div></div>
+    <div class="metric"><div class="metric-num green">${works.length}</div><div class="metric-lbl">Market Works</div></div>
+    <div class="metric"><div class="metric-num purple">${mine.filter(w=>w.status==='awarded').length}</div><div class="metric-lbl">Awarded</div></div>`;
+  } else {
+    const apps=demoMode?demoApps:[];
+    mHTML=`<div class="metric"><div class="metric-num blue">${works.length}</div><div class="metric-lbl">Open Works</div><div class="metric-trend up">Browse Now</div></div>
+    <div class="metric"><div class="metric-num orange">${apps.length}</div><div class="metric-lbl">My Applications</div></div>
+    <div class="metric"><div class="metric-num green">${apps.filter(a=>a.status==='awarded').length}</div><div class="metric-lbl">Awarded</div></div>
+    <div class="metric"><div class="metric-num purple">${apps.filter(a=>a.status==='review'||a.status==='shortlisted').length}</div><div class="metric-lbl">Shortlisted</div></div>`;
   }
+  document.getElementById('metrics-row').innerHTML=mHTML;
+  document.getElementById('home-works').innerHTML=works.slice(0,6).map(makeCard).join('')||`<div class="empty"><div class="ei">🏗️</div><h3>No works yet</h3><p>Check back soon</p></div>`;
+  document.getElementById('quick-actions').innerHTML=isMain
+    ?`<button class="btn btn-orange btn-block btn-lg" onclick="showPage('post')">+ Post New Work Requirement</button><button class="btn btn-ghost btn-block" onclick="showPage('myworks')">View My Posted Works</button>`
+    :`<button class="btn btn-primary btn-block btn-lg" onclick="showPage('find')">Browse Open Works →</button><button class="btn btn-ghost btn-block" onclick="showPage('apps')">My Applications</button>`;
 }
+
+// FIND
+let allWorks=[];
+async function loadFind(){
+  allWorks=await getWorks();
+  document.getElementById('find-count').textContent=allWorks.length+' works';
+  renderFind(allWorks);
+}
+function renderFind(arr){
+  document.getElementById('find-works').innerHTML=arr.length?arr.map(makeCard).join(''):`<div class="empty"><div class="ei">🔍</div><h3>No results</h3><p>Try different filters</p></div>`;
+}
+window.filterWorks=function(){
+  const q=document.getElementById('search-input').value.toLowerCase();
+  const f=allWorks.filter(w=>(w.title+''+w.location+''+w.trade+''+w.company+''+w.postedByName).toLowerCase().includes(q));
+  renderFind(filterTrade?f.filter(w=>w.trade===filterTrade):f);
+};
+window.setChip=function(el,trade){
+  document.querySelectorAll('#trade-chips .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');filterTrade=trade;filterWorks();
+};
+window.filterByTrade=function(t){filterTrade=t;showPage('find');setTimeout(()=>{document.querySelectorAll('#trade-chips .chip').forEach(c=>{if(c.textContent.includes(t))c.classList.add('on');else c.classList.remove('on');});filterWorks();},100);};
+
+// WORK DETAIL
+window.openWork=async function(id){
+  let w=demoMode?demoWorks.find(x=>x.id===id):null;
+  if(!demoMode){const s=await getDoc(doc(db,'works',id));w={id:s.id,...s.data()};}
+  if(!w)return;CW=w;
+  prevPage=document.querySelector('.page.on')?.id?.replace('page-','')||'find';
+  document.getElementById('det-tags').innerHTML=`<span class="tag" style="background:rgba(255,255,255,.2);color:#fff;">${w.trade||''}</span>${w.urgency&&w.urgency!=='Normal'?`<span class="tag orange">${w.urgency.toUpperCase()}</span>`:''}`;
+  document.getElementById('det-title').textContent=w.title;
+  document.getElementById('det-co').textContent='🏢 '+(w.company||w.postedByName||'')+'  ·  📍 '+(w.location||'');
+  document.getElementById('det-budget').textContent=fmtB(w);
+  document.getElementById('det-loc').textContent=w.location||'—';
+  document.getElementById('det-dur').textContent=w.duration?w.duration+' Days':'—';
+  document.getElementById('det-start').textContent=w.startDate||'—';
+  document.getElementById('det-exp').textContent=w.experience||'—';
+  document.getElementById('det-labour').textContent=w.labour||'—';
+  document.getElementById('det-bids-txt').textContent=(w.bids||0)+' bids received';
+  document.getElementById('det-deadline').textContent=w.startDate?'Start: '+w.startDate:'';
+  document.getElementById('det-prog').style.width=Math.min(100,((w.bids||0)/12)*100)+'%';
+  const sc=w.scope?w.scope.split(/\n/).filter(s=>s.trim().length>3).map(s=>`<div class="bullet"><div class="bdot"></div>${s.trim()}</div>`).join(''):'<p style="color:var(--slate5);font-size:14px;">No scope details provided.</p>';
+  document.getElementById('det-scope').innerHTML=sc;
+  document.getElementById('q-ref-content').innerHTML=`<div style="margin-bottom:10px;"><div style="font-family:var(--h);font-size:14px;font-weight:700;margin-bottom:4px;">${w.title}</div><div style="font-size:12px;color:var(--slate5);">${w.company||w.postedByName||''} · ${w.location||''}</div></div><div style="display:flex;gap:16px;"><span style="font-size:13px;font-weight:700;color:var(--green2);">${fmtB(w)}</span><span style="font-size:13px;color:var(--slate5);">${w.duration||'—'} days</span></div>`;
+  // check applied
+  let applied=false;
+  if(CU&&!demoMode){try{const s=await getDocs(query(collection(db,'applications'),where('workId','==',id),where('applicantId','==',CU.uid)));applied=!s.empty;}catch(e){}}
+  document.getElementById('det-apply-card').style.display=applied?'none':'block';
+  document.getElementById('det-applied-card').style.display=applied?'block':'none';
+  showPage('detail');
+};
+
+// SUBMIT QUOTE
+window.submitQuote=async function(){
+  if(!CW||!CU){toast('Please login','err');return;}
+  const amt=document.getElementById('q-amount').value,days=document.getElementById('q-days').value,pitch=document.getElementById('q-pitch').value.trim(),err=document.getElementById('q-err'),btn=document.getElementById('q-btn');
+  if(!amt||!days||!pitch){err.classList.add('on');return;}err.classList.remove('on');
+  btn.classList.add('btn-loading');btn.textContent='Submitting…';
+  const ad={workId:CW.id,workTitle:CW.title,workCompany:CW.company||CW.postedByName||'',workLocation:CW.location||'',applicantId:CU.uid,applicantName:CD?.name||'',amount:Number(amt),days:Number(days),labour:document.getElementById('q-labour').value||'',pitch,terms:document.getElementById('q-terms').value,status:'pending',createdAt:demoMode?Date.now():serverTimestamp()};
+  try{
+    if(demoMode){demoApps.push({id:'a'+Date.now(),...ad});}
+    else{await addDoc(collection(db,'applications'),ad);await updateDoc(doc(db,'works',CW.id),{bids:(CW.bids||0)+1});}
+    toast('Quotation submitted! 🎉','ok');
+    ['q-amount','q-days','q-labour','q-pitch'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+    showPage('apps');
+  }catch(e){toast('Error: '+e.message,'err');}
+  btn.classList.remove('btn-loading');btn.textContent='Submit Quotation →';
+};
+
+// POST WORK
+window.postWork=async function(){
+  if(!CU)return;
+  const title=document.getElementById('pw-title').value.trim(),trade=document.getElementById('pw-trade').value,loc=document.getElementById('pw-location').value.trim(),minB=document.getElementById('pw-min').value,maxB=document.getElementById('pw-max').value,scope=document.getElementById('pw-scope').value.trim(),err=document.getElementById('pw-err'),btn=document.getElementById('pw-btn');
+  if(!title||!trade||!loc||!minB||!maxB||!scope){err.classList.add('on');return;}err.classList.remove('on');
+  btn.classList.add('btn-loading');btn.textContent='Posting…';
+  const wd={title,trade,location:loc,company:CD?.name||'Main Contractor',postedByName:CD?.name||'Main Contractor',postedBy:CU.uid,minBudget:Number(minB),maxBudget:Number(maxB),duration:document.getElementById('pw-duration').value||'',startDate:document.getElementById('pw-start').value||'',experience:document.getElementById('pw-exp').value||'',labour:document.getElementById('pw-labour').value||'',urgency:document.getElementById('pw-urgency').value,scope,bids:0,createdAt:demoMode?Date.now():serverTimestamp()};
+  try{
+    if(demoMode){demoWorks.unshift({id:'dw'+Date.now(),...wd});}
+    else await addDoc(collection(db,'works'),wd);
+    toast('Work posted successfully! 🎉','ok');
+    ['pw-title','pw-location','pw-min','pw-max','pw-duration','pw-exp','pw-labour','pw-scope'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+    showPage('myworks');
+  }catch(e){toast('Error: '+e.message,'err');}
+  btn.classList.remove('btn-loading');btn.textContent='Post Work Requirement →';
+};
+
+// MY APPS TABLE
+async function loadApps(){
+  let apps=[];
+  if(demoMode)apps=demoApps;
+  else{try{const s=await getDocs(query(collection(db,'applications'),where('applicantId','==',CU.uid),orderBy('createdAt','desc')));apps=s.docs.map(d=>({id:d.id,...d.data()}));}catch(e){}}
+  const tb=document.getElementById('apps-tbody'),emp=document.getElementById('apps-empty');
+  if(!apps.length){tb.innerHTML='';emp.classList.remove('hidden');return;}
+  emp.classList.add('hidden');
+  const sl={pending:'Under Review',review:'Shortlisted',shortlisted:'Shortlisted',awarded:'Awarded',rejected:'Not Selected'};
+  tb.innerHTML=apps.map(a=>`<tr><td><strong style="font-weight:600;">${a.workTitle}</strong></td><td>${a.workCompany}</td><td>${a.workLocation}</td><td style="font-family:var(--h);font-weight:700;color:var(--green2);">₹${Number(a.amount).toLocaleString('en-IN')}</td><td>${a.days} days</td><td><span class="status ${a.status||'pending'}">${sl[a.status||'pending']||'Pending'}</span></td><td style="font-size:12px;color:var(--slate5);">${a.createdAt?new Date(typeof a.createdAt==='number'?a.createdAt:a.createdAt.toMillis?.()??Date.now()).toLocaleDateString('en-IN'):'-'}</td></tr>`).join('');
+}
+
+// MY WORKS
+async function loadMyWorks(){
+  const works=await getMyWorks();
+  const list=document.getElementById('myworks-list');
+  if(!works.length){list.innerHTML=`<div class="empty"><div class="ei">🏗️</div><h3>No works posted yet</h3><p>Post your first work requirement and receive quotations from verified contractors</p><button class="btn btn-orange btn-lg" style="margin-top:16px;" onclick="showPage('post')">Post First Work →</button></div>`;return;}
+  list.innerHTML=`<div class="card"><table><thead><tr><th>Work Title</th><th>Trade</th><th>Location</th><th>Budget</th><th>Bids</th><th>Status</th><th>Actions</th></tr></thead><tbody>${works.map(w=>`<tr><td><strong style="font-weight:600;">${w.title}</strong></td><td><span class="tag blue">${w.trade||'—'}</span></td><td>${w.location||'—'}</td><td style="font-family:var(--h);font-weight:700;color:var(--green2);">${fmtB(w)}</td><td>${w.bids||0}</td><td><span class="status ${w.status==='awarded'?'awarded':'open'}">${w.status==='awarded'?'Awarded':'Accepting Bids'}</span></td><td><button class="btn btn-primary btn-sm" onclick="openBids('${w.id}')">View Bids (${w.bids||0})</button></td></tr>`).join('')}</tbody></table></div>`;
+}
+
+// BIDS
+window.openBids=async function(id){
+  let w=demoMode?demoWorks.find(x=>x.id===id):null;
+  if(!demoMode){const s=await getDoc(doc(db,'works',id));w={id:s.id,...s.data()};}
+  if(!w)return;CW=w;
+  document.getElementById('bw-tags').innerHTML=`<span class="tag blue">${w.trade||''}</span><span class="tag ${tagColor(w.urgency)}">${w.urgency||'Normal'}</span>`;
+  document.getElementById('bw-title').textContent=w.title;
+  document.getElementById('bw-meta').textContent=`📍 ${w.location||''}  ·  ${w.duration||'—'} days  ·  Start ${w.startDate||'TBD'}`;
+  document.getElementById('bw-budget').textContent=fmtB(w);
+  document.getElementById('bw-bids').textContent=(w.bids||0)+' quotations received';
+  let apps=[];
+  if(demoMode){apps=[{id:'b1',applicantName:'Mohan Kumar',applicantId:'u1',amount:265000,days:40,pitch:'15 years experience in plastering across Pune and Mumbai. Worked on 12 residential projects exceeding 1L sq ft. Quality assurance certified.',rating:4.8,projects:12,status:'pending'},{id:'b2',applicantName:'Rajesh Patil',applicantId:'u2',amount:275000,days:38,pitch:'Expert plasterer with 8 years of experience. Specialise in high-end residential. POP and texture work expertise. All workers safety-trained.',rating:4.7,projects:15,status:'pending'},{id:'b3',applicantName:'Suresh Patil',applicantId:'u3',amount:280000,days:45,pitch:'Quality work with full warranty for 1 year. Experienced team. Own equipment. References available from Lodha and Godrej projects.',rating:4.5,projects:8,status:'pending'},{id:'b4',applicantName:'Vijay Deshmukh',applicantId:'u4',amount:290000,days:48,pitch:'Honest contractor with 5 years experience. Smaller team but dedicated fully to this project until completion.',rating:4.2,projects:5,status:'pending'}];}
+  else{try{const s=await getDocs(query(collection(db,'applications'),where('workId','==',id)));apps=s.docs.map(d=>({id:d.id,...d.data()}));}catch(e){}}
+  const colors=['#1D4ED8','#059669','#7C3AED','#EA580C','#DC2626'];
+  const grid=document.getElementById('bids-grid');
+  if(!apps.length){grid.innerHTML=`<div class="empty" style="grid-column:1/-1;"><div class="ei">📬</div><h3>No bids yet</h3><p>Share your posting to attract contractors</p></div>`;showPage('bids');return;}
+  grid.innerHTML=apps.map((a,i)=>`<div class="bid-card ${i===0?'top':''}">
+    ${i===0?'<div class="bid-badge">BEST MATCH</div>':''}
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+      <div class="bid-ava" style="background:${colors[i%5]};">${(a.applicantName||'?').split(' ').map(x=>x[0]).join('').slice(0,2)}</div>
+      <div style="flex:1;"><div class="bid-name">${a.applicantName||'Contractor'}</div><div class="bid-sub">${a.rating?'⭐ '+a.rating+' rating  ·  ':''} ${a.projects?a.projects+' past projects':'New Contractor'}</div></div>
+      <div style="text-align:right;"><div class="bid-price">₹${Number(a.amount).toLocaleString('en-IN')}</div><div style="font-size:11px;color:var(--slate5);">${a.days} days</div></div>
+    </div>
+    <div class="bid-pitch">"${a.pitch||'No pitch provided'}"</div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      ${a.terms?`<span style="font-size:11px;background:var(--slate9);padding:4px 8px;border-radius:6px;color:var(--slate4);">${a.terms.split('·')[0].trim()}</span>`:''}
+      <div style="flex:1;"></div>
+      ${a.status==='awarded'?'<span class="status awarded">Awarded ✓</span>':`<button class="btn btn-ghost btn-sm">💬 Chat</button><button class="btn btn-orange btn-sm" onclick="showAwardModal('${a.id}','${a.applicantName}')">Award Work</button>`}
+    </div>
+  </div>`).join('');
+  showPage('bids');
+};
+
+window.showAwardModal=function(id,name){pendingAward=id;document.getElementById('award-text').textContent=`Award this work to ${name}? They will be notified immediately and their status updated.`;document.getElementById('award-overlay').classList.remove('off');};
+window.closeModal=function(){document.getElementById('award-overlay').classList.add('off');};
+window.confirmAward=async function(){
+  if(!pendingAward)return;
+  try{if(!demoMode)await updateDoc(doc(db,'applications',pendingAward),{status:'awarded'});toast('Work awarded! 🏆','ok');}catch(e){toast('Error: '+e.message,'err');}
+  closeModal();showPage('myworks');
+};
+
+// PROFILE
+async function loadProfile(){
+  if(!CD)return;
+  const n=CD.name||'User',ini=n.split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('prof-ava').innerHTML=ini+'<div class="p-ver">✓</div>';
+  document.getElementById('prof-name').textContent=n;
+  document.getElementById('prof-role').textContent=(CD.trade||CD.role==='main'?'Main Contractor':'Petty Contractor')+(CD.city?' · '+CD.city:'');
+  document.getElementById('p-phone').textContent=CD.phone||'—';
+  document.getElementById('p-city').textContent=CD.city||'—';
+  document.getElementById('p-email').textContent=CD.email||'—';
+  document.getElementById('ps-exp').textContent=CD.exp||'—';
+  document.getElementById('prof-skills').innerHTML=CD.trade?`<span class="skill-tag">${CD.trade}</span>${CD.company?`<span class="skill-tag">${CD.company}</span>`:''}`:'' ;
+  document.getElementById('edit-name').value=CD.name||'';
+  document.getElementById('edit-phone').value=CD.phone||'';
+  document.getElementById('edit-city').value=CD.city||'';
+  document.getElementById('edit-trade').value=CD.trade||'';
+  document.getElementById('edit-exp').value=CD.exp||'';
+  document.getElementById('edit-company').value=CD.company||'';
+  document.getElementById('edit-bio').value=CD.bio||'';
+  if(CD.role==='main')document.getElementById('edit-trade-wrap').style.display='none';
+}
+
+window.saveProfile=async function(){
+  if(!CU)return;
+  const u={name:document.getElementById('edit-name').value.trim()||CD.name,phone:document.getElementById('edit-phone').value.trim(),city:document.getElementById('edit-city').value.trim(),trade:document.getElementById('edit-trade').value,exp:document.getElementById('edit-exp').value,company:document.getElementById('edit-company').value.trim(),bio:document.getElementById('edit-bio').value.trim()};
+  try{if(!demoMode)await updateDoc(doc(db,'users',CU.uid),u);CD={...CD,...u};toast('Profile saved ✓','ok');loadProfile();document.getElementById('sb-name').textContent=u.name;}catch(e){toast('Error: '+e.message,'err');}
+};
+
+// TOAST
+window.toast=function(msg,type=''){const el=document.getElementById('toast');el.textContent=msg;el.className=type?'on '+type:'on';setTimeout(()=>{el.className='';},3000);};
+
+// HIDDEN CLASS
+document.head.insertAdjacentHTML('beforeend','<style>.hidden{display:none!important;}</style>');
 </script>
 </body>
 </html>
