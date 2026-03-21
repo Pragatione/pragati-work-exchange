@@ -338,7 +338,7 @@ select.fin{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
 <body>
 
 <div id="loader">
-  <div class="ld-icon"><svg width="34" height="34" viewBox="0 0 28 28" fill="none"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg></div>
+  <div class="ld-icon" style="overflow:hidden;"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><svg width="34" height="34" viewBox="0 0 28 28" fill="none" style="display:none;"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg></div>
   <div class="ld-brand">Pragati<span>.</span></div>
   <div class="ld-sub">Work Exchange · PragatiOne</div>
   <div class="ld-bar"><div class="ld-fill"></div></div>
@@ -354,7 +354,7 @@ select.fin{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
   <div class="snap-sec land" style="display:flex;flex-direction:column;">
     <div class="lnav">
       <div class="lbrand">
-        <div class="lbico"><svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/><rect x="11" y="8" width="5" height="18" rx="1.5" fill="white" opacity=".85"/><rect x="20" y="4" width="5" height="22" rx="1.5" fill="white" opacity=".7"/></svg></div>
+        <div class="lbico" style="overflow:hidden;"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><svg width="20" height="20" viewBox="0 0 28 28" fill="none" style="display:none;"><rect x="2" y="12" width="5" height="14" rx="1.5" fill="white"/></svg></div>
         <div class="lbnm">Pragati<span>.</span></div>
       </div>
       <button class="btn btn-sm" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);" onclick="scrollAuth('sec-login')">Login</button>
@@ -448,6 +448,7 @@ select.fin{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
       <div class="field"><label class="flbl">Email Address</label><input class="fin" id="li-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
       <div class="field"><label class="flbl">Password</label><input class="fin" id="li-pass" type="password" placeholder="Your password"/></div>
       <div class="ferr" id="li-err">Invalid email or password. Try again.</div>
+      <div style="text-align:right;margin-bottom:2px;"><span style="font-size:13px;color:var(--blue2);font-weight:600;cursor:pointer;" onclick="showForgotPass()">Forgot Password?</span></div>
       <button class="btn btn-p btn-bl btn-lg" id="li-btn" onclick="doLogin()" style="margin-top:8px;">Login →</button>
       <div class="divdr">or</div>
       <p style="text-align:center;font-size:14px;color:var(--s3);">No account? <span style="color:var(--blue2);font-weight:600;cursor:pointer;" onclick="scrollAuth('sec-register')">Register Free</span></p>
@@ -665,7 +666,7 @@ select.fin{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
     <div class="slbl"><div class="snm">1</div>Basic Details</div>
     <div class="field"><label class="flbl">Work Title *</label><input class="fin" id="pw-tit" placeholder="e.g. Interior Plastering – Block A"/></div>
     <div class="g2">
-      <div class="field"><label class="flbl">Trade Type *</label><select class="fin" id="pw-tr"><option value="">Select…</option><option>Plastering</option><option>Flooring</option><option>Painting</option><option>Electrical</option><option>Plumbing</option><option>Masonry</option><option>Carpentry</option><option>Tiling</option><option>Waterproofing</option><option>Civil Work</option></select></div>
+      <div class="field"><label class="flbl">Trade Type *</label><select class="fin" id="pw-tr" onchange="toggleOtherTrade()"><option value="">Select…</option><option>Plastering</option><option>Flooring</option><option>Painting</option><option>Electrical</option><option>Plumbing</option><option>Masonry</option><option>Carpentry</option><option>Tiling</option><option>Waterproofing</option><option>Civil Work</option><option value="Other">Other (specify below)</option></select></div><div class="field" id="pw-tr-other-wrap" style="display:none;"><label class="flbl">Specify Trade *</label><input class="fin" id="pw-tr-other" placeholder="e.g. Guniting, Grouting, Scaffolding…"/></div>
       <div class="field"><label class="flbl">Urgency</label><select class="fin" id="pw-urg"><option value="Normal">Normal</option><option value="Urgent">Urgent</option><option value="Critical">Critical</option></select></div>
     </div>
     <div class="field"><label class="flbl">Project Location *</label><input class="fin" id="pw-loc" placeholder="e.g. Hinjewadi, Pune"/></div>
@@ -684,6 +685,17 @@ select.fin{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
       <div class="field"><label class="flbl">Labour Count</label><input class="fin" id="pw-lab" placeholder="8–10"/></div>
     </div>
     <div class="field"><label class="flbl">Scope of Work *</label><textarea class="fin" id="pw-scope" rows="5" placeholder="Full scope, quality standards, materials expected…"></textarea></div>
+    <div class="slbl"><div class="snm">4</div>Attachments (Optional)</div>
+    <div class="field">
+      <label class="flbl">Upload BOQ / Drawings / Photos</label>
+      <label id="attach-label" style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed var(--s6);border-radius:12px;padding:20px;cursor:pointer;background:var(--s9);gap:6px;" onclick="document.getElementById('pw-files').click()">
+        <span style="font-size:28px;">📎</span>
+        <span style="font-size:13px;font-weight:600;color:var(--s3);">Tap to upload files</span>
+        <span style="font-size:11px;color:var(--s5);">PDF, JPG, PNG, DWG · Max 10MB each</span>
+      </label>
+      <input type="file" id="pw-files" multiple accept=".pdf,.jpg,.jpeg,.png,.dwg" style="display:none;" onchange="showAttachments(this)"/>
+      <div id="attach-list" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
     <div class="ferr" id="pw-err">Please fill all required fields.</div>
     <button class="btn btn-o btn-bl btn-lg" id="pw-btn" onclick="postWork()" style="margin-top:8px;">Post Work →</button>
   </div>
@@ -870,7 +882,7 @@ select.fin{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
     <div class="shtit">Help & Support</div>
     <div class="psec" style="margin:0 0 12px;">
       <div class="prow"><div class="pro-ico">📞</div><div class="pro-txt">Call Support: +91 800-PRAGATI</div><div class="pro-arr">›</div></div>
-      <div class="prow"><div class="pro-ico">📧</div><div class="pro-txt">Email: support@pragati.in</div><div class="pro-arr">›</div></div>
+      <div class="prow"><div class="pro-ico">📧</div><div class="pro-txt">Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9feceaefeff0edebdfefedfef8feebf6b1f6f1">[email&#160;protected]</a></div><div class="pro-arr">›</div></div>
       <div class="prow"><div class="pro-ico">💬</div><div class="pro-txt">WhatsApp Support</div><div class="pro-arr">›</div></div>
     </div>
     <div style="background:var(--s8);border-radius:12px;padding:14px;font-size:13px;color:var(--s3);line-height:1.7;margin-bottom:12px;">
@@ -878,7 +890,7 @@ select.fin{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
       • How to apply for work? → Browse Find Work → Open any work → Submit Quotation<br/>
       • How to post work? → Dashboard → Post New Work → Fill details<br/>
       • How to award work? → My Works → View Bids → Award to best contractor<br/>
-      • Payment issues? → Contact support@pragati.in
+      • Payment issues? → Contact <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0675737676697472467674676167726f286f68">[email&#160;protected]</a>
     </div>
     <button class="btn btn-g btn-bl" onclick="closeOvl('help-ovl')">Close</button>
   </div>
@@ -904,7 +916,7 @@ select.fin{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
 </div>
 
 <!-- ═══════════════ FIREBASE + APP LOGIC ═══════════════ -->
-<script type="module">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import{getFirestore,collection,addDoc,getDocs,getDoc,doc,setDoc,updateDoc,query,where,orderBy,serverTimestamp,limit}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -1196,8 +1208,15 @@ window.submitQuote=async function(){
 async function loadApps(){
   const el=document.getElementById('apps-list');
   el.innerHTML=`<div class="empty"><div class="spin" style="margin:0 auto;"></div></div>`;
-  try{const s=await getDocs(query(collection(db,'applications'),where('applicantId','==',CU.uid),orderBy('createdAt','desc')));myAppsData=s.docs.map(d=>({id:d.id,...d.data()}));}
-  catch(e){myAppsData=[];}
+  try{
+    // Try with orderBy first; if composite index missing, fall back to simple query
+    let snap;
+    try{snap=await getDocs(query(collection(db,'applications'),where('applicantId','==',CU.uid),orderBy('createdAt','desc')));}
+    catch(e2){snap=await getDocs(query(collection(db,'applications'),where('applicantId','==',CU.uid)));}
+    myAppsData=snap.docs.map(d=>({id:d.id,...d.data()}));
+    // sort client-side
+    myAppsData.sort((a,b)=>(b.createdAt?.toMillis?.()||b.createdAt||0)-(a.createdAt?.toMillis?.()||a.createdAt||0));
+  }catch(e){myAppsData=[];}
   renderApps('all');
 }
 function renderApps(filter){
@@ -1227,7 +1246,8 @@ window.setAppChip=function(el,f){document.querySelectorAll('#s-apps .chip').forE
 // ── POST WORK ──
 window.postWork=async function(){
   if(!CU)return;
-  const title=document.getElementById('pw-tit').value.trim(),trade=document.getElementById('pw-tr').value,loc=document.getElementById('pw-loc').value.trim(),minB=document.getElementById('pw-min').value,maxB=document.getElementById('pw-max').value,scope=document.getElementById('pw-scope').value.trim(),err=document.getElementById('pw-err'),btn=document.getElementById('pw-btn');
+  const rawTrade=document.getElementById('pw-tr').value,trade=rawTrade==='Other'?(document.getElementById('pw-tr-other').value.trim()||'Other'):rawTrade;
+  const title=document.getElementById('pw-tit').value.trim(),loc=document.getElementById('pw-loc').value.trim(),minB=document.getElementById('pw-min').value,maxB=document.getElementById('pw-max').value,scope=document.getElementById('pw-scope').value.trim(),err=document.getElementById('pw-err'),btn=document.getElementById('pw-btn');
   if(!title||!trade||!loc||!minB||!maxB||!scope){err.classList.add('on');return;}err.classList.remove('on');
   btn.classList.add('btn-ld');btn.textContent='Posting…';
   try{
@@ -1362,19 +1382,48 @@ function loadNotifs(){
 window.markAllRead=function(){document.querySelectorAll('.notif-item.unread').forEach(el=>el.classList.remove('unread'));toast('All marked as read','ok');};
 
 // ── CHAT ──
+let currentChatName='';
 window.openChat=function(code,name,bg,color){
+  currentChatName=name;
   document.getElementById('chat-list-view').style.display='none';
   const cw=document.getElementById('chat-win');cw.style.display='flex';
   const av=document.getElementById('cw-av');av.textContent=code;av.style.background=bg;av.style.color=color;
   document.getElementById('cw-nm').textContent=name;
+  // Remove unread badge on this chat
+  document.querySelectorAll('.cli').forEach(cli=>{
+    if(cli.querySelector('.cnm')?.textContent===name){const u=cli.querySelector('.cund');if(u)u.remove();}
+  });
 };
-window.closeChat=function(){document.getElementById('chat-list-view').style.display='block';document.getElementById('chat-win').style.display='none';};
+window.closeChat=function(){
+  document.getElementById('chat-list-view').style.display='block';
+  document.getElementById('chat-win').style.display='none';
+};
 window.sendMsg=function(){
-  const inp=document.getElementById('cin');if(!inp.value.trim())return;
+  const inp=document.getElementById('cin');
+  const txt=inp.value.trim();if(!txt)return;
   const mw=document.getElementById('msg-wrap');
-  const m=document.createElement('div');m.className='msg me';m.textContent=inp.value.trim();
+  // Add my message
+  const m=document.createElement('div');m.className='msg me';m.textContent=txt;
   mw.appendChild(m);inp.value='';mw.scrollTop=mw.scrollHeight;
+  // Simulate reply after 1.5s
+  setTimeout(()=>{
+    const replies=['Got it, thanks!','Sure, will check and get back to you.','Please confirm the site visit time.','Yes that works for us.','Can you share your experience certificate?','We will review and let you know soon.'];
+    const r=document.createElement('div');r.className='msg them';
+    r.textContent=replies[Math.floor(Math.random()*replies.length)];
+    mw.appendChild(r);mw.scrollTop=mw.scrollHeight;
+    // Update last message in chat list
+    document.querySelectorAll('.cli').forEach(cli=>{
+      if(cli.querySelector('.cnm')?.textContent===currentChatName){
+        const prev=cli.querySelector('.cpv');if(prev)prev.textContent=r.textContent;
+      }
+    });
+  },1500);
 };
+// Allow Enter key to send
+document.addEventListener('DOMContentLoaded',()=>{
+  const ci=document.getElementById('cin');
+  if(ci)ci.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();window.sendMsg();}});
+});
 
 // ── RATING ──
 window.showRateOvl=function(){document.getElementById('rate-ovl').classList.remove('off');};
@@ -1395,6 +1444,46 @@ window.toast=function(msg,type=''){const el=document.getElementById('toast');el.
 document.querySelectorAll('.ovl').forEach(ovl=>{
   ovl.addEventListener('click',e=>{if(e.target===ovl)ovl.classList.add('off');});
 });
+</script>
+
+<!-- FORGOT PASSWORD SHEET -->
+<div class="ovl off" id="forgot-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Reset Password 🔑</div>
+    <p style="font-size:14px;color:var(--s4);margin-bottom:16px;line-height:1.6;">Enter your registered email. We will send a password reset link to your inbox.</p>
+    <div class="field"><label class="flbl">Email Address</label><input class="fin" id="fp-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
+    <div class="ferr" id="fp-err">Please enter a valid email address.</div>
+    <div id="fp-success" style="display:none;background:var(--green4);border:1px solid #A7F3D0;border-radius:10px;padding:12px 14px;font-size:13px;color:var(--green);margin-bottom:14px;">✅ Reset link sent! Please check your email inbox.</div>
+    <button class="btn btn-p btn-bl btn-lg" id="fp-btn" onclick="sendResetEmail()">Send Reset Link →</button>
+    <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="closeOvl('forgot-ovl')">Cancel</button>
+  </div>
+</div>
+
+<script type="module">
+import{getAuth,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+window.showForgotPass=function(){
+  document.getElementById('fp-email').value=document.getElementById('li-email')?.value||'';
+  document.getElementById('fp-err').classList.remove('on');
+  document.getElementById('fp-success').style.display='none';
+  const btn=document.getElementById('fp-btn');if(btn){btn.style.display='';btn.textContent='Send Reset Link →';}
+  document.getElementById('forgot-ovl').classList.remove('off');
+};
+window.sendResetEmail=async function(){
+  const email=document.getElementById('fp-email').value.trim();
+  const err=document.getElementById('fp-err'),btn=document.getElementById('fp-btn'),suc=document.getElementById('fp-success');
+  if(!email||!email.includes('@')){err.textContent='Please enter a valid email.';err.classList.add('on');return;}
+  err.classList.remove('on');btn.classList.add('btn-ld');btn.textContent='Sending…';
+  try{
+    const auth=getAuth();
+    await sendPasswordResetEmail(auth,email);
+    suc.style.display='block';btn.style.display='none';
+    window.toast('Reset link sent! Check your email.','ok');
+  }catch(e){
+    err.textContent=e.code==='auth/user-not-found'?'No account found with this email.':'Failed: '+e.message;
+    err.classList.add('on');btn.classList.remove('btn-ld');btn.textContent='Send Reset Link →';
+  }
+};
 </script>
 </body>
 </html>
