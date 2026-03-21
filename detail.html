@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<title>Work Details — Pragati Work Exchange</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<div style="display:flex;flex-direction:column;min-height:100vh;">
+  <div class="dh" id="det-hero">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <button class="tbk" onclick="history.back()" style="background:rgba(255,255,255,.2);color:#fff;">←</button>
+      <div style="flex:1;"></div>
+      <button class="tbk" id="save-btn" style="background:rgba(255,255,255,.2);" onclick="toggleSave()">🔖</button>
+    </div>
+    <div class="tags" id="det-tags"></div>
+    <h1 id="det-title">Loading…</h1>
+    <div class="dco" id="det-co"></div>
+    <div class="dprog"><div class="dpf" id="det-pf" style="width:50%;"></div></div>
+    <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;opacity:.75;"><span id="det-bt"></span><span id="det-dl"></span></div>
+  </div>
+  <div class="pscr" style="padding-bottom:0;">
+    <div class="dsec"><h4>Work Details</h4>
+      <div class="irow"><span class="ik">Budget</span><span class="iv" style="color:var(--green2);" id="det-bud">—</span></div>
+      <div class="irow"><span class="ik">Location</span><span class="iv" id="det-loc">—</span></div>
+      <div class="irow"><span class="ik">Duration</span><span class="iv" id="det-dur">—</span></div>
+      <div class="irow"><span class="ik">Start Date</span><span class="iv" id="det-std">—</span></div>
+      <div class="irow"><span class="ik">Experience</span><span class="iv" id="det-exp">—</span></div>
+      <div class="irow"><span class="ik">Labour</span><span class="iv" id="det-lab">—</span></div>
+    </div>
+    <div class="dsec"><h4>Scope of Work</h4><div id="det-scope"></div></div>
+    <div class="dsec" id="det-applied-box" style="display:none;text-align:center;padding:16px;">
+      <div style="font-size:32px;margin-bottom:8px;">✅</div>
+      <div style="font-family:var(--h);font-size:15px;font-weight:700;color:var(--green2);">Already Applied!</div>
+      <div style="font-size:12px;color:var(--s4);margin-top:4px;">You'll be notified when status changes.</div>
+    </div>
+    <div style="height:100px;"></div>
+  </div>
+  <div class="scta" id="det-cta">
+    <button class="btn btn-g" style="width:46px;font-size:20px;padding:0;" onclick="go('chat.html')">💬</button>
+    <button class="btn btn-p" style="flex:1;" id="apply-btn">Submit Quotation →</button>
+  </div>
+</div>
+<script src="shared.js"></script>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,onAuthStateChanged,signOut,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getFirestore,collection,addDoc,getDocs,getDoc,doc,setDoc,updateDoc,query,where,orderBy,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const fbApp=initializeApp(FB_CFG);
+const auth=getAuth(fbApp);
+const db=getFirestore(fbApp);
+
+let CU=null;
+onAuthStateChanged(auth,async u=>{
+  if(!u){location.href='index.html';return;}
+  CU=u;
+  document.getElementById('loader').classList.add('out');
+  const id=getParam('id');
+  if(!id){history.back();return;}
+  let w=null;
+  try{const s=await getDoc(doc(db,'works',id));if(s.exists())w={id:s.id,...s.data()};}
+  catch(e){}
+  if(!w)w=DEMO_WORKS.find(x=>x.id===id);
+  if(!w){history.back();return;}
+  saveState('currentWork',w);
+  document.getElementById('det-tags').innerHTML=`<span class="tag" style="background:rgba(255,255,255,.2);color:#fff;">${w.trade||''}</span>${w.urgency&&w.urgency!=='Normal'?`<span class="tag t-or">${w.urgency.toUpperCase()}</span>`:''}`;
+  document.getElementById('det-title').textContent=w.title;
+  document.getElementById('det-co').textContent='🏢 '+(w.company||w.postedByName||'')+' · 📍 '+(w.location||'');
+  document.getElementById('det-bud').textContent=fmtBudget(w);
+  document.getElementById('det-loc').textContent=w.location||'—';
+  document.getElementById('det-dur').textContent=w.duration?w.duration+' Days':'—';
+  document.getElementById('det-std').textContent=w.startDate||'—';
+  document.getElementById('det-exp').textContent=w.experience||'—';
+  document.getElementById('det-lab').textContent=w.labour||'—';
+  document.getElementById('det-bt').textContent=(w.bids||0)+' bids received';
+  document.getElementById('det-dl').textContent=w.startDate?'Start: '+w.startDate:'';
+  document.getElementById('det-pf').style.width=Math.min(100,((w.bids||0)/12)*100)+'%';
+  document.getElementById('det-scope').innerHTML=w.scope?w.scope.split(/\n/).filter(s=>s.trim()).map(s=>`<div class="blit"><div class="bdo"></div>${s.trim()}</div>`).join(''):'<p style="color:var(--s4);font-size:13px;">No scope details.</p>';
+  document.getElementById('apply-btn').onclick=()=>go('quote.html',{id:id});
+  // Check applied
+  try{
+    let snap;
+    try{snap=await getDocs(query(collection(db,'applications'),where('workId','==',id),where('applicantId','==',u.uid)));}
+    catch(e2){snap=await getDocs(query(collection(db,'applications'),where('workId','==',id)));}
+    const applied=!snap.empty&&snap.docs.some(d=>d.data().applicantId===u.uid);
+    document.getElementById('det-applied-box').style.display=applied?'block':'none';
+    document.getElementById('det-cta').style.display=applied?'none':'flex';
+  }catch(e){}
+});
+function toggleSave(){const b=document.getElementById('save-btn');b.textContent=b.textContent==='🔖'?'🔖✓':'🔖';toast('Saved to bookmarks','ok');}
+</script>
+</body>
+</html>

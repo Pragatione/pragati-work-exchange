@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<title>Dashboard — Pragati Work Exchange</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<div style="display:flex;flex-direction:column;min-height:100vh;">
+  <div class="hh" style="background:linear-gradient(135deg,#065F46,#059669);">
+    <div class="hh-top">
+      <div><div class="hh-gr">Main Contractor 🏗️</div><div class="hh-nm" id="mh-nm">—</div></div>
+      <div class="hh-av" id="mh-av" onclick="go('profile.html')" style="background:rgba(255,255,255,.2);">MC</div>
+    </div>
+  </div>
+  <div class="pscr pb90">
+    <div class="mets">
+      <div class="met"><div class="mn bl" id="mm-post">0</div><div class="ml">Works Posted</div></div>
+      <div class="met"><div class="mn or" id="mm-bids">0</div><div class="ml">Bids Received</div></div>
+      <div class="met"><div class="mn gr" id="mm-awd">0</div><div class="ml">Awarded</div></div>
+      <div class="met"><div class="mn pu" id="mm-act">0</div><div class="ml">Active Works</div></div>
+    </div>
+    <div style="padding:0 16px 0;"><div class="sh" style="margin-top:4px;"><h3>My Recent Works</h3><a onclick="go('myworks.html')">View all →</a></div></div>
+    <div style="padding:0 16px;" id="mw-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
+    <div style="padding:10px 16px 4px;"><button class="btn btn-o btn-bl btn-lg" onclick="go('post.html')">+ Post New Work Requirement</button></div>
+  </div>
+  <nav class="bnav n4"><div class="bni on" onclick="location.href='main.html'"><div class="ico">🏠</div><div class="lbl">Home</div></div><div class="bni" onclick="location.href='post.html'"><div class="ico">➕</div><div class="lbl">Post Work</div></div><div class="bni" onclick="location.href='myworks.html'"><div class="ico">📋</div><div class="lbl">My Works</div></div><div class="bni" onclick="location.href='chat.html'"><div class="ico">💬</div><div class="lbl">Messages</div></div></nav>
+
+</div>
+<script src="shared.js"></script>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,onAuthStateChanged,signOut,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getFirestore,collection,addDoc,getDocs,getDoc,doc,setDoc,updateDoc,query,where,orderBy,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const fbApp=initializeApp(FB_CFG);
+const auth=getAuth(fbApp);
+const db=getFirestore(fbApp);
+
+onAuthStateChanged(auth,async u=>{
+  if(!u){location.href='index.html';return;}
+  const s=await getDoc(doc(db,'users',u.uid));
+  const cd=s.exists()?s.data():null;
+  if(!cd){location.href='index.html';return;}
+  if(cd.role!=='main'){location.href='home.html';return;}
+  document.getElementById('loader').classList.add('out');
+  const n=cd.name||'Company';
+  document.getElementById('mh-nm').textContent=n;
+  document.getElementById('mh-av').textContent=initials(n);
+  let works=[];
+  try{const ws=await getDocs(query(collection(db,'works'),where('postedBy','==',u.uid)));works=ws.docs.map(d=>({id:d.id,...d.data()}));}
+  catch(e){works=DEMO_WORKS.slice(0,3);}
+  document.getElementById('mm-post').textContent=works.length;
+  document.getElementById('mm-bids').textContent=works.reduce((s,w)=>s+(w.bids||0),0);
+  document.getElementById('mm-awd').textContent=works.filter(w=>w.status==='awarded').length;
+  document.getElementById('mm-act').textContent=works.filter(w=>!w.status||w.status==='open').length;
+  document.getElementById('mw-list').innerHTML=works.slice(0,3).map(w=>`<div class="arow" onclick="go('bids.html','id=${w.id}')">
+    <div class="tags" style="margin-bottom:7px;"><span class="tag t-bl">${w.trade||'—'}</span><span class="tag ${tagColor(w.urgency)}">${w.urgency||'Normal'}</span></div>
+    <div class="art">${w.title}</div><div class="ars">📍 ${w.location||'—'} · ${w.bids||0} bids received</div>
+    <div class="arf"><span class="sts ${w.status==='awarded'?'awd':'open'}">${w.status==='awarded'?'Awarded ✓':'Accepting Bids'}</span><span style="font-size:13px;font-weight:700;color:var(--green2);">${fmtBudget(w)}</span></div>
+  </div>`).join('')||emptyHTML('🏗️','No works posted yet','Post your first work requirement');
+});
+</script>
+</body>
+</html>

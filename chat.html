@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<title>Messages — Pragati Work Exchange</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<div style="display:flex;flex-direction:column;min-height:100vh;">
+  <div id="chat-list-view" style="display:flex;flex-direction:column;flex:1;">
+    <div class="tbar"><button class="tbk" onclick="history.back()">←</button><h2>Messages</h2></div>
+    <div style="flex:1;overflow-y:auto;background:#fff;" id="chat-list">
+      <div class="cli" onclick="openChat('KP','Kalpataru Projects','rgba(37,99,235,.12)','var(--blue2)')"><div class="cav" style="background:rgba(37,99,235,.12);color:var(--blue2);">KP</div><div class="cinfo"><div class="cnm">Kalpataru Projects</div><div class="cpv">Please share availability for site visit</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-size:10px;color:var(--s5);">2:30 PM</div><div class="cund">2</div></div></div>
+      <div class="cli" onclick="openChat('GP','Godrej Properties','rgba(16,185,129,.12)','var(--green2)')"><div class="cav" style="background:rgba(16,185,129,.12);color:var(--green2);">GP</div><div class="cinfo"><div class="cnm">Godrej Properties</div><div class="cpv">Your quotation looks good, let's discuss</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-size:10px;color:var(--s5);">11:15</div><div class="cund">1</div></div></div>
+      <div class="cli" onclick="openChat('SP','Shapoorji Pallonji','rgba(249,115,22,.12)','var(--orange2)')"><div class="cav" style="background:rgba(249,115,22,.12);color:var(--orange2);">SP</div><div class="cinfo"><div class="cnm">Shapoorji Pallonji</div><div class="cpv">Congratulations! Work awarded to you 🎉</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-size:10px;color:var(--s5);">Yesterday</div></div></div>
+      <div class="cli" onclick="openChat('LG','Lodha Group','rgba(124,58,237,.12)','#7C3AED')"><div class="cav" style="background:rgba(124,58,237,.12);color:#7C3AED;">LG</div><div class="cinfo"><div class="cnm">Lodha Group</div><div class="cpv">Please share your GST certificate</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-size:10px;color:var(--s5);">Mon</div></div></div>
+      <div class="cli" onclick="openChat('TR','Tata Realty','rgba(220,38,38,.1)','var(--red2)')"><div class="cav" style="background:rgba(220,38,38,.1);color:var(--red2);">TR</div><div class="cinfo"><div class="cnm">Tata Realty</div><div class="cpv">Site visit scheduled for Saturday 10 AM</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-size:10px;color:var(--s5);">Sun</div></div></div>
+    </div>
+    <div class="bnav n4" id="chat-bnav"></div>
+  </div>
+  <div id="chat-win" style="display:none;flex-direction:column;height:100vh;position:fixed;inset:0;background:#fff;z-index:100;">
+    <div style="background:#fff;padding:14px 14px;border-bottom:1px solid var(--s7);display:flex;align-items:center;gap:10px;padding-top:52px;">
+      <button class="tbk" onclick="closeChat()">←</button>
+      <div class="cav" id="cw-av" style="width:36px;height:36px;border-radius:11px;font-size:13px;flex-shrink:0;">KP</div>
+      <div style="flex:1;"><div style="font-family:var(--h);font-size:14px;font-weight:700;" id="cw-nm">—</div><div style="font-size:11px;color:var(--green2);">● Online</div></div>
+      <button class="tbk">📞</button>
+    </div>
+    <div class="mwrap" id="msg-wrap">
+      <div class="mtime">Today</div>
+      <div class="msg them">Hello! We reviewed your quotation for the plastering work.</div>
+      <div class="msg them">Your price looks competitive. Can you visit the site this week?</div>
+      <div class="msg me">Thank you! I'm available Saturday 10 AM or Sunday anytime.</div>
+      <div class="msg them">Saturday 10 AM works. Hinjewadi Phase 2, ask for Mr. Sharma at gate.</div>
+      <div class="msg me">Confirmed! Should I bring any documents?</div>
+      <div class="msg them">Please bring Aadhaar copy and photos of past work if any.</div>
+    </div>
+    <div class="cbar">
+      <input class="cin" id="cin" placeholder="Type a message…"/>
+      <button class="csnd" onclick="sendMsg()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+</div>
+<script src="shared.js"></script>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,onAuthStateChanged,signOut,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getFirestore,collection,addDoc,getDocs,getDoc,doc,setDoc,updateDoc,query,where,orderBy,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const fbApp=initializeApp(FB_CFG);
+const auth=getAuth(fbApp);
+const db=getFirestore(fbApp);
+
+let currentChatName='',CU=null,CD=null;
+onAuthStateChanged(auth,async u=>{
+  if(!u){location.href='index.html';return;}
+  CU=u;
+  const s=await getDoc(doc(db,'users',u.uid));
+  CD=s.exists()?s.data():null;
+  document.getElementById('loader').classList.add('out');
+  const isMain=CD?.role==='main';
+  const nav=document.getElementById('chat-bnav');
+  nav.innerHTML=`
+    <div class="bni" onclick="location.href='${isMain?'main.html':'home.html'}'"><div class="ico">🏠</div><div class="lbl">Home</div></div>
+    <div class="bni" onclick="location.href='${isMain?'post.html':'find.html'}'"><div class="ico">${isMain?'➕':'🔍'}</div><div class="lbl">${isMain?'Post Work':'Find Work'}</div></div>
+    <div class="bni" onclick="location.href='${isMain?'myworks.html':'apps.html'}'"><div class="ico">📋</div><div class="lbl">${isMain?'My Works':'My Bids'}</div></div>
+    <div class="bni on"><div class="ico">💬</div><div class="lbl">Messages</div></div>`;
+});
+function openChat(code,name,bg,color){
+  currentChatName=name;
+  document.getElementById('chat-list-view').style.display='none';
+  const cw=document.getElementById('chat-win');cw.style.display='flex';cw.style.flexDirection='column';
+  const av=document.getElementById('cw-av');av.textContent=code;av.style.background=bg;av.style.color=color;
+  document.getElementById('cw-nm').textContent=name;
+  document.querySelectorAll('.cli').forEach(c=>{if(c.querySelector('.cnm')?.textContent===name){const u=c.querySelector('.cund');if(u)u.remove();}});
+}
+function closeChat(){document.getElementById('chat-list-view').style.display='flex';document.getElementById('chat-win').style.display='none';}
+function sendMsg(){
+  const inp=document.getElementById('cin'),txt=inp.value.trim();if(!txt)return;
+  const mw=document.getElementById('msg-wrap');
+  const m=document.createElement('div');m.className='msg me';m.textContent=txt;mw.appendChild(m);inp.value='';mw.scrollTop=mw.scrollHeight;
+  setTimeout(()=>{
+    const replies=['Got it, thanks!','Sure, will check and get back to you.','Please confirm the site visit time.','Yes that works.','Can you share your experience certificate?','We will review and let you know.'];
+    const r=document.createElement('div');r.className='msg them';r.textContent=replies[Math.floor(Math.random()*replies.length)];mw.appendChild(r);mw.scrollTop=mw.scrollHeight;
+  },1500);
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const ci=document.getElementById('cin');
+  if(ci)ci.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
+});
+</script>
+</body>
+</html>

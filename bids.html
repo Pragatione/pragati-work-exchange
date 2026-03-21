@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<title>Bid Management — Pragati Work Exchange</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<div style="display:flex;flex-direction:column;min-height:100vh;">
+  <div class="tbar"><button class="tbk" onclick="history.back()">←</button><h2>Bid Management</h2><span id="bids-cnt" class="tag t-bl" style="flex-shrink:0;">0</span></div>
+  <div style="background:var(--blue5);border-bottom:1px solid var(--s7);padding:10px 16px;flex-shrink:0;">
+    <div style="font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue2);" id="bw-tit">—</div>
+    <div style="font-size:11px;color:var(--s4);" id="bw-meta">—</div>
+  </div>
+  <div class="pscr pb90" style="padding:12px 16px 0;" id="bids-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
+</div>
+
+<!-- AWARD SHEET -->
+<div class="ovl off" id="award-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Award This Work 🏆</div>
+    <p style="font-size:14px;color:var(--s3);margin-bottom:20px;line-height:1.6;" id="award-txt">—</p>
+    <button class="btn btn-o btn-bl btn-lg" onclick="confirmAward()">Yes, Award Work →</button>
+    <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="document.getElementById('award-ovl').classList.add('off')">Cancel</button>
+  </div>
+</div>
+<script src="shared.js"></script>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,onAuthStateChanged,signOut,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getFirestore,collection,addDoc,getDocs,getDoc,doc,setDoc,updateDoc,query,where,orderBy,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const fbApp=initializeApp(FB_CFG);
+const auth=getAuth(fbApp);
+const db=getFirestore(fbApp);
+
+let pendingAward=null;
+onAuthStateChanged(auth,async u=>{
+  if(!u){location.href='index.html';return;}
+  document.getElementById('loader').classList.add('out');
+  const id=getParam('id');if(!id){history.back();return;}
+  let w=null;
+  try{const s=await getDoc(doc(db,'works',id));if(s.exists())w={id:s.id,...s.data()};}catch(e){}
+  if(!w)w=DEMO_WORKS.find(x=>x.id===id);
+  if(!w){history.back();return;}
+  document.getElementById('bw-tit').textContent=w.title;
+  document.getElementById('bw-meta').textContent=`📍 ${w.location||''} · ${fmtBudget(w)} · ${w.bids||0} quotations received`;
+  let apps=[];
+  try{const as=await getDocs(query(collection(db,'applications'),where('workId','==',id)));apps=as.docs.map(d=>({id:d.id,...d.data()}));}catch(e){}
+  if(!apps.length&&id.startsWith('d'))apps=[
+    {id:'b1',applicantName:'Mohan Kumar',amount:265000,days:40,pitch:'15 years plastering experience across Pune and Mumbai. 12 major residential projects.',rating:4.8,projects:12,status:'pending'},
+    {id:'b2',applicantName:'Rajesh Patil',amount:275000,days:38,pitch:'Expert plasterer with 8 years. High-end residential specialist. Full team safety-certified.',rating:4.7,projects:15,status:'pending'},
+    {id:'b3',applicantName:'Suresh More',amount:280000,days:45,pitch:'Quality work with 1 year warranty. References from Lodha and Godrej available.',rating:4.5,projects:8,status:'pending'},
+    {id:'b4',applicantName:'Vijay Deshmukh',amount:290000,days:48,pitch:'Honest contractor, dedicated team, fully committed to quality.',rating:4.2,projects:5,status:'pending'},
+  ];
+  document.getElementById('bids-cnt').textContent=apps.length;
+  const cols=['#1D4ED8','#059669','#7C3AED','#EA580C','#DC2626'];
+  const el=document.getElementById('bids-list');
+  if(!apps.length){el.innerHTML=emptyHTML('📬','No bids yet','Share your work to attract contractors');return;}
+  el.innerHTML=apps.map((a,i)=>`<div class="bcard ${i===0?'top':''}">
+    ${i===0?'<div class="bbadge">BEST MATCH</div>':''}
+    <div style="display:flex;gap:11px;align-items:center;margin-bottom:10px;">
+      <div class="bav" style="background:${cols[i%5]};">${initials(a.applicantName||'C')}</div>
+      <div style="flex:1;"><div class="bnm">${a.applicantName||'Contractor'}</div><div class="bsb">${a.rating?'⭐ '+a.rating+' · ':''}${a.projects||0} projects</div></div>
+      <div style="text-align:right;"><div class="bpr">₹${Number(a.amount).toLocaleString('en-IN')}</div><div style="font-size:10px;color:var(--s4);">${a.days} days</div></div>
+    </div>
+    <div class="bpit">"${a.pitch||'No pitch provided'}"</div>
+    <div style="display:flex;gap:8px;">
+      ${a.status==='awarded'?'<span class="sts awd" style="padding:8px 14px;">Awarded ✓</span>':`<button class="btn btn-g btn-sm" style="flex:1;" onclick="go('chat.html')">💬 Chat</button><button class="btn btn-o btn-sm" onclick="showAward('${a.id}','${a.applicantName}')">Award →</button>`}
+    </div>
+  </div>`).join('');
+});
+function showAward(id,name){pendingAward=id;document.getElementById('award-txt').textContent=`Award this work to ${name}? They will be notified immediately.`;document.getElementById('award-ovl').classList.remove('off');}
+async function confirmAward(){
+  if(!pendingAward)return;
+  try{await updateDoc(doc(db,'applications',pendingAward),{status:'awarded'});toast('Work awarded! 🏆','ok');setTimeout(()=>location.href='myworks.html',1200);}
+  catch(e){toast('Error: '+e.message,'err');}
+  document.getElementById('award-ovl').classList.add('off');
+}
+</script>
+</body>
+</html>

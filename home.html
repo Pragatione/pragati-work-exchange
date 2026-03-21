@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<title>Home — Pragati Work Exchange</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<div style="display:flex;flex-direction:column;min-height:100vh;">
+  <div class="hh">
+    <div class="hh-top">
+      <div><div class="hh-gr">Good day 👋</div><div class="hh-nm" id="hh-nm">—</div></div>
+      <div class="hh-av" id="hh-av" onclick="go('profile.html')">RP</div>
+    </div>
+    <div class="spill" onclick="go('find.html')"><span style="font-size:16px;opacity:.6;">🔍</span><span>Search work by trade, location…</span></div>
+  </div>
+  <div class="pscr pb90">
+    <div class="mets">
+      <div class="met"><div class="mn bl" id="st-open">—</div><div class="ml">Open Works</div></div>
+      <div class="met"><div class="mn or" id="st-app">0</div><div class="ml">Applied</div></div>
+      <div class="met"><div class="mn gr" id="st-awd">0</div><div class="ml">Awarded</div></div>
+      <div class="met"><div class="mn pu" id="st-sh">0</div><div class="ml">Shortlisted</div></div>
+    </div>
+    <div id="home-ntc" style="display:none;" class="ntc">⚡ <span id="home-ntxt"></span></div>
+    <div style="padding:12px 16px 0;"><div class="sh"><h3>Browse by Trade</h3></div></div>
+    <div class="istrip">
+      <div class="icard" onclick="go('find.html','trade=Plastering')"><div class="icico">🧱</div><div class="ictit">Plastering</div><div class="icsub">Wall & ceiling</div></div>
+      <div class="icard" onclick="go('find.html','trade=Flooring')"><div class="icico">⬜</div><div class="ictit">Flooring</div><div class="icsub">Tiles & marble</div></div>
+      <div class="icard" onclick="go('find.html','trade=Electrical')"><div class="icico">⚡</div><div class="ictit">Electrical</div><div class="icsub">Wiring</div></div>
+      <div class="icard" onclick="go('find.html','trade=Painting')"><div class="icico">🎨</div><div class="ictit">Painting</div><div class="icsub">Int. & ext.</div></div>
+      <div class="icard" onclick="go('find.html','trade=Plumbing')"><div class="icico">🔧</div><div class="ictit">Plumbing</div><div class="icsub">Sanitary</div></div>
+      <div class="icard" onclick="go('find.html','trade=Masonry')"><div class="icico">🏗️</div><div class="ictit">Masonry</div><div class="icsub">Brick & block</div></div>
+    </div>
+    <div style="padding:0 16px;"><div class="sh"><h3>Latest Works</h3><a onclick="go('find.html')">See all →</a></div></div>
+    <div style="padding:0 16px;" id="hw-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
+  </div>
+  <nav class="bnav n4"><div class="bni on" onclick="location.href='home.html'"><div class="ico">🏠</div><div class="lbl">Home</div></div><div class="bni" onclick="location.href='find.html'"><div class="ico">🔍</div><div class="lbl">Find Work</div></div><div class="bni" onclick="location.href='apps.html'"><div class="ico">📋</div><div class="lbl">My Bids</div></div><div class="bni" onclick="location.href='chat.html'"><div class="ico">💬</div><div class="lbl">Messages</div></div></nav>
+
+</div>
+<script src="shared.js"></script>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,onAuthStateChanged,signOut,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getFirestore,collection,addDoc,getDocs,getDoc,doc,setDoc,updateDoc,query,where,orderBy,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const fbApp=initializeApp(FB_CFG);
+const auth=getAuth(fbApp);
+const db=getFirestore(fbApp);
+
+onAuthStateChanged(auth,async u=>{
+  if(!u){location.href='index.html';return;}
+  const s=await getDoc(doc(db,'users',u.uid));
+  const cd=s.exists()?s.data():null;
+  if(!cd){location.href='index.html';return;}
+  if(cd.role==='main'){location.href='main.html';return;}
+  document.getElementById('loader').classList.add('out');
+  const n=cd.name||'Contractor';
+  document.getElementById('hh-nm').textContent=n.split(' ')[0];
+  document.getElementById('hh-av').textContent=initials(n);
+  // Load works
+  let works=[];
+  try{const ws=await getDocs(query(collection(db,'works'),orderBy('createdAt','desc')));works=ws.docs.map(d=>({id:d.id,...d.data()}));}
+  catch(e){works=DEMO_WORKS;}
+  document.getElementById('st-open').textContent=works.length;
+  document.getElementById('hw-list').innerHTML=works.slice(0,4).map(w=>mkCard(w)).join('')||emptyHTML('🏗️','No works yet','Check back soon');
+  if(works.length){document.getElementById('home-ntc').style.display='flex';document.getElementById('home-ntxt').textContent=works.length+' open works available near you!';}
+  // App stats
+  try{
+    let snap;
+    try{snap=await getDocs(query(collection(db,'applications'),where('applicantId','==',u.uid),orderBy('createdAt','desc')));}
+    catch(e2){snap=await getDocs(query(collection(db,'applications'),where('applicantId','==',u.uid)));}
+    const apps=snap.docs.map(d=>d.data());
+    document.getElementById('st-app').textContent=apps.length;
+    document.getElementById('st-awd').textContent=apps.filter(a=>a.status==='awarded').length;
+    document.getElementById('st-sh').textContent=apps.filter(a=>a.status==='review'||a.status==='shortlisted').length;
+  }catch(e){}
+});
+</script>
+</body>
+</html>
