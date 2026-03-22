@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<title>Bid Management — Pragati Work Exchange</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange · PragatiOne</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<div style="display:flex;flex-direction:column;min-height:100vh;">
+  <div class="tbar"><button class="tbk" onclick="history.back()">←</button><h2>Bid Management</h2><span id="bids-cnt" class="tag t-bl" style="flex-shrink:0;">0</span></div>
+  <div id="bw-info" style="background:var(--blue5);border-bottom:1px solid var(--s7);padding:10px 16px;flex-shrink:0;">
+    <div style="font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue2);" id="bw-tit">Loading…</div>
+    <div style="font-size:11px;color:var(--s4);" id="bw-meta">—</div>
+  </div>
+  <div class="pscr pb90" style="padding:12px 16px 0;" id="bids-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
+</div>
+<!-- AWARD SHEET -->
+<div class="ovl off" id="award-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Award This Work 🏆</div>
+    <p style="font-size:14px;color:var(--s3);margin-bottom:20px;line-height:1.6;" id="award-txt">—</p>
+    <button class="btn btn-o btn-bl btn-lg" onclick="confirmAward()">Yes, Award Work →</button>
+    <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="document.getElementById('award-ovl').classList.add('off')">Cancel</button>
+  </div>
+</div>
+<!-- BID DETAIL SHEET -->
+<div class="ovl off" id="bid-detail-ovl">
+  <div class="sheet" style="max-height:90vh;">
+    <div class="shdl"></div>
+    <div id="bid-detail-content"></div>
+    <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="document.getElementById('bid-detail-ovl').classList.add('off')">Close</button>
+  </div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="shared.js"></script>
+<script>
+
+const firebase_cfg = {
+  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
+  authDomain:"pragati-work-exchange.firebaseapp.com",
+  projectId:"pragati-work-exchange",
+  storageBucket:"pragati-work-exchange.firebasestorage.app",
+  messagingSenderId:"422215240765",
+  appId:"1:422215240765:web:eefb239420262c9d822e54"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+const FS   = firebase.firestore;
+var CU=null, CD=null;
+auth.onAuthStateChanged(async function(user){
+  if(!user){location.href='index.html';return;}
+  CU=user;
+  try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
+  if(!CD){location.href='index.html';return;}
+  if(!CD || CD.role!=='main'){location.href='home.html';return;}
+  document.getElementById('loader').classList.add('out');
+  loadBids();
+});
+
+function toast(msg,type){
+  var el=document.getElementById('toast'); el.textContent=msg;
+  el.className=type?'on '+type:'on'; setTimeout(function(){el.className='';},3000);
+}
+function getP(k){return new URLSearchParams(window.location.search).get(k);}
+function saveLS(k,v){try{localStorage.setItem('pg_'+k,JSON.stringify(v));}catch(e){}}
+function getLS(k){try{return JSON.parse(localStorage.getItem('pg_'+k));}catch(e){return null;}}
+function clearLS(k){localStorage.removeItem('pg_'+k);}
+function fmtBud(w){
+  var f=function(n){return n>=100000?'₹'+(n/100000).toFixed(1).replace('.0','')+'L':'₹'+n.toLocaleString('en-IN');};
+  return(w.minBudget&&w.maxBudget)?f(w.minBudget)+'–'+f(w.maxBudget):w.minBudget?f(w.minBudget):'TBD';
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).join('').toUpperCase().slice(0,2);}
+function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
+function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
+function mkCard(w){
+  return '<div class="wcard" onclick="goDetail('+JSON.stringify(w.id)+')">'+
+    '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
+    '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
+    '<div class="wt">'+esc(w.title)+'</div>'+
+    '<div class="wco">🏢 '+esc(w.company||w.postedByName||'Main Contractor')+'</div></div>'+
+    '<div class="wb"><div class="wmeta"><span>📍 '+esc(w.location||'—')+'</span>'+
+    '<span>⏱ '+esc(w.startDate||'TBD')+'</span>'+
+    '<span>👷 '+esc(w.experience||'—')+'</span></div></div>'+
+    '<div class="wf"><span class="wbud">'+fmtBud(w)+'</span>'+
+    '<span class="wbids">'+(w.bids||0)+' bids</span></div></div>';
+}
+</script>
+<script>
+var pendingAward=null, pendingChatUid=null, pendingChatName=null;
+async function loadBids(){
+  var id=getP('id');
+  if(!id){history.back();return;}
+  var w=null;
+  try{var s=await db.collection('works').doc(id).get();w=s.exists?Object.assign({id:s.id},s.data()):null;}catch(e){}
+  if(!w) w=DEMO_WORKS.find(function(x){return x.id===id;});
+  if(!w){history.back();return;}
+  document.getElementById('bw-tit').textContent=w.title;
+  document.getElementById('bw-meta').textContent='📍 '+(w.location||'')+' · '+fmtBud(w)+' · '+(w.bids||0)+' quotations received';
+  var apps=[];
+  try{
+    var snap=await db.collection('applications').where('workId','==',id).get();
+    apps=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
+    apps.sort(function(a,b){return (b.amount||0)-(a.amount||0);});
+  }catch(e){}
+  // Demo bids for demo works
+  if(!apps.length&&id.startsWith('d')) apps=[
+    {id:'b1',applicantId:'uid_mk',applicantName:'Mohan Kumar',amount:265000,days:40,labour:'9',terms:'30% advance · 40% mid · 30% completion',pitch:'15 years plastering experience across Pune and Mumbai. 12 major residential projects. POP certified. Full safety compliance.',rating:4.8,projects:12,status:'pending'},
+    {id:'b2',applicantId:'uid_rp',applicantName:'Rajesh Patil',amount:275000,days:38,labour:'8',terms:'50% advance · 50% completion',pitch:'Expert plasterer with 8 years. High-end residential specialist. Full team safety-certified. ISO quality standards.',rating:4.7,projects:15,status:'pending'},
+    {id:'b3',applicantId:'uid_sm',applicantName:'Suresh More',amount:280000,days:45,labour:'10',terms:'30% advance · 40% mid · 30% completion',pitch:'Quality work with 1 year warranty on workmanship. References from Lodha and Godrej available on request.',rating:4.5,projects:8,status:'pending'},
+    {id:'b4',applicantId:'uid_vd',applicantName:'Vijay Deshmukh',amount:290000,days:48,labour:'8',terms:'100% on completion',pitch:'Honest contractor with dedicated team. Fully committed to quality delivery within timeline.',rating:4.2,projects:5,status:'pending'},
+  ];
+  document.getElementById('bids-cnt').textContent=apps.length;
+  var cols=['#1D4ED8','#059669','#7C3AED','#EA580C','#DC2626'];
+  var el=document.getElementById('bids-list');
+  if(!apps.length){el.innerHTML=emptyHTML('📬','No bids yet','Share your work posting to attract contractors');return;}
+  el.innerHTML=apps.map(function(a,i){
+    return '<div class="bcard '+(i===0?'top':'')+'" data-bid-id="'+a.id+'" onclick="showBidDetail(this.dataset.bidId)" style="cursor:pointer;">'+
+      (i===0?'<div class="bbadge">BEST MATCH</div>':'')+
+      '<div style="display:flex;gap:11px;align-items:center;margin-bottom:10px;">'+
+      '<div class="bav" style="background:'+cols[i%5]+';">'+initials(a.applicantName||'C')+'</div>'+
+      '<div style="flex:1;"><div class="bnm">'+esc(a.applicantName||'Contractor')+'</div>'+
+      '<div class="bsb">'+(a.rating?'⭐ '+a.rating+' · ':'')+( a.projects||0)+' projects</div></div>'+
+      '<div style="text-align:right;"><div class="bpr">₹'+Number(a.amount||0).toLocaleString('en-IN')+'</div>'+
+      '<div style="font-size:10px;color:var(--s4);">'+(a.days||'—')+' days</div></div></div>'+
+      '<div class="bpit">"'+esc((a.pitch||'No pitch provided').substring(0,120))+(a.pitch&&a.pitch.length>120?'…':'')+'"</div>'+
+      '<div style="display:flex;gap:8px;" onclick="event.stopPropagation()">'+
+      (a.status==='awarded'?'<span class="sts awd" style="padding:8px 14px;">Awarded ✓</span>':
+        '<button class="btn btn-g btn-sm" style="flex:1;" data-uid="'+esc(a.applicantId||'')+'" data-nm="'+esc(a.applicantName||'Contractor')+'" onclick="chatWithBidderEl(this)">💬 Chat</button>'+
+        '<button class="btn btn-o btn-sm" data-aid="'+a.id+'" data-nm="'+esc(a.applicantName||'Contractor')+'" onclick="showAwardEl(this)">Award →</button>')+
+      '</div></div>';
+  }).join('');
+  // Store apps for detail view
+  window._bidsApps=apps;
+}
+
+function showBidDetail(appId){
+  var app = window._bidsApps && window._bidsApps.find(function(a){return a.id===appId;});
+  if(!app) return;
+  var cols=['#1D4ED8','#059669','#7C3AED','#EA580C','#DC2626'];
+  var idx = window._bidsApps.indexOf(app);
+  var html =
+    '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">' +
+    '<div class="bav" style="background:'+cols[idx%5]+';width:52px;height:52px;border-radius:15px;font-size:18px;">'+initials(app.applicantName||'C')+'</div>' +
+    '<div><div style="font-family:var(--h);font-size:18px;font-weight:700;">'+esc(app.applicantName||'Contractor')+'</div>' +
+    '<div style="font-size:13px;color:var(--s4);">'+(app.rating?'⭐ '+app.rating+' · ':'')+( app.projects||0)+' projects</div></div></div>' +
+    '<div class="dsec" style="margin:0 0 12px;"><h4>Quotation Details</h4>' +
+    '<div class="irow"><span class="ik">Quoted Amount</span><span class="iv" style="color:var(--green2);font-family:var(--h);font-size:15px;">₹'+Number(app.amount||0).toLocaleString('en-IN')+'</span></div>' +
+    '<div class="irow"><span class="ik">Timeline</span><span class="iv">'+(app.days||'—')+' Days</span></div>' +
+    '<div class="irow"><span class="ik">Labour</span><span class="iv">'+(app.labour||'—')+'</span></div>' +
+    '<div class="irow"><span class="ik">Terms</span><span class="iv">'+(app.terms||'—')+'</span></div></div>' +
+    '<div style="background:var(--s8);border-radius:12px;padding:14px;margin-bottom:16px;font-size:14px;color:var(--s2);line-height:1.6;font-style:italic;">'+esc(app.pitch||'No pitch provided')+'</div>';
+  if(app.status !== 'awarded'){
+    html += '<div style="display:flex;gap:10px;">' +
+      '<button class="btn btn-g btn-bl" id="bd-chat-btn">💬 Chat</button>' +
+      '<button class="btn btn-o btn-bl" id="bd-award-btn">Award Work →</button>' +
+      '</div>';
+  }
+  document.getElementById('bid-detail-content').innerHTML = html;
+  // Set button handlers after render
+  setTimeout(function(){
+    var cb = document.getElementById('bd-chat-btn');
+    var ab = document.getElementById('bd-award-btn');
+    if(cb) cb.onclick = function(){ chatWithBidder(app.applicantId||'', app.applicantName||'Contractor'); document.getElementById('bid-detail-ovl').classList.add('off'); };
+    if(ab) ab.onclick = function(){ showAward(app.id, app.applicantName||'Contractor'); document.getElementById('bid-detail-ovl').classList.add('off'); };
+  }, 50);
+  document.getElementById('bid-detail-ovl').classList.remove('off');
+}
+
+async function chatWithBidder(otherUid, otherName){
+  if(!otherUid){toast('Bidder ID not available. Chat not possible for demo bids.','err');return;}
+  toast('Opening chat with '+otherName+'…','');
+  try{
+    var snap=await db.collection('conversations').where('participants','array-contains',CU.uid).get();
+    var existing=snap.docs.find(function(d){return (d.data().participants||[]).includes(otherUid);});
+    if(!existing){
+      var workTitle=document.getElementById('bw-tit').textContent||'Work';
+      await db.collection('conversations').add({
+        participants:[CU.uid,otherUid],
+        participantNames:{[CU.uid]:CD.name||'Main Contractor',[otherUid]:otherName},
+        workId:getP('id')||'', workTitle:workTitle,
+        lastMsg:'', lastMsgTime:FS.FieldValue.serverTimestamp(),
+        unread:{[CU.uid]:0,[otherUid]:0}, createdAt:FS.FieldValue.serverTimestamp()
+      });
+    }
+    saveLS('chatTarget',{uid:otherUid,name:otherName});
+    location.href='chat.html';
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+
+function showAward(id,name){
+  pendingAward=id;
+  document.getElementById('award-txt').textContent='Award this work to '+name+'? They will be notified immediately.';
+  document.getElementById('award-ovl').classList.remove('off');
+}
+async function confirmAward(){
+  if(!pendingAward)return;
+  try{
+    await db.collection('applications').doc(pendingAward).update({status:'awarded'});
+    toast('Work awarded! 🏆','ok');
+    document.getElementById('award-ovl').classList.add('off');
+    setTimeout(function(){location.href='myworks.html';},1200);
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+document.getElementById('award-ovl').addEventListener('click',function(e){if(e.target===this)this.classList.add('off');});
+document.getElementById('bid-detail-ovl').addEventListener('click',function(e){if(e.target===this)this.classList.add('off');});
+function goDetail(id){location.href='detail.html?id='+id;}
+function chatBidDetail(el){chatWithBidder(el.dataset.uid,el.dataset.nm);document.getElementById('bid-detail-ovl').classList.add('off');}
+function awardBidDetail(el){showAward(el.dataset.aid,el.dataset.nm);document.getElementById('bid-detail-ovl').classList.add('off');}
+</script>
+</body></html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<title>Welcome — Pragati Work Exchange</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange · PragatiOne</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<style>
+.snap-wrap{height:100vh;overflow:hidden;position:relative;}
+.snap-sec{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .35s ease;background:#fff;}
+.snap-sec::-webkit-scrollbar{display:none;}
+.snap-sec.sec-active{transform:translateX(0);opacity:1;pointer-events:auto;z-index:2;}
+.snap-sec.sec-left{transform:translateX(-100%);opacity:0;pointer-events:none;z-index:1;}
+.snap-sec.sec-right{transform:translateX(100%);opacity:0;pointer-events:none;z-index:1;}
+.land{background:linear-gradient(160deg,#0F172A 0%,#1E3A5F 55%,#0F172A 100%);display:flex;flex-direction:column;min-height:100vh;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+</style>
+
+<div class="snap-wrap" id="auth-wrap">
+  <!-- HERO -->
+  <section class="snap-sec sec-active land" id="sec-hero">
+    <nav style="padding:52px 18px 0;display:flex;justify-content:space-between;align-items:center;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:36px;height:36px;border-radius:10px;background:var(--blue2);overflow:hidden;display:flex;align-items:center;justify-content:center;">
+          <img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-family:var(--h);font-size:20px;font-weight:800;color:#fff;">Pragati<span style="color:var(--orange3);">.</span></div>
+      </div>
+      <button class="btn btn-sm" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);" onclick="goSec('sec-login')">Login</button>
+    </nav>
+    <div style="flex:1;padding:24px 18px 0;">
+      <div style="display:flex;justify-content:center;margin-bottom:20px;">
+        <svg viewBox="0 0 300 170" width="290" height="165" fill="none">
+          <rect width="300" height="145" fill="#0F172A" opacity=".35"/>
+          <circle cx="40" cy="18" r="1.5" fill="white" opacity=".5"/><circle cx="120" cy="10" r="1" fill="white" opacity=".6"/><circle cx="200" cy="18" r="1.5" fill="white" opacity=".4"/><circle cx="270" cy="12" r="1" fill="white" opacity=".5"/>
+          <rect x="15" y="42" width="48" height="113" rx="3" fill="#1E40AF"/><rect x="15" y="42" width="48" height="7" rx="2" fill="#2563EB"/>
+          <rect x="21" y="55" width="10" height="8" rx="1" fill="#93C5FD" opacity=".9"/><rect x="36" y="55" width="10" height="8" rx="1" fill="white" opacity=".8"/>
+          <rect x="21" y="70" width="10" height="8" rx="1" fill="white" opacity=".7"/><rect x="36" y="70" width="10" height="8" rx="1" fill="#93C5FD" opacity=".6"/>
+          <rect x="21" y="85" width="10" height="8" rx="1" fill="#93C5FD" opacity=".8"/><rect x="36" y="85" width="10" height="8" rx="1" fill="white" opacity=".5"/>
+          <rect x="80" y="75" width="80" height="80" rx="3" fill="#334155"/>
+          <rect x="76" y="42" width="5" height="113" rx="2" fill="#64748B"/><rect x="159" y="42" width="5" height="113" rx="2" fill="#64748B"/>
+          <rect x="76" y="42" width="88" height="5" rx="2" fill="#64748B"/>
+          <rect x="76" y="63" width="88" height="2" rx="1" fill="#94A3B8" opacity=".4"/><rect x="76" y="84" width="88" height="2" rx="1" fill="#94A3B8" opacity=".4"/>
+          <rect x="88" y="86" width="13" height="11" rx="1" fill="#1E40AF" opacity=".6"/><rect x="108" y="86" width="13" height="11" rx="1" fill="#1E40AF" opacity=".4"/>
+          <rect x="222" y="14" width="6" height="141" rx="2" fill="#EA580C"/>
+          <rect x="182" y="14" width="78" height="5" rx="2" fill="#F97316"/><rect x="246" y="9" width="17" height="13" rx="3" fill="#DC2626"/>
+          <line x1="202" y1="19" x2="202" y2="46" stroke="#94A3B8" stroke-width="1.5"/><rect x="194" y="46" width="16" height="10" rx="3" fill="#F97316"/>
+          <rect x="246" y="68" width="40" height="87" rx="3" fill="#1E3A5F"/>
+          <circle cx="94" cy="53" r="5" fill="#FBBF24"/><rect x="89" y="58" width="10" height="12" rx="2" fill="#F97316"/><path d="M88 53 Q94 45 100 53" fill="#EA580C"/>
+          <circle cx="148" cy="136" r="5" fill="#FCD34D"/><rect x="143" y="141" width="10" height="10" rx="2" fill="#2563EB"/>
+          <rect y="150" width="300" height="20" fill="#1E293B"/>
+          <text x="150" y="164" text-anchor="middle" font-size="8" font-weight="800" fill="white" opacity=".5" font-family="sans-serif">PRAGATI WORK EXCHANGE</text>
+        </svg>
+      </div>
+      <div style="font-family:var(--h);font-size:32px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:12px;">Find Construction <span style="color:var(--orange3);">Work Faster</span></div>
+      <p style="font-size:14px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:24px;">India's #1 marketplace for subcontract work. Post requirements or bid for jobs — free forever.</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+        <button class="btn btn-o btn-bl btn-lg" onclick="goSec('sec-register')">Get Started Free →</button>
+        <button class="btn btn-bl btn-lg" style="background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);" onclick="goSec('sec-login')">I Have an Account</button>
+      </div>
+      <div style="display:flex;gap:24px;padding:20px 0;border-top:1px solid rgba(255,255,255,.1);">
+        <div><div style="font-family:var(--h);font-size:22px;font-weight:800;color:#fff;">10K+</div><div style="font-size:11px;color:rgba(255,255,255,.5);">Contractors</div></div>
+        <div><div style="font-family:var(--h);font-size:22px;font-weight:800;color:#fff;">₹200Cr+</div><div style="font-size:11px;color:rgba(255,255,255,.5);">Work Awarded</div></div>
+        <div><div style="font-family:var(--h);font-size:22px;font-weight:800;color:#fff;">28</div><div style="font-size:11px;color:rgba(255,255,255,.5);">States</div></div>
+      </div>
+    </div>
+    <div style="text-align:center;padding:14px 0 20px;color:rgba(255,255,255,.4);font-size:12px;animation:bounce 2s infinite;">↓ Scroll to sign up</div>
+  </section>
+
+  <!-- REGISTER -->
+  <section class="snap-sec sec-right" id="sec-register" style="display:flex;flex-direction:column;">
+    <div class="ahero">
+      <div class="ld-icon" style="margin:0 auto 12px;overflow:hidden;"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'"/></div>
+      <h2>Create Account</h2><p>Join 10,000+ contractors on Pragati</p>
+    </div>
+    <div class="abody" style="flex:1;overflow-y:auto;">
+      <p style="font-size:11px;font-weight:700;color:var(--s3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">I am a…</p>
+      <div class="rgrid">
+        <div class="rcard sel" id="rc-petty" onclick="selRole('petty')"><div class="ri">👷</div><h4>Petty Contractor</h4><p>Find & apply for work</p></div>
+        <div class="rcard" id="rc-main" onclick="selRole('main')"><div class="ri">🏗️</div><h4>Main Contractor</h4><p>Post work & hire</p></div>
+      </div>
+      <input type="hidden" id="rg-role" value="petty"/>
+      <div class="field"><label class="flbl">Full Name *</label><input class="fin" id="rg-name" placeholder="e.g. Rajesh Patil"/></div>
+      <div class="g2">
+        <div class="field"><label class="flbl">Phone *</label><input class="fin" id="rg-phone" type="tel" placeholder="+91 98765 43210" inputmode="tel"/></div>
+        <div class="field"><label class="flbl">City *</label><input class="fin" id="rg-city" placeholder="Pune, MH"/></div>
+      </div>
+      <div class="field" id="rg-tw"><label class="flbl">Primary Trade</label>
+        <select class="fin" id="rg-trade"><option value="">Select…</option><option>Plastering</option><option>Flooring</option><option>Painting</option><option>Electrical</option><option>Plumbing</option><option>Masonry</option><option>Carpentry</option><option>Tiling</option><option>Waterproofing</option><option>Civil Work</option><option>Other</option></select>
+      </div>
+      <div class="field"><label class="flbl">Email *</label><input class="fin" id="rg-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
+      <div class="field"><label class="flbl">Password *</label><input class="fin" id="rg-pass" type="password" placeholder="Min 6 characters"/></div>
+      <div class="ferr" id="rg-err"></div>
+      <button class="btn btn-p btn-bl btn-lg" id="rg-btn" onclick="doRegister()" style="margin-top:8px;">Create Account →</button>
+      <div class="divdr">or</div>
+      <p style="text-align:center;font-size:14px;color:var(--s3);">Already registered? <span style="color:var(--blue2);font-weight:600;cursor:pointer;" onclick="goSec('sec-login')">Login here</span></p>
+      <p style="text-align:center;font-size:12px;color:var(--s5);margin-top:10px;cursor:pointer;" onclick="goSec('sec-hero')">↑ Back to top</p>
+      <div style="height:20px;"></div>
+    </div>
+  </section>
+
+  <!-- LOGIN -->
+  <section class="snap-sec sec-right" id="sec-login" style="display:flex;flex-direction:column;">
+    <div class="ahero">
+      <div class="ld-icon" style="margin:0 auto 12px;overflow:hidden;"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'"/></div>
+      <h2>Welcome Back</h2><p>Login to your Pragati account</p>
+    </div>
+    <div class="abody" style="flex:1;overflow-y:auto;">
+      <div class="field"><label class="flbl">Email Address</label><input class="fin" id="li-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
+      <div class="field"><label class="flbl">Password</label><input class="fin" id="li-pass" type="password" placeholder="Your password"/></div>
+      <div class="ferr" id="li-err"></div>
+      <div style="text-align:right;margin-bottom:8px;"><span style="font-size:13px;color:var(--blue2);font-weight:600;cursor:pointer;" onclick="showForgot()">Forgot Password?</span></div>
+      <button class="btn btn-p btn-bl btn-lg" id="li-btn" onclick="doLogin()">Login →</button>
+      <div class="divdr">or</div>
+      <p style="text-align:center;font-size:14px;color:var(--s3);">No account? <span style="color:var(--blue2);font-weight:600;cursor:pointer;" onclick="goSec('sec-register')">Register Free</span></p>
+      <p style="text-align:center;font-size:12px;color:var(--s5);margin-top:10px;cursor:pointer;" onclick="goSec('sec-hero')">↑ Back</p>
+      <div style="height:20px;"></div>
+    </div>
+  </section>
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div class="ovl off" id="forgot-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Reset Password 🔑</div>
+    <p style="font-size:14px;color:var(--s4);margin-bottom:16px;line-height:1.6;">Enter your registered email. We will send a reset link.</p>
+    <div class="field"><label class="flbl">Email Address</label><input class="fin" id="fp-email" type="email" placeholder="you@example.com"/></div>
+    <div class="ferr" id="fp-err"></div>
+    <div id="fp-ok" style="display:none;background:var(--green4);border:1px solid #A7F3D0;border-radius:10px;padding:12px;font-size:13px;color:var(--green);margin-bottom:14px;">✅ Reset link sent! Check your inbox.</div>
+    <button class="btn btn-p btn-bl btn-lg" id="fp-btn" onclick="doReset()">Send Reset Link →</button>
+    <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="closeForgot()">Cancel</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="shared.js"></script>
+<script>
+
+const firebase_cfg = {
+  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
+  authDomain:"pragati-work-exchange.firebaseapp.com",
+  projectId:"pragati-work-exchange",
+  storageBucket:"pragati-work-exchange.firebasestorage.app",
+  messagingSenderId:"422215240765",
+  appId:"1:422215240765:web:eefb239420262c9d822e54"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+const FS   = firebase.firestore;
+
+// Redirect if already logged in
+auth.onAuthStateChanged(async function(user) {
+  if (user) {
+    try {
+      var snap = await db.collection('users').doc(user.uid).get();
+      var cd = snap.exists ? snap.data() : null;
+      if (cd) { window.location.href = cd.role==='main' ? 'main.html' : 'home.html'; return; }
+    } catch(e) {}
+  }
+  document.getElementById('loader').classList.add('out');
+});
+
+// Section navigation
+var SEC_ORDER = ['sec-hero','sec-register','sec-login'];
+function goSec(targetId) {
+  var all = document.querySelectorAll('.snap-sec');
+  var curEl = document.querySelector('.snap-sec.sec-active');
+  var curIdx = curEl ? SEC_ORDER.indexOf(curEl.id) : 0;
+  var tgtIdx = SEC_ORDER.indexOf(targetId);
+  var goRight = tgtIdx > curIdx;
+  all.forEach(function(s) {
+    s.classList.remove('sec-active','sec-left','sec-right');
+    if (s.id === targetId) s.classList.add('sec-active');
+    else if (goRight) s.classList.add('sec-left');
+    else s.classList.add('sec-right');
+  });
+  var tgt = document.getElementById(targetId);
+  if (tgt) tgt.scrollTop = 0;
+}
+
+function selRole(r) {
+  document.getElementById('rg-role').value = r;
+  document.getElementById('rc-petty').classList.toggle('sel', r==='petty');
+  document.getElementById('rc-main').classList.toggle('sel', r==='main');
+  document.getElementById('rg-tw').style.display = r==='petty' ? 'block' : 'none';
+}
+
+async function doLogin() {
+  var email = document.getElementById('li-email').value.trim();
+  var pass  = document.getElementById('li-pass').value;
+  var err   = document.getElementById('li-err');
+  var btn   = document.getElementById('li-btn');
+  err.textContent=''; err.classList.remove('on');
+  if (!email || !pass) { err.textContent='Please enter email and password.'; err.classList.add('on'); return; }
+  btn.classList.add('btn-ld'); btn.textContent='Logging in…';
+  try {
+    var uc   = await auth.signInWithEmailAndPassword(email, pass);
+    var snap = await db.collection('users').doc(uc.user.uid).get();
+    var cd   = snap.exists ? snap.data() : null;
+    window.location.href = cd && cd.role==='main' ? 'main.html' : 'home.html';
+  } catch(ex) {
+    err.textContent = ex.code==='auth/user-not-found' ? 'No account found with this email.' :
+      ex.code==='auth/wrong-password'||ex.code==='auth/invalid-credential' ? 'Incorrect email or password.' :
+      ex.code==='auth/too-many-requests' ? 'Too many attempts. Please try later.' : 'Login failed: '+ex.message;
+    err.classList.add('on');
+    btn.classList.remove('btn-ld'); btn.textContent='Login →';
+  }
+}
+
+async function doRegister() {
+  var name=document.getElementById('rg-name').value.trim(), phone=document.getElementById('rg-phone').value.trim(),
+      city=document.getElementById('rg-city').value.trim(), email=document.getElementById('rg-email').value.trim(),
+      pass=document.getElementById('rg-pass').value, role=document.getElementById('rg-role').value,
+      trade=document.getElementById('rg-trade').value;
+  var err=document.getElementById('rg-err'), btn=document.getElementById('rg-btn');
+  err.textContent=''; err.classList.remove('on');
+  if (!name||!email||!city||pass.length<6) { err.textContent='Please fill all required fields (password min 6 chars).'; err.classList.add('on'); return; }
+  btn.classList.add('btn-ld'); btn.textContent='Creating…';
+  try {
+    var uc = await auth.createUserWithEmailAndPassword(email, pass);
+    await db.collection('users').doc(uc.user.uid).set({
+      name:name, email:email, phone:phone, city:city, role:role, trade:trade,
+      exp:'', bio:'', company: role==='main' ? name : '',
+      createdAt: FS.FieldValue.serverTimestamp()
+    });
+    window.location.href = role==='main' ? 'main.html' : 'home.html';
+  } catch(ex) {
+    err.textContent = ex.code==='auth/email-already-in-use' ? 'Email already registered. Please login.' :
+      ex.code==='auth/weak-password' ? 'Password too weak. Use at least 6 characters.' : 'Error: '+ex.message;
+    err.classList.add('on');
+    btn.classList.remove('btn-ld'); btn.textContent='Create Account →';
+  }
+}
+
+function showForgot() {
+  document.getElementById('fp-email').value = document.getElementById('li-email').value||'';
+  document.getElementById('fp-err').textContent=''; document.getElementById('fp-err').classList.remove('on');
+  document.getElementById('fp-ok').style.display='none';
+  document.getElementById('fp-btn').style.display=''; document.getElementById('fp-btn').textContent='Send Reset Link →';
+  document.getElementById('forgot-ovl').classList.remove('off');
+}
+function closeForgot() { document.getElementById('forgot-ovl').classList.add('off'); }
+
+async function doReset() {
+  var email=document.getElementById('fp-email').value.trim();
+  var err=document.getElementById('fp-err'), btn=document.getElementById('fp-btn');
+  if (!email||!email.includes('@')) { err.textContent='Enter a valid email.'; err.classList.add('on'); return; }
+  btn.classList.add('btn-ld'); btn.textContent='Sending…';
+  try {
+    await auth.sendPasswordResetEmail(email);
+    document.getElementById('fp-ok').style.display='block'; btn.style.display='none';
+    toast('Reset link sent!','ok');
+  } catch(ex) {
+    err.textContent = ex.code==='auth/user-not-found' ? 'No account with this email.' : 'Error: '+ex.message;
+    err.classList.add('on'); btn.classList.remove('btn-ld'); btn.textContent='Send Reset Link →';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('li-pass').addEventListener('keydown', function(e) { if(e.key==='Enter') doLogin(); });
+  document.getElementById('rg-pass').addEventListener('keydown', function(e) { if(e.key==='Enter') doRegister(); });
+  document.getElementById('forgot-ovl').addEventListener('click', function(e) { if(e.target===this) closeForgot(); });
+});
+
+function toast(msg,type) {
+  var el=document.getElementById('toast'); el.textContent=msg;
+  el.className=type?'on '+type:'on'; setTimeout(function(){el.className='';},3000);
+}
+</script>
+</body></html>

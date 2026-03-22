@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<title>My Applications — Pragati Work Exchange</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange · PragatiOne</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<div style="display:flex;flex-direction:column;min-height:100vh;">
+  <div class="tbar"><h2>My Applications</h2><button class="btn btn-p btn-sm" onclick="location.href='find.html'">Find Work</button></div>
+  <div class="chips" style="padding:12px 16px 0;flex-shrink:0;">
+    <div class="chip on" onclick="setF(this,'all')">All</div>
+    <div class="chip" onclick="setF(this,'pending')">Pending</div>
+    <div class="chip" onclick="setF(this,'rev')">Shortlisted</div>
+    <div class="chip" onclick="setF(this,'awarded')">Awarded</div>
+    <div class="chip" onclick="setF(this,'rejected')">Rejected</div>
+  </div>
+  <div class="pscr pb90" style="padding:10px 16px 0;" id="apps-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
+  <nav class="bnav n4"><div class="bni" onclick="location.href='home.html'"><div class="ico">🏠</div><div class="lbl">Home</div></div><div class="bni" onclick="location.href='find.html'"><div class="ico">🔍</div><div class="lbl">Find</div></div><div class="bni on" onclick="location.href='apps.html'"><div class="ico">📋</div><div class="lbl">My Bids</div></div><div class="bni" onclick="location.href='chat.html'"><div class="ico">💬</div><div class="lbl">Messages</div></div></nav>
+</div>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="shared.js"></script>
+<script>
+
+const firebase_cfg = {
+  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
+  authDomain:"pragati-work-exchange.firebaseapp.com",
+  projectId:"pragati-work-exchange",
+  storageBucket:"pragati-work-exchange.firebasestorage.app",
+  messagingSenderId:"422215240765",
+  appId:"1:422215240765:web:eefb239420262c9d822e54"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+const FS   = firebase.firestore;
+var CU=null, CD=null;
+auth.onAuthStateChanged(async function(user){
+  if(!user){location.href='index.html';return;}
+  CU=user;
+  try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
+  if(!CD){location.href='index.html';return;}
+  if(CD && CD.role==='main'){location.href='main.html';return;}
+  document.getElementById('loader').classList.add('out');
+  loadApps();
+});
+
+function toast(msg,type){
+  var el=document.getElementById('toast'); el.textContent=msg;
+  el.className=type?'on '+type:'on'; setTimeout(function(){el.className='';},3000);
+}
+function getP(k){return new URLSearchParams(window.location.search).get(k);}
+function saveLS(k,v){try{localStorage.setItem('pg_'+k,JSON.stringify(v));}catch(e){}}
+function getLS(k){try{return JSON.parse(localStorage.getItem('pg_'+k));}catch(e){return null;}}
+function clearLS(k){localStorage.removeItem('pg_'+k);}
+function fmtBud(w){
+  var f=function(n){return n>=100000?'₹'+(n/100000).toFixed(1).replace('.0','')+'L':'₹'+n.toLocaleString('en-IN');};
+  return(w.minBudget&&w.maxBudget)?f(w.minBudget)+'–'+f(w.maxBudget):w.minBudget?f(w.minBudget):'TBD';
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).join('').toUpperCase().slice(0,2);}
+function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
+function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
+function mkCard(w){
+  return '<div class="wcard" onclick="goDetail('+JSON.stringify(w.id)+')">'+
+    '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
+    '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
+    '<div class="wt">'+esc(w.title)+'</div>'+
+    '<div class="wco">🏢 '+esc(w.company||w.postedByName||'Main Contractor')+'</div></div>'+
+    '<div class="wb"><div class="wmeta"><span>📍 '+esc(w.location||'—')+'</span>'+
+    '<span>⏱ '+esc(w.startDate||'TBD')+'</span>'+
+    '<span>👷 '+esc(w.experience||'—')+'</span></div></div>'+
+    '<div class="wf"><span class="wbud">'+fmtBud(w)+'</span>'+
+    '<span class="wbids">'+(w.bids||0)+' bids</span></div></div>';
+}
+</script>
+<script>
+var allApps=[],filterF='all';
+var SL={pending:'Under Review',review:'Shortlisted ✓',shortlisted:'Shortlisted ✓',awarded:'Awarded 🎉',rejected:'Not Selected'};
+var SM={pending:'pend',review:'rev',shortlisted:'rev',awarded:'awd',rejected:'rej'};
+async function loadApps(){
+  try{
+    var snap=await db.collection('applications').where('applicantId','==',CU.uid).get();
+    allApps=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
+    allApps.sort(function(a,b){return (b.createdAt&&b.createdAt.toMillis?b.createdAt.toMillis():0)-(a.createdAt&&a.createdAt.toMillis?a.createdAt.toMillis():0);});
+  }catch(e){allApps=[];}
+  renderApps();
+}
+function renderApps(){
+  var el=document.getElementById('apps-list');
+  var arr=filterF==='all'?allApps:allApps.filter(function(a){
+    if(filterF==='rev') return a.status==='review'||a.status==='shortlisted';
+    return a.status===filterF;
+  });
+  if(!arr.length){
+    el.innerHTML=emptyHTML('📋','No applications yet','Browse works and submit your first quotation!')+
+      '<div style="padding:10px 0;"><button class="btn btn-p btn-bl" onclick="goFind()">Browse Works →</button></div>';
+    return;
+  }
+  el.innerHTML=arr.map(function(a){
+    return '<div class="arow">'+
+      '<div class="art">'+esc(a.workTitle||'Work')+'</div>'+
+      '<div class="ars">'+esc(a.workCompany||'—')+' · '+esc(a.workLocation||'—')+'</div>'+
+      '<div style="font-size:12px;color:var(--s4);margin-bottom:9px;">Quoted ₹'+Number(a.amount||0).toLocaleString('en-IN')+' · '+(a.days||'—')+' days</div>'+
+      '<div class="arf"><span class="sts '+(SM[a.status||'pending']||'pend')+'">'+(SL[a.status||'pending']||'Under Review')+'</span>'+
+      '<div style="display:flex;gap:6px;">'+
+      (a.status==='awarded'?'<button class="btn btn-sm" style="background:var(--green4);color:var(--green);border:none;" onclick="rateWork()">Rate ⭐</button>':'')+
+      '<button class="btn btn-g btn-sm" onclick="goChat()">💬</button>'+
+      '</div></div></div>';
+  }).join('');
+}
+function setF(el,f){document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});el.classList.add('on');filterF=f;renderApps();}
+function goDetail(id){location.href='detail.html?id='+id;}
+function goFind(){location.href='find.html';}
+function goChat(){location.href='chat.html';}
+</script>
+</body></html>

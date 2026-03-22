@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<title>My Profile — Pragati Work Exchange</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange · PragatiOne</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<div style="display:flex;flex-direction:column;min-height:100vh;">
+  <div class="pscr pb90">
+    <div class="ph">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:10px;"><button class="tbk" style="background:rgba(255,255,255,.2);color:#fff;" onclick="document.getElementById('edit-ovl').classList.remove('off')">✏️ Edit</button></div>
+      <div class="pav" id="pf-av">RP<div class="pav-ver">✓</div></div>
+      <div class="pnm" id="pf-nm">—</div>
+      <div class="prl" id="pf-rl">—</div>
+      <div class="pst">★★★★★</div>
+      <div class="skts" id="pf-sk"></div>
+    </div>
+    <div class="psts">
+      <div class="psi"><div class="psn" id="ps-proj">0</div><div class="psl">Projects</div></div>
+      <div class="psi"><div class="psn" id="ps-exp">—</div><div class="psl">Yrs Exp</div></div>
+      <div class="psi"><div class="psn">4.8</div><div class="psl">Rating</div></div>
+    </div>
+    <div class="psec">
+      <div class="prow"><div class="pro-ico">📞</div><div style="flex:1;"><div class="pro-txt" id="pf-ph">—</div><div style="font-size:11px;color:var(--s4);">Phone</div></div></div>
+      <div class="prow"><div class="pro-ico">📍</div><div style="flex:1;"><div class="pro-txt" id="pf-ct">—</div><div style="font-size:11px;color:var(--s4);">Location</div></div></div>
+      <div class="prow"><div class="pro-ico">📧</div><div style="flex:1;"><div class="pro-txt" id="pf-em">—</div><div style="font-size:11px;color:var(--s4);">Email</div></div></div>
+    </div>
+    <div class="psec" style="margin-top:0;">
+      <div class="prow"><div class="pro-ico">🪪</div><div class="pro-txt">Aadhaar Verified</div><div class="pro-badge">Verified</div></div>
+      <div class="prow"><div class="pro-ico">🏦</div><div class="pro-txt">Bank Account</div><div class="pro-badge">Linked</div></div>
+    </div>
+    <div class="psec" style="margin-top:0;">
+      <div class="prow" onclick="location.href='notifications.html'"><div class="pro-ico">🔔</div><div class="pro-txt">Notifications</div><div class="pro-arr">›</div></div>
+      <div class="prow" onclick="document.getElementById('help-ovl').classList.remove('off')"><div class="pro-ico">❓</div><div class="pro-txt">Help & Support</div><div class="pro-arr">›</div></div>
+      <div class="prow" onclick="document.getElementById('about-ovl').classList.remove('off')"><div class="pro-ico">ℹ️</div><div class="pro-txt">About Pragati</div><div class="pro-arr">›</div></div>
+      <div class="prow" onclick="doLogout()"><div class="pro-ico">🚪</div><div class="pro-txt" style="color:var(--red2);">Logout</div><div class="pro-arr" style="color:var(--red2);">›</div></div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="bnav n4" id="pf-bnav"></div>
+</div>
+<!-- EDIT PROFILE -->
+<div class="ovl off" id="edit-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Edit Profile</div>
+    <div class="field"><label class="flbl">Full Name</label><input class="fin" id="ep-nm"/></div>
+    <div class="g2">
+      <div class="field"><label class="flbl">Phone</label><input class="fin" id="ep-ph" type="tel" inputmode="tel"/></div>
+      <div class="field"><label class="flbl">City</label><input class="fin" id="ep-ct"/></div>
+    </div>
+    <div class="field" id="ep-tw"><label class="flbl">Primary Trade</label>
+      <select class="fin" id="ep-tr"><option value="">—</option><option>Plastering</option><option>Flooring</option><option>Painting</option><option>Electrical</option><option>Plumbing</option><option>Masonry</option><option>Carpentry</option><option>Tiling</option><option>Waterproofing</option><option>Civil Work</option><option>Other</option></select>
+    </div>
+    <div class="g2">
+      <div class="field"><label class="flbl">Years Exp.</label><input class="fin" id="ep-exp" type="number" inputmode="numeric"/></div>
+      <div class="field"><label class="flbl">Company/Firm</label><input class="fin" id="ep-co"/></div>
+    </div>
+    <div class="field"><label class="flbl">Bio</label><textarea class="fin" id="ep-bio" rows="3"></textarea></div>
+    <button class="btn btn-p btn-bl btn-lg" onclick="saveProfile()">Save Profile</button>
+    <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="document.getElementById('edit-ovl').classList.add('off')">Cancel</button>
+  </div>
+</div>
+<!-- HELP -->
+<div class="ovl off" id="help-ovl">
+  <div class="sheet">
+    <div class="shdl"></div><div class="shtit">Help & Support</div>
+    <div class="psec" style="margin:0 0 12px;">
+      <div class="prow"><div class="pro-ico">📞</div><div class="pro-txt">Call: +91 800-PRAGATI</div></div>
+      <div class="prow"><div class="pro-ico">📧</div><div class="pro-txt">support@pragati.in</div></div>
+    </div>
+    <div style="background:var(--s8);border-radius:12px;padding:14px;font-size:13px;color:var(--s3);line-height:1.7;margin-bottom:12px;">
+      <strong>How to apply:</strong> Find Work → Open work → Submit Quotation<br/>
+      <strong>How to post work:</strong> Dashboard → Post New Work<br/>
+      <strong>How to award:</strong> My Works → View Bids → Award
+    </div>
+    <button class="btn btn-g btn-bl" onclick="document.getElementById('help-ovl').classList.add('off')">Close</button>
+  </div>
+</div>
+<!-- ABOUT -->
+<div class="ovl off" id="about-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div style="text-align:center;margin-bottom:16px;">
+      <div class="ld-icon" style="margin:0 auto 12px;overflow:hidden;"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'"/></div>
+      <div style="font-family:var(--h);font-size:20px;font-weight:800;">Pragati Work Exchange</div>
+      <div style="font-size:13px;color:var(--s4);margin-top:4px;">Version 1.0.0 · PragatiOne Platform</div>
+    </div>
+    <div style="font-size:13px;color:var(--s3);line-height:1.7;margin-bottom:16px;">India's leading marketplace for construction subcontract work. Connecting Main Contractors with Petty Contractors across 28 states.</div>
+    <button class="btn btn-g btn-bl" onclick="document.getElementById('about-ovl').classList.add('off')">Close</button>
+  </div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="shared.js"></script>
+<script>
+
+const firebase_cfg = {
+  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
+  authDomain:"pragati-work-exchange.firebaseapp.com",
+  projectId:"pragati-work-exchange",
+  storageBucket:"pragati-work-exchange.firebasestorage.app",
+  messagingSenderId:"422215240765",
+  appId:"1:422215240765:web:eefb239420262c9d822e54"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+const FS   = firebase.firestore;
+var CU=null, CD=null;
+auth.onAuthStateChanged(async function(user){
+  if(!user){location.href='index.html';return;}
+  CU=user;
+  try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
+  if(!CD){location.href='index.html';return;}
+  
+  document.getElementById('loader').classList.add('out');
+  _isMain = CD && CD.role==='main';
+  loadProfile();
+});
+
+function toast(msg,type){
+  var el=document.getElementById('toast'); el.textContent=msg;
+  el.className=type?'on '+type:'on'; setTimeout(function(){el.className='';},3000);
+}
+function getP(k){return new URLSearchParams(window.location.search).get(k);}
+function saveLS(k,v){try{localStorage.setItem('pg_'+k,JSON.stringify(v));}catch(e){}}
+function getLS(k){try{return JSON.parse(localStorage.getItem('pg_'+k));}catch(e){return null;}}
+function clearLS(k){localStorage.removeItem('pg_'+k);}
+function fmtBud(w){
+  var f=function(n){return n>=100000?'₹'+(n/100000).toFixed(1).replace('.0','')+'L':'₹'+n.toLocaleString('en-IN');};
+  return(w.minBudget&&w.maxBudget)?f(w.minBudget)+'–'+f(w.maxBudget):w.minBudget?f(w.minBudget):'TBD';
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).join('').toUpperCase().slice(0,2);}
+function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
+function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
+function mkCard(w){
+  return '<div class="wcard" onclick="goDetail('+JSON.stringify(w.id)+')">'+
+    '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
+    '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
+    '<div class="wt">'+esc(w.title)+'</div>'+
+    '<div class="wco">🏢 '+esc(w.company||w.postedByName||'Main Contractor')+'</div></div>'+
+    '<div class="wb"><div class="wmeta"><span>📍 '+esc(w.location||'—')+'</span>'+
+    '<span>⏱ '+esc(w.startDate||'TBD')+'</span>'+
+    '<span>👷 '+esc(w.experience||'—')+'</span></div></div>'+
+    '<div class="wf"><span class="wbud">'+fmtBud(w)+'</span>'+
+    '<span class="wbids">'+(w.bids||0)+' bids</span></div></div>';
+}
+</script>
+<script>
+function loadProfile(){
+  var n=CD.name||'User';
+  document.getElementById('pf-av').innerHTML=initials(n)+'<div class="pav-ver">✓</div>';
+  document.getElementById('pf-nm').textContent=n;
+  document.getElementById('pf-rl').textContent=(CD.trade||(CD.role==='main'?'Main Contractor':'Petty Contractor'))+(CD.city?' · '+CD.city:'');
+  document.getElementById('pf-ph').textContent=CD.phone||'—';
+  document.getElementById('pf-ct').textContent=CD.city||'—';
+  document.getElementById('pf-em').textContent=CD.email||'—';
+  document.getElementById('ps-exp').textContent=CD.exp||'—';
+  document.getElementById('pf-sk').innerHTML=CD.trade?'<span class="skt">'+esc(CD.trade)+'</span>':'';
+  document.getElementById('ep-nm').value=CD.name||'';
+  document.getElementById('ep-ph').value=CD.phone||'';
+  document.getElementById('ep-ct').value=CD.city||'';
+  document.getElementById('ep-tr').value=CD.trade||'';
+  document.getElementById('ep-exp').value=CD.exp||'';
+  document.getElementById('ep-co').value=CD.company||'';
+  document.getElementById('ep-bio').value=CD.bio||'';
+  if(CD.role==='main') document.getElementById('ep-tw').style.display='none';
+  // Build bottom nav based on role
+  var isMain=CD.role==='main';
+  document.getElementById('pf-bnav').innerHTML=
+    '<div class="bni" onclick="goHome()"><div class="ico">🏠</div><div class="lbl">Home</div></div>'+
+    '<div class="bni" onclick="goMid()"><div class="ico">'+(isMain?'➕':'🔍')+'</div><div class="lbl">'+(isMain?'Post Work':'Find Work')+'</div></div>'+
+    '<div class="bni" onclick="goBids2()"><div class="ico">📋</div><div class="lbl">'+(isMain?'My Works':'My Bids')+'</div></div>'+
+    '<div class="bni on"><div class="ico">👤</div><div class="lbl">Profile</div></div>';
+}
+async function saveProfile(){
+  var u={name:document.getElementById('ep-nm').value.trim()||CD.name, phone:document.getElementById('ep-ph').value.trim(),
+    city:document.getElementById('ep-ct').value.trim(), trade:document.getElementById('ep-tr').value,
+    exp:document.getElementById('ep-exp').value, company:document.getElementById('ep-co').value.trim(),
+    bio:document.getElementById('ep-bio').value.trim()};
+  try{
+    await db.collection('users').doc(CU.uid).update(u);
+    Object.assign(CD,u); toast('Profile saved ✓','ok');
+    document.getElementById('edit-ovl').classList.add('off'); loadProfile();
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+async function doLogout(){
+  await auth.signOut(); location.href='index.html';
+}
+document.querySelectorAll('.ovl').forEach(function(o){o.addEventListener('click',function(e){if(e.target===this)this.classList.add('off');});});
+function goDetail(id){location.href='detail.html?id='+id;}
+var _isMain=false; function goHome(){location.href=_isMain?'main.html':'home.html';} function goMid(){location.href=_isMain?'post.html':'find.html';} function goBids2(){location.href=_isMain?'myworks.html':'apps.html';}
+</script>
+</body></html>
