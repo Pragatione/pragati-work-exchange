@@ -45,7 +45,7 @@ auth.onAuthStateChanged(async function(user){
   CU=user;
   try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
   if(!CD){location.href='index.html';return;}
-  if(!cd || cd.role!=='main'){location.href='home.html';return;}
+  if(!CD || CD.role!=='main'){location.href='home.html';return;}
   document.getElementById('loader').classList.add('out');
   loadMyWorks();
 });
