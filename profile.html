@@ -127,6 +127,7 @@ auth.onAuthStateChanged(async function(user){
   if(!CD){location.href='index.html';return;}
   
   document.getElementById('loader').classList.add('out');
+  _isMain = CD && CD.role==='main';
   loadProfile();
 });
 
@@ -147,7 +148,7 @@ function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).jo
 function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
 function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
 function mkCard(w){
-  return '<div class="wcard" onclick="location.href='detail.html?id='+w.id+''">'+
+  return '<div class="wcard" onclick="goDetail('+JSON.stringify(w.id)+')">'+
     '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
     '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
     '<div class="wt">'+esc(w.title)+'</div>'+
@@ -181,9 +182,9 @@ function loadProfile(){
   // Build bottom nav based on role
   var isMain=CD.role==='main';
   document.getElementById('pf-bnav').innerHTML=
-    '<div class="bni" onclick="location.href=''+(isMain?'main.html':'home.html')+''"><div class="ico">🏠</div><div class="lbl">Home</div></div>'+
-    '<div class="bni" onclick="location.href=''+(isMain?'post.html':'find.html')+''"><div class="ico">'+(isMain?'➕':'🔍')+'</div><div class="lbl">'+(isMain?'Post Work':'Find Work')+'</div></div>'+
-    '<div class="bni" onclick="location.href=''+(isMain?'myworks.html':'apps.html')+''"><div class="ico">📋</div><div class="lbl">'+(isMain?'My Works':'My Bids')+'</div></div>'+
+    '<div class="bni" onclick="goHome()"><div class="ico">🏠</div><div class="lbl">Home</div></div>'+
+    '<div class="bni" onclick="goMid()"><div class="ico">'+(isMain?'➕':'🔍')+'</div><div class="lbl">'+(isMain?'Post Work':'Find Work')+'</div></div>'+
+    '<div class="bni" onclick="goBids2()"><div class="ico">📋</div><div class="lbl">'+(isMain?'My Works':'My Bids')+'</div></div>'+
     '<div class="bni on"><div class="ico">👤</div><div class="lbl">Profile</div></div>';
 }
 async function saveProfile(){
@@ -201,5 +202,7 @@ async function doLogout(){
   await auth.signOut(); location.href='index.html';
 }
 document.querySelectorAll('.ovl').forEach(function(o){o.addEventListener('click',function(e){if(e.target===this)this.classList.add('off');});});
+function goDetail(id){location.href='detail.html?id='+id;}
+var _isMain=false; function goHome(){location.href=_isMain?'main.html':'home.html';} function goMid(){location.href=_isMain?'post.html':'find.html';} function goBids2(){location.href=_isMain?'myworks.html':'apps.html';}
 </script>
 </body></html>

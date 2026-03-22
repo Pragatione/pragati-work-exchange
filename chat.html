@@ -117,6 +117,7 @@ auth.onAuthStateChanged(async function(user){
   try{var s=await db.collection('users').doc(user.uid).get();CD=s.exists?s.data():null;}catch(e){}
   if(!CD){location.href='index.html';return;}
   document.getElementById('loader').classList.add('out');
+  _isMain = CD && CD.role==='main';
   buildBnav();
   await loadConvos();
   // Auto-open if redirected from bids/detail
@@ -146,9 +147,9 @@ auth.onAuthStateChanged(async function(user){
 function buildBnav(){
   var isMain=CD&&CD.role==='main';
   document.getElementById('chat-bnav').innerHTML=
-    '<div class="bni" onclick="location.href=''+(isMain?'main.html':'home.html')+''"><div class="ico">🏠</div><div class="lbl">Home</div></div>'+
-    '<div class="bni" onclick="location.href=''+(isMain?'post.html':'find.html')+''"><div class="ico">'+(isMain?'➕':'🔍')+'</div><div class="lbl">'+(isMain?'Post Work':'Find Work')+'</div></div>'+
-    '<div class="bni" onclick="location.href=''+(isMain?'myworks.html':'apps.html')+''"><div class="ico">📋</div><div class="lbl">'+(isMain?'My Works':'My Bids')+'</div></div>'+
+    '<div class="bni" onclick="goHome()"><div class="ico">🏠</div><div class="lbl">Home</div></div>'+
+    '<div class="bni" onclick="goMid()"><div class="ico">'+(isMain?'➕':'🔍')+'</div><div class="lbl">'+(isMain?'Post Work':'Find Work')+'</div></div>'+
+    '<div class="bni" onclick="goBids2()"><div class="ico">📋</div><div class="lbl">'+(isMain?'My Works':'My Bids')+'</div></div>'+
     '<div class="bni on"><div class="ico">💬</div><div class="lbl">Messages</div></div>';
 }
 
@@ -193,7 +194,7 @@ function renderConvoList(convos){
     var s=avatarStyle(otherName);
     var ini=initials(otherName);
     var unread=(c.unread&&c.unread[CU.uid])||0;
-    return '<div class="cli" onclick="openChat(''+c.id+'',''+otherId+'',''+esc(otherName)+'')">'+
+    return '<div class="cli" onclick="openChatLS(this)" data-cid="'+c.id+'" data-uid="'+otherId+'" data-nm="'+esc(otherName)+'">'+
       '<div class="cli-av" style="background:'+s.bg+';color:'+s.color+';">'+ini+'</div>'+
       '<div class="cli-info"><div class="cli-name">'+esc(otherName)+'</div>'+
       '<div class="cli-prev">'+(c.workTitle?'['+esc(c.workTitle)+'] ':'')+esc(c.lastMsg||'Start a conversation…')+'</div></div>'+
@@ -203,6 +204,7 @@ function renderConvoList(convos){
   }).join('');
 }
 
+function openChatLS(el){openChat(el.dataset.cid, el.dataset.uid, el.dataset.nm);}
 function filterConvos(){
   var q=document.getElementById('srch').value.toLowerCase();
   if(!q){renderConvoList(allConvos);return;}
@@ -332,5 +334,6 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('msg-inp').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
   document.getElementById('msg-inp').addEventListener('input',resizeInp);
 });
+var _isMain=false; function goHome(){location.href=_isMain?'main.html':'home.html';} function goMid(){location.href=_isMain?'post.html':'find.html';} function goBids2(){location.href=_isMain?'myworks.html':'apps.html';}
 </script>
 </body></html>

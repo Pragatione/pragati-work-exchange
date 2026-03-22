@@ -78,7 +78,7 @@ function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).jo
 function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
 function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
 function mkCard(w){
-  return '<div class="wcard" onclick="location.href='detail.html?id='+w.id+''">'+
+  return '<div class="wcard" onclick="goDetail('+JSON.stringify(w.id)+')">'+
     '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
     '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
     '<div class="wt">'+esc(w.title)+'</div>'+
@@ -112,5 +112,6 @@ function setChip(el,t){
   document.querySelectorAll('#trade-chips .chip').forEach(function(c){c.classList.remove('on');});
   el.classList.add('on'); filterTV=t; renderFind();
 }
+function goDetail(id){location.href='detail.html?id='+id;}
 </script>
 </body></html>

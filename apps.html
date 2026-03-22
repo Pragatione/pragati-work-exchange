@@ -74,7 +74,7 @@ function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).jo
 function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
 function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
 function mkCard(w){
-  return '<div class="wcard" onclick="location.href='detail.html?id='+w.id+''">'+
+  return '<div class="wcard" onclick="goDetail('+JSON.stringify(w.id)+')">'+
     '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
     '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
     '<div class="wt">'+esc(w.title)+'</div>'+
@@ -106,7 +106,7 @@ function renderApps(){
   });
   if(!arr.length){
     el.innerHTML=emptyHTML('📋','No applications yet','Browse works and submit your first quotation!')+
-      '<div style="padding:10px 0;"><button class="btn btn-p btn-bl" onclick="location.href='find.html'">Browse Works →</button></div>';
+      '<div style="padding:10px 0;"><button class="btn btn-p btn-bl" onclick="goFind()">Browse Works →</button></div>';
     return;
   }
   el.innerHTML=arr.map(function(a){
@@ -116,11 +116,14 @@ function renderApps(){
       '<div style="font-size:12px;color:var(--s4);margin-bottom:9px;">Quoted ₹'+Number(a.amount||0).toLocaleString('en-IN')+' · '+(a.days||'—')+' days</div>'+
       '<div class="arf"><span class="sts '+(SM[a.status||'pending']||'pend')+'">'+(SL[a.status||'pending']||'Under Review')+'</span>'+
       '<div style="display:flex;gap:6px;">'+
-      (a.status==='awarded'?'<button class="btn btn-sm" style="background:var(--green4);color:var(--green);border:none;" onclick="toast('Rating coming soon!','')">Rate ⭐</button>':'')+
-      '<button class="btn btn-g btn-sm" onclick="location.href='chat.html'">💬</button>'+
+      (a.status==='awarded'?'<button class="btn btn-sm" style="background:var(--green4);color:var(--green);border:none;" onclick="rateWork()">Rate ⭐</button>':'')+
+      '<button class="btn btn-g btn-sm" onclick="goChat()">💬</button>'+
       '</div></div></div>';
   }).join('');
 }
 function setF(el,f){document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});el.classList.add('on');filterF=f;renderApps();}
+function goDetail(id){location.href='detail.html?id='+id;}
+function goFind(){location.href='find.html';}
+function goChat(){location.href='chat.html';}
 </script>
 </body></html>

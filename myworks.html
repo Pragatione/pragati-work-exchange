@@ -67,7 +67,7 @@ function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).jo
 function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
 function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
 function mkCard(w){
-  return '<div class="wcard" onclick="location.href='detail.html?id='+w.id+''">'+
+  return '<div class="wcard" onclick="goDetail('+JSON.stringify(w.id)+')">'+
     '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
     '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
     '<div class="wt">'+esc(w.title)+'</div>'+
@@ -88,9 +88,9 @@ async function loadMyWorks(){
     works.sort(function(a,b){return (b.createdAt&&b.createdAt.toMillis?b.createdAt.toMillis():0)-(a.createdAt&&a.createdAt.toMillis?a.createdAt.toMillis():0);});
   }catch(e){works=DEMO_WORKS.slice(0,3);}
   var el=document.getElementById('myw-list');
-  if(!works.length){el.innerHTML=emptyHTML('🏗️','No works posted yet','Post your first work requirement')+'<div style="padding:10px 0;"><button class="btn btn-o btn-bl btn-lg" onclick="location.href='post.html'">Post Now →</button></div>';return;}
+  if(!works.length){el.innerHTML=emptyHTML('🏗️','No works posted yet','Post your first work requirement')+'<div style="padding:10px 0;"><button class="btn btn-o btn-bl btn-lg" onclick="goPost()">Post Now →</button></div>';return;}
   el.innerHTML=works.map(function(w){
-    return '<div class="arow" onclick="location.href='bids.html?id='+w.id+''">'+
+    return '<div class="arow" onclick="goBids('+JSON.stringify(w.id)+')">'+
       '<div class="tags" style="margin-bottom:7px;"><span class="tag t-bl">'+esc(w.trade||'—')+'</span><span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
       '<div class="art">'+esc(w.title)+'</div>'+
       '<div class="ars">📍 '+esc(w.location||'—')+' · '+fmtBud(w)+'</div>'+
@@ -98,5 +98,8 @@ async function loadMyWorks(){
       '<span style="font-size:12px;font-weight:700;color:var(--blue2);">'+(w.bids||0)+' bids →</span></div></div>';
   }).join('');
 }
+function goDetail(id){location.href='detail.html?id='+id;}
+function goBids(id){location.href='bids.html?id='+id;}
+function goPost(){location.href='post.html';}
 </script>
 </body></html>
