@@ -6,6 +6,13 @@
 <meta name="theme-color" content="#1D4ED8"/>
 <title>Messages — Pragati Work Exchange</title>
 <link rel="stylesheet" href="style.css"/>
+<style>
+.bni .ico svg { display:block; transition:transform .2s; }
+.bni.on .ico svg { stroke:var(--blue2); transform:scale(1.12); }
+.bni .ico { display:flex; align-items:center; justify-content:center; font-size:22px; }
+.bni .lbl { font-size:10px; font-weight:600; color:var(--s5); margin-top:1px; }
+.bni.on .lbl { color:var(--blue2); }
+</style>
 </head>
 <body>
 <div id="loader">
@@ -146,11 +153,16 @@ auth.onAuthStateChanged(async function(user){
 
 function buildBnav(){
   var isMain=CD&&CD.role==='main';
-  document.getElementById('chat-bnav').innerHTML=
-    '<div class="bni" onclick="goHome()"><div class="ico">🏠</div><div class="lbl">Home</div></div>'+
-    '<div class="bni" onclick="goMid()"><div class="ico">'+(isMain?'➕':'🔍')+'</div><div class="lbl">'+(isMain?'Post Work':'Find Work')+'</div></div>'+
-    '<div class="bni" onclick="goBids2()"><div class="ico">📋</div><div class="lbl">'+(isMain?'My Works':'My Bids')+'</div></div>'+
-    '<div class="bni on"><div class="ico">💬</div><div class="lbl">Messages</div></div>';
+  document.getElementById('chat-bnav').innerHTML = (isMain ? [
+    {href:'main.html',ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>',lbl:'Home'},
+    {href:'post.html',ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',lbl:'Post Work'},
+    {href:'myworks.html',ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><path d="M12 12v4M10 14h4"/></svg>',lbl:'My Works'},
+  ] : [
+    {href:'home.html',ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>',lbl:'Home'},
+    {href:'find.html',ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>',lbl:'Find Work'},
+    {href:'apps.html',ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>',lbl:'My Bids'},
+  ]).map(function(it){return '<div class="bni" onclick="location.href=\''+it.href+'\'"><div class="ico">'+it.ico+'</div><div class="lbl">'+it.lbl+'</div></div>';}).join('')+
+  '<div class="bni on"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="lbl">Messages</div></div>';
 }
 
 async function loadConvos(){
@@ -335,5 +347,25 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('msg-inp').addEventListener('input',resizeInp);
 });
 var _isMain=false; function goHome(){location.href=_isMain?'main.html':'home.html';} function goMid(){location.href=_isMain?'post.html':'find.html';} function goBids2(){location.href=_isMain?'myworks.html':'apps.html';}
+function buildBnavHTML(isMain, activeKey) {
+  var pettyItems = [
+    {href:'home.html', ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>',    lbl:'Home',      key:'home'},
+    {href:'find.html', ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>',    lbl:'Find Work', key:'find'},
+    {href:'apps.html', ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>',    lbl:'My Bids',   key:'apps'},
+    {href:'chat.html', ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',    lbl:'Messages',  key:'chat'},
+  ];
+  var mainItems = [
+    {href:'main.html',    ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>',    lbl:'Home',     key:'home'},
+    {href:'post.html',    ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',    lbl:'Post Work',key:'post'},
+    {href:'myworks.html', ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><path d="M12 12v4M10 14h4"/></svg>', lbl:'My Works', key:'myworks'},
+    {href:'chat.html',    ico:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',    lbl:'Messages', key:'chat'},
+  ];
+  var items = isMain ? mainItems : pettyItems;
+  return '<nav class="bnav n4">' + items.map(function(it){
+    var on = it.key === activeKey ? ' on' : '';
+    return '<div class="bni'+on+'" onclick="location.href=\''+it.href+'\'">' +
+      '<div class="ico">'+it.ico+'</div><div class="lbl">'+it.lbl+'</div></div>';
+  }).join('') + '</nav>';
+}
 </script>
 </body></html>

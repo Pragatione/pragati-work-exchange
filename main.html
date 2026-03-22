@@ -6,6 +6,13 @@
 <meta name="theme-color" content="#1D4ED8"/>
 <title>Dashboard — Pragati Work Exchange</title>
 <link rel="stylesheet" href="style.css"/>
+<style>
+.bni .ico svg { display:block; transition:transform .2s; }
+.bni.on .ico svg { stroke:var(--blue2); transform:scale(1.12); }
+.bni .ico { display:flex; align-items:center; justify-content:center; font-size:22px; }
+.bni .lbl { font-size:10px; font-weight:600; color:var(--s5); margin-top:1px; }
+.bni.on .lbl { color:var(--blue2); }
+</style>
 </head>
 <body>
 <div id="loader">
@@ -34,7 +41,7 @@
     <div style="padding:0 16px;" id="mw-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
     <div style="padding:10px 16px 4px;"><button class="btn btn-o btn-bl btn-lg" onclick="location.href='post.html'">+ Post New Work Requirement</button></div>
   </div>
-  <nav class="bnav n4"><div class="bni on" onclick="location.href='main.html'"><div class="ico">🏠</div><div class="lbl">Home</div></div><div class="bni" onclick="location.href='post.html'"><div class="ico">➕</div><div class="lbl">Post Work</div></div><div class="bni" onclick="location.href='myworks.html'"><div class="ico">📋</div><div class="lbl">My Works</div></div><div class="bni" onclick="location.href='chat.html'"><div class="ico">💬</div><div class="lbl">Messages</div></div></nav>
+  <nav class="bnav n4"><div class="bni on" onclick="location.href='main.html'"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></div><div class="lbl">Home</div></div><div class="bni" onclick="location.href='post.html'"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div><div class="lbl">Post Work</div></div><div class="bni" onclick="location.href='myworks.html'"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><path d="M12 12v4M10 14h4"/></svg></div><div class="lbl">My Works</div></div><div class="bni" onclick="location.href='chat.html'"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="lbl">Messages</div></div></nav>
 </div>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
