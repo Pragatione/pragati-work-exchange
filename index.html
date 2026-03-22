@@ -41,16 +41,16 @@
     <!-- REAL CONSTRUCTION PHOTO BACKGROUND -->
     <div style="position:absolute;inset:0;z-index:0;
       background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=900&q=85&auto=format&fit=crop');
-      background-size:cover;background-position:center 35%;"></div>
+      background-size:cover;background-position:center 30%;background-attachment:scroll;"></div>
 
     <!-- Overlay gradient for readability -->
     <div style="position:absolute;inset:0;z-index:1;
       background:linear-gradient(180deg,
-        rgba(0,0,0,.6) 0%,
-        rgba(0,0,0,.3) 25%,
-        rgba(0,0,0,.4) 55%,
-        rgba(0,0,0,.82) 80%,
-        rgba(0,0,0,.96) 100%);"></div>
+        rgba(0,0,0,.75) 0%,
+        rgba(0,0,0,.60) 30%,
+        rgba(0,0,0,.68) 60%,
+        rgba(0,0,0,.90) 80%,
+        rgba(0,0,0,.97) 100%);"></div>
 
     <!-- Orange brand glow at bottom -->
     <div style="position:absolute;bottom:0;left:0;right:0;height:200px;z-index:2;
@@ -68,11 +68,11 @@
               style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'"/>
           </div>
           <span style="font-family:var(--h);font-size:21px;font-weight:800;color:#fff;letter-spacing:-.02em;
-            text-shadow:0 1px 8px rgba(0,0,0,.5);">Pragati<span style="color:#FB923C;">.</span></span>
+            text-shadow:0 2px 12px rgba(0,0,0,.9),0 1px 4px rgba(0,0,0,.7);">Pragati<span style="color:#FB923C;">.</span></span>
         </div>
         <button class="btn btn-sm" onclick="goSec('sec-login')"
-          style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
-          backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);">Login</button>
+          style="background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.35);
+          backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-weight:600;">Login</button>
       </div>
 
       <!-- HERO CONTENT -->
@@ -84,42 +84,40 @@
           border-radius:20px;padding:5px 13px;margin-bottom:16px;width:fit-content;">
           <div style="width:7px;height:7px;border-radius:50%;background:#F97316;
             box-shadow:0 0 8px #F97316;animation:blink 1.5s infinite;"></div>
-          <span style="font-size:11px;font-weight:700;color:#FB923C;letter-spacing:.07em;text-transform:uppercase;">
-            India's #1 Construction Marketplace
-          </span>
+          <span style="font-size:11px;font-weight:700;color:#FFA040;letter-spacing:.07em;text-transform:uppercase;">India's #1 Construction Marketplace</span>
         </div>
 
         <!-- Headline -->
         <h1 class="a2" style="font-family:var(--h);font-size:34px;font-weight:800;color:#fff;
-          line-height:1.1;margin-bottom:12px;letter-spacing:-.02em;text-shadow:0 2px 16px rgba(0,0,0,.6);">
+          line-height:1.1;margin-bottom:12px;letter-spacing:-.02em;text-shadow:0 2px 20px rgba(0,0,0,.9),0 1px 4px rgba(0,0,0,.8);">
           Find Construction<br/><span style="color:#FB923C;">Work Faster</span>
         </h1>
 
         <!-- Sub -->
-        <p class="a3" style="font-size:14px;color:rgba(255,255,255,.7);line-height:1.7;
-          margin-bottom:20px;max-width:300px;">
+        <p class="a3" style="font-size:14px;color:rgba(255,255,255,.92);line-height:1.7;
+          margin-bottom:20px;max-width:300px;text-shadow:0 1px 6px rgba(0,0,0,.8);">
           Connect with verified contractors across India. Post work, submit bids, award projects — free forever.
         </p>
 
         <!-- Badges -->
         <div class="a4" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
-          <div style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);
-            border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:5px 11px;
+          <div style="display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.4);
+            border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:5px 11px;
             backdrop-filter:blur(8px);">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span style="font-size:11px;color:rgba(255,255,255,.8);font-weight:600;">Free Forever</span>
+            <span style="font-size:11px;color:#fff;font-weight:700;">Free Forever</span>
           </div>
-          <div style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);
-            border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:5px 11px;
+          <div style="display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.4);
+            border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:5px 11px;
             backdrop-filter:blur(8px);">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span style="font-size:11px;color:rgba(255,255,255,.8);font-weight:600;">Verified Contractors</span>
+            <span style="font-size:11px;color:#fff;font-weight:700;">Verified Contractors</span>
           </div>
-          <div style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);
-            border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:5px 11px;
+          <div style="display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.4);
+            border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:5px 11px;
             backdrop-filter:blur(8px);">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2.5" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <span style="font-size:11px;color:rgba(255,255,255,.8);font-weight:600;">4.9 ★ Rated</span>
+            <span style="font-size:11px;color:#fff;font-weight:700;">4.9 ★ Rated</span>
           </div>
         </div>
 
@@ -132,8 +130,8 @@
             Get Started Free →
           </button>
           <button class="btn btn-lg btn-bl" onclick="goSec('sec-login')"
-            style="background:rgba(255,255,255,.1);color:#fff;
-            border:1px solid rgba(255,255,255,.22);
+            style="background:rgba(0,0,0,.45);color:#fff;
+            border:1px solid rgba(255,255,255,.35);
             backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);">
             I Have an Account
           </button>
@@ -141,20 +139,20 @@
 
         <!-- Stats -->
         <div class="a5" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
-          <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+          <div style="background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.2);
             border-radius:12px;padding:11px;text-align:center;backdrop-filter:blur(8px);">
-            <div style="font-family:var(--h);font-size:20px;font-weight:800;color:#fff;">10K+</div>
-            <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;font-weight:500;">Contractors</div>
+            <div style="font-family:var(--h);font-size:20px;font-weight:800;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5);">10K+</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.75);margin-top:2px;font-weight:600;">Contractors</div>
           </div>
-          <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+          <div style="background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.2);
             border-radius:12px;padding:11px;text-align:center;backdrop-filter:blur(8px);">
-            <div style="font-family:var(--h);font-size:20px;font-weight:800;color:#fff;">₹200Cr+</div>
-            <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;font-weight:500;">Work Awarded</div>
+            <div style="font-family:var(--h);font-size:20px;font-weight:800;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5);">₹200Cr+</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.75);margin-top:2px;font-weight:600;">Work Awarded</div>
           </div>
-          <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+          <div style="background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.2);
             border-radius:12px;padding:11px;text-align:center;backdrop-filter:blur(8px);">
-            <div style="font-family:var(--h);font-size:20px;font-weight:800;color:#fff;">28</div>
-            <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;font-weight:500;">States</div>
+            <div style="font-family:var(--h);font-size:20px;font-weight:800;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5);">28</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.75);margin-top:2px;font-weight:600;">States</div>
           </div>
         </div>
       </div>
