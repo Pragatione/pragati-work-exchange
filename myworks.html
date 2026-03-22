@@ -7,11 +7,11 @@
 <title>My Works — Pragati Work Exchange</title>
 <link rel="stylesheet" href="style.css"/>
 <style>
-.bni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 4px;flex:1;border:none;background:none;position:relative;}
-.bni .ico{width:26px;height:26px;display:flex;align-items:center;justify-content:center;transition:transform .18s;}
+.bni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 4px;flex:1;border:none;background:none;}
+.bni .ico{width:26px;height:26px;display:flex;align-items:center;justify-content:center;}
 .bni .ico svg{stroke:var(--s5);transition:stroke .18s,transform .18s;}
-.bni .lbl{font-size:10px;font-weight:600;color:var(--s5);transition:color .18s;letter-spacing:.01em;}
-.bni.on .ico svg{stroke:var(--blue2);transform:scale(1.15);}
+.bni .lbl{font-size:10px;font-weight:600;color:var(--s5);letter-spacing:.01em;}
+.bni.on .ico svg{stroke:var(--blue2);transform:scale(1.12);}
 .bni.on .lbl{color:var(--blue2);}
 .bni:active .ico{transform:scale(.9);}
 .bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--s7);display:flex;z-index:50;padding:8px 0 max(env(safe-area-inset-bottom),12px);box-shadow:0 -2px 16px rgba(0,0,0,.07);}
@@ -21,23 +21,46 @@
 <div id="loader">
   <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
   <div class="ld-brand">Pragati<span>.</span></div>
-  <div class="ld-sub">Work Exchange · PragatiOne</div>
+  <div class="ld-sub">Work Exchange</div>
   <div class="ld-bar"><div class="ld-fill"></div></div>
 </div>
 <div id="toast"></div>
 
 <div style="display:flex;flex-direction:column;min-height:100vh;">
-  <div class="tbar"><button class="tbk" onclick="history.back()">←</button><h2>My Works</h2><button class="btn btn-o btn-sm" onclick="location.href='post.html'">+ Post</button></div>
-  <div class="pscr pb90" style="padding:12px 16px 0;" id="myw-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
-  <nav class="bnav"><div class="bni" onclick="location.href='main.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div class="lbl">Home</div></div><div class="bni" onclick="location.href='post.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg></div><div class="lbl">Post Work</div></div><div class="bni on" onclick="location.href='myworks.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div><div class="lbl">My Works</div></div><div class="bni" onclick="location.href='chat.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg></div><div class="lbl">Messages</div></div></nav>
+  <div class="tbar">
+    <button class="tbk" onclick="history.back()">←</button>
+    <h2>My Works</h2>
+    <button class="btn btn-o btn-sm" onclick="location.href='post.html'">+ Post</button>
+  </div>
+  <div class="pscr pb90" style="padding:12px 16px 0;" id="myw-list">
+    <div class="empty"><div class="spin" style="margin:0 auto;"></div></div>
+  </div>
+  <nav class="bnav">
+    <div class="bni" onclick="location.href='main.html'">
+      <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="lbl">Home</div>
+    </div>
+    <div class="bni" onclick="location.href='post.html'">
+      <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg></div>
+      <div class="lbl">Post Work</div>
+    </div>
+    <div class="bni on" onclick="location.href='myworks.html'">
+      <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+      <div class="lbl">My Works</div>
+    </div>
+    <div class="bni" onclick="location.href='chat.html'">
+      <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg></div>
+      <div class="lbl">Messages</div>
+    </div>
+  </nav>
 </div>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="shared.js"></script>
 <script>
-
-const firebase_cfg = {
+var firebase_cfg = {
   apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
   authDomain:"pragati-work-exchange.firebaseapp.com",
   projectId:"pragati-work-exchange",
@@ -45,71 +68,82 @@ const firebase_cfg = {
   messagingSenderId:"422215240765",
   appId:"1:422215240765:web:eefb239420262c9d822e54"
 };
-if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
-const auth = firebase.auth();
-const db   = firebase.firestore();
-const FS   = firebase.firestore;
-var CU=null, CD=null;
-auth.onAuthStateChanged(async function(user){
-  if(!user){location.href='index.html';return;}
-  CU=user;
-  try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
-  if(!CD){location.href='index.html';return;}
-  if(!CD || CD.role!=='main'){location.href='home.html';return;}
+if (!firebase.apps.length) firebase.initializeApp(firebase_cfg);
+var auth = firebase.auth();
+var db   = firebase.firestore();
+var FS   = firebase.firestore;
+var CU = null, CD = null;
+
+auth.onAuthStateChanged(async function(user) {
+  if (!user) { location.href = 'index.html'; return; }
+  CU = user;
+  try {
+    var s = await db.collection('users').doc(user.uid).get();
+    CD = s.exists ? s.data() : null;
+  } catch(e) {}
+  if (!CD) { location.href = 'index.html'; return; }
+  if (!CD || CD.role !== 'main') { location.href = 'home.html'; return; }
   document.getElementById('loader').classList.add('out');
   loadMyWorks();
 });
 
-function toast(msg,type){
-  var el=document.getElementById('toast'); el.textContent=msg;
-  el.className=type?'on '+type:'on'; setTimeout(function(){el.className='';},3000);
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = type ? 'on ' + type : 'on';
+  setTimeout(function() { el.className = ''; }, 3000);
 }
-function getP(k){return new URLSearchParams(window.location.search).get(k);}
-function saveLS(k,v){try{localStorage.setItem('pg_'+k,JSON.stringify(v));}catch(e){}}
-function getLS(k){try{return JSON.parse(localStorage.getItem('pg_'+k));}catch(e){return null;}}
-function clearLS(k){localStorage.removeItem('pg_'+k);}
-function fmtBud(w){
-  var f=function(n){return n>=100000?'₹'+(n/100000).toFixed(1).replace('.0','')+'L':'₹'+n.toLocaleString('en-IN');};
-  return(w.minBudget&&w.maxBudget)?f(w.minBudget)+'–'+f(w.maxBudget):w.minBudget?f(w.minBudget):'TBD';
+function fmtBud(w) {
+  var f = function(n) { return n >= 100000 ? '₹' + (n/100000).toFixed(1).replace('.0','') + 'L' : '₹' + n.toLocaleString('en-IN'); };
+  return (w.minBudget && w.maxBudget) ? f(w.minBudget) + '–' + f(w.maxBudget) : w.minBudget ? f(w.minBudget) : 'TBD';
 }
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).join('').toUpperCase().slice(0,2);}
-function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
-function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
-function mkCard(w){
-  return '<div class="wcard" onclick="goDetail('+JSON.stringify(w.id)+')">'+
-    '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
-    '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
-    '<div class="wt">'+esc(w.title)+'</div>'+
-    '<div class="wco">🏢 '+esc(w.company||w.postedByName||'Main Contractor')+'</div></div>'+
-    '<div class="wb"><div class="wmeta"><span>📍 '+esc(w.location||'—')+'</span>'+
-    '<span>⏱ '+esc(w.startDate||'TBD')+'</span>'+
-    '<span>👷 '+esc(w.experience||'—')+'</span></div></div>'+
-    '<div class="wf"><span class="wbud">'+fmtBud(w)+'</span>'+
-    '<span class="wbids">'+(w.bids||0)+' bids</span></div></div>';
-}
-</script>
-<script>
-async function loadMyWorks(){
-  var works=[];
-  try{
-    var ws=await db.collection('works').where('postedBy','==',CU.uid).get();
-    works=ws.docs.map(function(d){return Object.assign({id:d.id},d.data());});
-    works.sort(function(a,b){return (b.createdAt&&b.createdAt.toMillis?b.createdAt.toMillis():0)-(a.createdAt&&a.createdAt.toMillis?a.createdAt.toMillis():0);});
-  }catch(e){works=DEMO_WORKS.slice(0,3);}
-  var el=document.getElementById('myw-list');
-  if(!works.length){el.innerHTML=emptyHTML('🏗️','No works posted yet','Post your first work requirement')+'<div style="padding:10px 0;"><button class="btn btn-o btn-bl btn-lg" onclick="goPost()">Post Now →</button></div>';return;}
-  el.innerHTML=works.map(function(w){
-    return '<div class="arow" onclick="goBids('+JSON.stringify(w.id)+')">'+
-      '<div class="tags" style="margin-bottom:7px;"><span class="tag t-bl">'+esc(w.trade||'—')+'</span><span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
-      '<div class="art">'+esc(w.title)+'</div>'+
-      '<div class="ars">📍 '+esc(w.location||'—')+' · '+fmtBud(w)+'</div>'+
-      '<div class="arf"><span class="sts '+(w.status==='awarded'?'awd':'open')+'">'+(w.status==='awarded'?'Awarded ✓':'Accepting Bids')+'</span>'+
-      '<span style="font-size:12px;font-weight:700;color:var(--blue2);">'+(w.bids||0)+' bids →</span></div></div>';
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function tagClr(u) { return u === 'Urgent' ? 't-or' : u === 'Critical' ? 't-re' : 't-gr'; }
+
+async function loadMyWorks() {
+  var works = [];
+  try {
+    var ws = await db.collection('works').where('postedBy','==',CU.uid).get();
+    works = ws.docs.map(function(d) { return Object.assign({id: d.id}, d.data()); });
+    works.sort(function(a,b) {
+      var at = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+      var bt = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+      return bt - at;
+    });
+  } catch(e) {
+    works = DEMO_WORKS.slice(0, 3);
+  }
+
+  var el = document.getElementById('myw-list');
+
+  if (!works.length) {
+    el.innerHTML =
+      '<div class="empty"><div class="ei">🏗️</div><h3>No works posted yet</h3><p>Post your first work requirement</p></div>' +
+      '<div style="padding:10px 0;"><button class="btn btn-o btn-bl btn-lg" onclick="location.href=\'post.html\'">Post Now →</button></div>';
+    return;
+  }
+
+  el.innerHTML = works.map(function(w) {
+    var statusCls = w.status === 'awarded' ? 'awd' : 'open';
+    var statusTxt = w.status === 'awarded' ? 'Awarded ✓' : 'Accepting Bids';
+    return '<div class="arow" onclick="openBids(\'' + w.id + '\')">' +
+      '<div class="tags" style="margin-bottom:7px;">' +
+        '<span class="tag t-bl">' + esc(w.trade || '—') + '</span>' +
+        '<span class="tag ' + tagClr(w.urgency) + '">' + esc(w.urgency || 'Normal') + '</span>' +
+      '</div>' +
+      '<div class="art">' + esc(w.title) + '</div>' +
+      '<div class="ars">📍 ' + esc(w.location || '—') + ' · ' + fmtBud(w) + '</div>' +
+      '<div class="arf">' +
+        '<span class="sts ' + statusCls + '">' + statusTxt + '</span>' +
+        '<span style="font-size:12px;font-weight:700;color:var(--blue2);">' + (w.bids || 0) + ' bids →</span>' +
+      '</div>' +
+    '</div>';
   }).join('');
 }
-function goDetail(id){location.href='detail.html?id='+id;}
-function goBids(id){location.href='bids.html?id='+id;}
-function goPost(){location.href='post.html';}
+
+function openBids(id) {
+  location.href = 'bids.html?id=' + encodeURIComponent(id);
+}
 </script>
-</body></html>
+</body>
+</html>
