@@ -3,9 +3,20 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
-<meta name="theme-color" content="#1D4ED8"/>
-<title>Welcome — Pragati Work Exchange</title>
+<meta name="theme-color" content="#0F172A"/>
+<title>Pragati Work Exchange — India's Construction Marketplace</title>
 <link rel="stylesheet" href="style.css"/>
+<style>
+.snap-wrap{height:100vh;overflow:hidden;position:relative;}
+.snap-sec{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  transition:transform .42s cubic-bezier(.4,0,.2,1),opacity .38s ease;background:#fff;}
+.snap-sec::-webkit-scrollbar{display:none;}
+.snap-sec.sec-active{transform:translateX(0);opacity:1;pointer-events:auto;z-index:2;}
+.snap-sec.sec-left{transform:translateX(-100%);opacity:0;pointer-events:none;z-index:1;}
+.snap-sec.sec-right{transform:translateX(100%);opacity:0;pointer-events:none;z-index:1;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+</style>
 </head>
 <body>
 <div id="loader">
@@ -16,166 +27,243 @@
 </div>
 <div id="toast"></div>
 
-<style>
-.snap-wrap{height:100vh;overflow:hidden;position:relative;}
-.snap-sec{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .35s ease;background:#fff;}
-.snap-sec::-webkit-scrollbar{display:none;}
-.snap-sec.sec-active{transform:translateX(0);opacity:1;pointer-events:auto;z-index:2;}
-.snap-sec.sec-left{transform:translateX(-100%);opacity:0;pointer-events:none;z-index:1;}
-.snap-sec.sec-right{transform:translateX(100%);opacity:0;pointer-events:none;z-index:1;}
-.land{background:linear-gradient(160deg,#0F172A 0%,#1E3A5F 55%,#0F172A 100%);display:flex;flex-direction:column;min-height:100vh;}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
-</style>
-
 <div class="snap-wrap" id="auth-wrap">
-  <!-- HERO -->
-  <section class="snap-sec sec-active land" id="sec-hero">
-    <nav style="padding:52px 18px 0;display:flex;justify-content:space-between;align-items:center;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:36px;height:36px;border-radius:10px;background:var(--blue2);overflow:hidden;display:flex;align-items:center;justify-content:center;">
-          <img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'"/>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="snap-sec sec-active" id="sec-hero" style="background:#0B1220;">
+    <div class="hero-wrap">
+
+      <!-- Background layers -->
+      <div class="sky"></div>
+      <div class="stars"></div>
+      <div class="haze"></div>
+      <div class="moon"></div>
+
+      <!-- Dust particles -->
+      <div class="particle" style="width:4px;height:4px;left:42%;bottom:36%;animation-duration:5s;animation-delay:0s;"></div>
+      <div class="particle" style="width:3px;height:3px;left:38%;bottom:32%;animation-duration:7s;animation-delay:1s;"></div>
+      <div class="particle" style="width:5px;height:5px;left:47%;bottom:38%;animation-duration:6s;animation-delay:2.5s;"></div>
+      <div class="particle" style="width:3px;height:3px;left:33%;bottom:34%;animation-duration:8s;animation-delay:.5s;"></div>
+
+      <!-- Light beams from site -->
+      <div class="light-beam"></div>
+      <div class="light-beam" style="left:28%;transform:rotate(12deg);"></div>
+
+      <!-- ── BUILDING UNDER CONSTRUCTION (left) ── -->
+      <div class="building-main">
+        <!-- Floor 7 - bare skeleton -->
+        <div style="display:flex;gap:2px;margin-bottom:2px;opacity:.4;">
+          <div style="flex:1;height:18px;border:1px solid rgba(148,163,184,.3);border-radius:2px 2px 0 0;"></div>
+          <div style="flex:1;height:18px;border:1px solid rgba(148,163,184,.3);border-radius:2px 2px 0 0;"></div>
+          <div style="flex:1;height:18px;"></div>
+          <div style="flex:1;height:18px;border:1px solid rgba(148,163,184,.3);border-radius:2px 2px 0 0;"></div>
         </div>
-        <div style="font-family:var(--h);font-size:20px;font-weight:800;color:#fff;">Pragati<span style="color:var(--orange3);">.</span></div>
+        <!-- Floor 6 -->
+        <div style="display:flex;gap:2px;margin-bottom:2px;">
+          <div style="flex:1;height:20px;background:linear-gradient(180deg,#1E3A5F,#162847);border-radius:2px 2px 0 0;"></div>
+          <div style="flex:1;height:20px;background:linear-gradient(180deg,#1E3A5F,#162847);"></div>
+          <div style="flex:1;height:20px;background:linear-gradient(180deg,#162847,#0F1E3A);"></div>
+          <div style="flex:1;height:20px;background:linear-gradient(180deg,#1E3A5F,#162847);"></div>
+        </div>
+        <!-- Floor 5 - some lights on -->
+        <div style="display:flex;gap:2px;margin-bottom:2px;">
+          <div style="flex:1;height:22px;background:#1E3A5F;position:relative;">
+            <div style="position:absolute;top:4px;left:3px;right:3px;height:10px;background:rgba(251,191,36,.15);border-radius:1px;"></div>
+          </div>
+          <div style="flex:1;height:22px;background:linear-gradient(180deg,#2D4A7A,#1E3A5F);">
+            <div style="height:10px;margin:4px 3px 0;background:rgba(147,197,253,.2);border-radius:1px;"></div>
+          </div>
+          <div style="flex:1;height:22px;background:#1E3A5F;"></div>
+          <div style="flex:1;height:22px;background:linear-gradient(180deg,#1E3A5F,#162847);">
+            <div style="height:10px;margin:4px 3px 0;background:rgba(251,191,36,.1);border-radius:1px;"></div>
+          </div>
+        </div>
+        <!-- Floor 4 - active level, bright light spilling -->
+        <div style="display:flex;gap:2px;margin-bottom:2px;">
+          <div style="flex:1;height:24px;background:#1A3355;position:relative;">
+            <div style="position:absolute;inset:3px 4px;background:rgba(251,191,36,.25);border-radius:1px;"></div>
+          </div>
+          <div style="flex:1;height:24px;background:#243F6B;position:relative;">
+            <div style="position:absolute;inset:3px 4px;background:rgba(251,191,36,.35);border-radius:1px;box-shadow:0 0 8px rgba(251,191,36,.3);"></div>
+          </div>
+          <div style="flex:1;height:24px;background:#1A3355;">
+            <div style="height:12px;margin:4px 3px 0;background:rgba(251,191,36,.2);border-radius:1px;"></div>
+          </div>
+          <div style="flex:1;height:24px;background:#243F6B;">
+            <div style="height:12px;margin:4px 3px 0;background:rgba(251,191,36,.3);border-radius:1px;"></div>
+          </div>
+        </div>
+        <!-- Floor 3 -->
+        <div style="display:flex;gap:2px;margin-bottom:2px;">
+          <div style="flex:1;height:26px;background:linear-gradient(180deg,#243F6B,#1A3355);"></div>
+          <div style="flex:1;height:26px;background:linear-gradient(180deg,#1E3A5F,#162847);">
+            <div style="height:14px;margin:5px 4px 0;background:rgba(147,197,253,.12);border-radius:1px;"></div>
+          </div>
+          <div style="flex:1;height:26px;background:#243F6B;"></div>
+          <div style="flex:1;height:26px;background:linear-gradient(180deg,#1E3A5F,#162847);">
+            <div style="height:14px;margin:5px 4px 0;background:rgba(147,197,253,.15);border-radius:1px;"></div>
+          </div>
+        </div>
+        <!-- Floor 2 -->
+        <div style="display:flex;gap:2px;margin-bottom:2px;">
+          <div style="flex:1;height:28px;background:#1A3355;">
+            <div style="height:16px;margin:5px 4px 0;background:rgba(147,197,253,.1);border-radius:1px;"></div>
+          </div>
+          <div style="flex:1;height:28px;background:#243F6B;"></div>
+          <div style="flex:1;height:28px;background:#1E3A5F;">
+            <div style="height:16px;margin:5px 4px 0;background:rgba(147,197,253,.08);border-radius:1px;"></div>
+          </div>
+          <div style="flex:1;height:28px;background:#243F6B;"></div>
+        </div>
+        <!-- Ground floor -->
+        <div style="display:flex;gap:2px;">
+          <div style="flex:2;height:30px;background:linear-gradient(180deg,#1A3355,#0F1A2E);border-bottom:3px solid #F97316;"></div>
+          <div style="flex:1;height:30px;background:#0F1A2E;border-bottom:3px solid #F97316;">
+            <div style="width:60%;height:24px;margin:3px auto 0;background:rgba(0,0,0,.4);border-radius:2px 2px 0 0;"></div>
+          </div>
+          <div style="flex:1;height:30px;background:linear-gradient(180deg,#1A3355,#0F1A2E);border-bottom:3px solid #F97316;"></div>
+        </div>
+        <!-- Safety nets / tarpaulin -->
+        <div style="position:absolute;top:28%;right:0;width:4px;height:60%;background:repeating-linear-gradient(180deg,rgba(249,115,22,.5) 0px,rgba(249,115,22,.5) 4px,transparent 4px,transparent 8px);"></div>
       </div>
-      <button class="btn btn-sm" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);" onclick="goSec('sec-login')">Login</button>
-    </nav>
-    <div style="flex:1;padding:24px 18px 0;">
-      <div style="display:flex;justify-content:center;margin-bottom:20px;">
-        <svg viewBox="0 0 300 170" width="290" height="165" fill="none">
-          <rect width="300" height="145" fill="#0F172A" opacity=".35"/>
-          <circle cx="40" cy="18" r="1.5" fill="white" opacity=".5"/><circle cx="120" cy="10" r="1" fill="white" opacity=".6"/><circle cx="200" cy="18" r="1.5" fill="white" opacity=".4"/><circle cx="270" cy="12" r="1" fill="white" opacity=".5"/>
-          <rect x="15" y="42" width="48" height="113" rx="3" fill="#1E40AF"/><rect x="15" y="42" width="48" height="7" rx="2" fill="#2563EB"/>
-          <rect x="21" y="55" width="10" height="8" rx="1" fill="#93C5FD" opacity=".9"/><rect x="36" y="55" width="10" height="8" rx="1" fill="white" opacity=".8"/>
-          <rect x="21" y="70" width="10" height="8" rx="1" fill="white" opacity=".7"/><rect x="36" y="70" width="10" height="8" rx="1" fill="#93C5FD" opacity=".6"/>
-          <rect x="21" y="85" width="10" height="8" rx="1" fill="#93C5FD" opacity=".8"/><rect x="36" y="85" width="10" height="8" rx="1" fill="white" opacity=".5"/>
-          <rect x="80" y="75" width="80" height="80" rx="3" fill="#334155"/>
-          <rect x="76" y="42" width="5" height="113" rx="2" fill="#64748B"/><rect x="159" y="42" width="5" height="113" rx="2" fill="#64748B"/>
-          <rect x="76" y="42" width="88" height="5" rx="2" fill="#64748B"/>
-          <rect x="76" y="63" width="88" height="2" rx="1" fill="#94A3B8" opacity=".4"/><rect x="76" y="84" width="88" height="2" rx="1" fill="#94A3B8" opacity=".4"/>
-          <rect x="88" y="86" width="13" height="11" rx="1" fill="#1E40AF" opacity=".6"/><rect x="108" y="86" width="13" height="11" rx="1" fill="#1E40AF" opacity=".4"/>
-          <rect x="222" y="14" width="6" height="141" rx="2" fill="#EA580C"/>
-          <rect x="182" y="14" width="78" height="5" rx="2" fill="#F97316"/><rect x="246" y="9" width="17" height="13" rx="3" fill="#DC2626"/>
-          <line x1="202" y1="19" x2="202" y2="46" stroke="#94A3B8" stroke-width="1.5"/><rect x="194" y="46" width="16" height="10" rx="3" fill="#F97316"/>
-          <rect x="246" y="68" width="40" height="87" rx="3" fill="#1E3A5F"/>
-          <circle cx="94" cy="53" r="5" fill="#FBBF24"/><rect x="89" y="58" width="10" height="12" rx="2" fill="#F97316"/><path d="M88 53 Q94 45 100 53" fill="#EA580C"/>
-          <circle cx="148" cy="136" r="5" fill="#FCD34D"/><rect x="143" y="141" width="10" height="10" rx="2" fill="#2563EB"/>
-          <rect y="150" width="300" height="20" fill="#1E293B"/>
-          <text x="150" y="164" text-anchor="middle" font-size="8" font-weight="800" fill="white" opacity=".5" font-family="sans-serif">PRAGATI WORK EXCHANGE</text>
-        </svg>
+
+      <!-- ── SCAFFOLDING ── -->
+      <div style="position:absolute;left:46%;bottom:82px;width:10%;z-index:5;">
+        <div style="width:2px;height:120px;background:rgba(148,163,184,.45);margin-left:0;"></div>
+        <div style="width:2px;height:120px;background:rgba(148,163,184,.45);margin-left:calc(100% - 2px);margin-top:-120px;"></div>
+        <div style="height:2px;width:100%;background:rgba(148,163,184,.35);margin-top:-80px;"></div>
+        <div style="height:2px;width:100%;background:rgba(148,163,184,.35);margin-top:38px;"></div>
+        <div style="height:2px;width:100%;background:rgba(148,163,184,.35);margin-top:38px;"></div>
       </div>
-      <div style="font-family:var(--h);font-size:32px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:12px;">Find Construction <span style="color:var(--orange3);">Work Faster</span></div>
-      <p style="font-size:14px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:24px;">India's #1 marketplace for subcontract work. Post requirements or bid for jobs — free forever.</p>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
-        <button class="btn btn-o btn-bl btn-lg" onclick="goSec('sec-register')">Get Started Free →</button>
-        <button class="btn btn-bl btn-lg" style="background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);" onclick="goSec('sec-login')">I Have an Account</button>
+
+      <!-- ── TOWER CRANE ── -->
+      <div class="crane-wrap">
+        <div class="safety-light" style="top:-8px;left:50%;transform:translateX(-50%);"></div>
+        <!-- Jib (horizontal arm) -->
+        <div style="position:relative;width:130px;height:6px;background:linear-gradient(90deg,#475569 0%,#F97316 35%,#EA580C 60%,#64748B 100%);border-radius:3px;margin-bottom:-3px;">
+          <div class="safety-light" style="top:-4px;right:0;width:5px;height:5px;"></div>
+        </div>
+        <!-- Mast -->
+        <div style="width:8px;height:180px;background:linear-gradient(180deg,#F97316,#C2410C);border-radius:4px;margin:0 auto;position:relative;">
+          <!-- Cabin -->
+          <div style="position:absolute;top:20px;right:-18px;width:26px;height:1  <section class="snap-sec sec-active" id="sec-hero" style="background:#0B1220;">
+    <div style="position:relative;min-height:100vh;display:flex;flex-direction:column;overflow:hidden;">
+
+      <!-- REAL PHOTO BACKGROUND -->
+      <div id="hero-bg" style="
+        position:absolute;inset:0;z-index:0;
+        background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=900&q=85&auto=format&fit=crop');
+        background-size:cover;background-position:center 40%;
+        transition:opacity .5s;
+      "></div>
+
+      <!-- Dark overlay - gradient for readability -->
+      <div style="
+        position:absolute;inset:0;z-index:1;
+        background:linear-gradient(
+          180deg,
+          rgba(0,0,0,.55) 0%,
+          rgba(0,0,0,.35) 30%,
+          rgba(0,0,0,.45) 60%,
+          rgba(0,0,0,.85) 85%,
+          rgba(0,0,0,.95) 100%
+        );
+      "></div>
+
+      <!-- Orange accent glow at bottom -->
+      <div style="
+        position:absolute;bottom:0;left:0;right:0;height:220px;z-index:2;
+        background:linear-gradient(0deg,rgba(234,88,12,.18) 0%,transparent 100%);
+      "></div>
+
+      <!-- TOPBAR -->
+      <div style="position:relative;z-index:10;padding:52px 20px 0;display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:38px;height:38px;border-radius:11px;background:var(--blue2);overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(37,99,235,.45);">
+            <img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'"/>
+          </div>
+          <div style="font-family:var(--h);font-size:21px;font-weight:800;color:#fff;letter-spacing:-.02em;text-shadow:0 1px 8px rgba(0,0,0,.4);">
+            Pragati<span style="color:#FB923C;">.</span>
+          </div>
+        </div>
+        <button class="btn btn-sm" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);" onclick="goSec('sec-login')">Login</button>
       </div>
-      <div style="display:flex;gap:24px;padding:20px 0;border-top:1px solid rgba(255,255,255,.1);">
-        <div><div style="font-family:var(--h);font-size:22px;font-weight:800;color:#fff;">10K+</div><div style="font-size:11px;color:rgba(255,255,255,.5);">Contractors</div></div>
-        <div><div style="font-family:var(--h);font-size:22px;font-weight:800;color:#fff;">₹200Cr+</div><div style="font-size:11px;color:rgba(255,255,255,.5);">Work Awarded</div></div>
-        <div><div style="font-family:var(--h);font-size:22px;font-weight:800;color:#fff;">28</div><div style="font-size:11px;color:rgba(255,255,255,.5);">States</div></div>
+
+      <!-- HERO CONTENT -->
+      <div style="position:relative;z-index:10;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:20px 20px 24px;">
+
+        <!-- Live badge -->
+        <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(249,115,22,.18);border:1px solid rgba(249,115,22,.4);border-radius:20px;padding:5px 13px;margin-bottom:16px;width:fit-content;">
+          <div style="width:7px;height:7px;border-radius:50%;background:#F97316;box-shadow:0 0 8px #F97316;animation:blink 1.5s infinite;"></div>
+          <span style="font-size:11px;font-weight:700;color:#FB923C;letter-spacing:.07em;text-transform:uppercase;">India's #1 Construction Marketplace</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 style="font-family:var(--h);font-size:34px;font-weight:800;color:#fff;line-height:1.1;margin-bottom:12px;letter-spacing:-.02em;text-shadow:0 2px 16px rgba(0,0,0,.5);">
+          Find Construction<br/><span style="color:#FB923C;">Work Faster</span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p style="font-size:14px;color:rgba(255,255,255,.7);line-height:1.7;margin-bottom:20px;max-width:300px;">
+          Connect with verified contractors across India. Post work, submit bids, award projects — free forever.
+        </p>
+
+        <!-- Trust badges -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:5px 11px;backdrop-filter:blur(8px);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;">Free Forever</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:5px 11px;backdrop-filter:blur(8px);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;">Verified Contractors</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:5px 11px;backdrop-filter:blur(8px);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2.5" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;">4.9 ★ Rated</span>
+          </div>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:24px;">
+          <button class="btn btn-lg btn-bl" onclick="goSec('sec-register')" style="
+            background:linear-gradient(135deg,#F97316,#EA580C);
+            color:#fff;font-weight:700;font-size:16px;
+            border:none;
+            box-shadow:0 4px 24px rgba(249,115,22,.45),0 0 0 1px rgba(249,115,22,.3);
+            letter-spacing:-.01em;
+          ">Get Started Free →</button>
+          <button class="btn btn-lg btn-bl" onclick="goSec('sec-login')" style="
+            background:rgba(255,255,255,.1);
+            color:#fff;
+            border:1px solid rgba(255,255,255,.22);
+            backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+          ">I Have an Account</button>
+        </div>
+
+        <!-- Stats -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+          <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:11px;text-align:center;backdrop-filter:blur(8px);">
+            <div style="font-family:var(--h);font-size:20px;font-weight:800;color:#fff;">10K+</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;font-weight:500;">Contractors</div>
+          </div>
+          <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:11px;text-align:center;backdrop-filter:blur(8px);">
+            <div style="font-family:var(--h);font-size:20px;font-weight:800;color:#fff;">₹200Cr+</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;font-weight:500;">Work Awarded</div>
+          </div>
+          <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:11px;text-align:center;backdrop-filter:blur(8px);">
+            <div style="font-family:var(--h);font-size:20px;font-weight:800;color:#fff;">28</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;font-weight:500;">States</div>
+          </div>
+        </div>
       </div>
     </div>
-    <div style="text-align:center;padding:14px 0 20px;color:rgba(255,255,255,.4);font-size:12px;animation:bounce 2s infinite;">↓ Scroll to sign up</div>
   </section>
 
-  <!-- REGISTER -->
-  <section class="snap-sec sec-right" id="sec-register" style="display:flex;flex-direction:column;">
-    <div class="ahero">
-      <div class="ld-icon" style="margin:0 auto 12px;overflow:hidden;"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'"/></div>
-      <h2>Create Account</h2><p>Join 10,000+ contractors on Pragati</p>
-    </div>
-    <div class="abody" style="flex:1;overflow-y:auto;">
-      <p style="font-size:11px;font-weight:700;color:var(--s3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">I am a…</p>
-      <div class="rgrid">
-        <div class="rcard sel" id="rc-petty" onclick="selRole('petty')"><div class="ri">👷</div><h4>Petty Contractor</h4><p>Find & apply for work</p></div>
-        <div class="rcard" id="rc-main" onclick="selRole('main')"><div class="ri">🏗️</div><h4>Main Contractor</h4><p>Post work & hire</p></div>
-      </div>
-      <input type="hidden" id="rg-role" value="petty"/>
-      <div class="field"><label class="flbl">Full Name *</label><input class="fin" id="rg-name" placeholder="e.g. Rajesh Patil"/></div>
-      <div class="g2">
-        <div class="field"><label class="flbl">Phone *</label><input class="fin" id="rg-phone" type="tel" placeholder="+91 98765 43210" inputmode="tel"/></div>
-        <div class="field"><label class="flbl">City *</label><input class="fin" id="rg-city" placeholder="Pune, MH"/></div>
-      </div>
-      <div class="field" id="rg-tw"><label class="flbl">Primary Trade</label>
-        <select class="fin" id="rg-trade"><option value="">Select…</option><option>Plastering</option><option>Flooring</option><option>Painting</option><option>Electrical</option><option>Plumbing</option><option>Masonry</option><option>Carpentry</option><option>Tiling</option><option>Waterproofing</option><option>Civil Work</option><option>Other</option></select>
-      </div>
-      <div class="field"><label class="flbl">Email *</label><input class="fin" id="rg-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
-      <div class="field"><label class="flbl">Password *</label><input class="fin" id="rg-pass" type="password" placeholder="Min 6 characters"/></div>
-      <div class="ferr" id="rg-err"></div>
-      <button class="btn btn-p btn-bl btn-lg" id="rg-btn" onclick="doRegister()" style="margin-top:8px;">Create Account →</button>
-      <div class="divdr">or</div>
-      <p style="text-align:center;font-size:14px;color:var(--s3);">Already registered? <span style="color:var(--blue2);font-weight:600;cursor:pointer;" onclick="goSec('sec-login')">Login here</span></p>
-      <p style="text-align:center;font-size:12px;color:var(--s5);margin-top:10px;cursor:pointer;" onclick="goSec('sec-hero')">↑ Back to top</p>
-      <div style="height:20px;"></div>
-    </div>
-  </section>
+y = r==='petty' ? 'block' : 'none';
+}
 
-  <!-- LOGIN -->
-  <section class="snap-sec sec-right" id="sec-login" style="display:flex;flex-direction:column;">
-    <div class="ahero">
-      <div class="ld-icon" style="margin:0 auto 12px;overflow:hidden;"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'"/></div>
-      <h2>Welcome Back</h2><p>Login to your Pragati account</p>
-    </div>
-    <div class="abody" style="flex:1;overflow-y:auto;">
-      <div class="field"><label class="flbl">Email Address</label><input class="fin" id="li-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
-      <div class="field"><label class="flbl">Password</label><input class="fin" id="li-pass" type="password" placeholder="Your password"/></div>
-      <div class="ferr" id="li-err"></div>
-      <div style="text-align:right;margin-bottom:8px;"><span style="font-size:13px;color:var(--blue2);font-weight:600;cursor:pointer;" onclick="showForgot()">Forgot Password?</span></div>
-      <button class="btn btn-p btn-bl btn-lg" id="li-btn" onclick="doLogin()">Login →</button>
-      <div class="divdr">or</div>
-      <p style="text-align:center;font-size:14px;color:var(--s3);">No account? <span style="color:var(--blue2);font-weight:600;cursor:pointer;" onclick="goSec('sec-register')">Register Free</span></p>
-      <p style="text-align:center;font-size:12px;color:var(--s5);margin-top:10px;cursor:pointer;" onclick="goSec('sec-hero')">↑ Back</p>
-      <div style="height:20px;"></div>
-    </div>
-  </section>
-</div>
-
-<!-- FORGOT PASSWORD -->
-<div class="ovl off" id="forgot-ovl">
-  <div class="sheet">
-    <div class="shdl"></div>
-    <div class="shtit">Reset Password 🔑</div>
-    <p style="font-size:14px;color:var(--s4);margin-bottom:16px;line-height:1.6;">Enter your registered email. We will send a reset link.</p>
-    <div class="field"><label class="flbl">Email Address</label><input class="fin" id="fp-email" type="email" placeholder="you@example.com"/></div>
-    <div class="ferr" id="fp-err"></div>
-    <div id="fp-ok" style="display:none;background:var(--green4);border:1px solid #A7F3D0;border-radius:10px;padding:12px;font-size:13px;color:var(--green);margin-bottom:14px;">✅ Reset link sent! Check your inbox.</div>
-    <button class="btn btn-p btn-bl btn-lg" id="fp-btn" onclick="doReset()">Send Reset Link →</button>
-    <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="closeForgot()">Cancel</button>
-  </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="shared.js"></script>
-<script>
-
-const firebase_cfg = {
-  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
-  authDomain:"pragati-work-exchange.firebaseapp.com",
-  projectId:"pragati-work-exchange",
-  storageBucket:"pragati-work-exchange.firebasestorage.app",
-  messagingSenderId:"422215240765",
-  appId:"1:422215240765:web:eefb239420262c9d822e54"
-};
-if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
-const auth = firebase.auth();
-const db   = firebase.firestore();
-const FS   = firebase.firestore;
-
-// Redirect if already logged in
-auth.onAuthStateChanged(async function(user) {
-  if (user) {
-    try {
-      var snap = await db.collection('users').doc(user.uid).get();
-      var cd = snap.exists ? snap.data() : null;
-      if (cd) { window.location.href = cd.role==='main' ? 'main.html' : 'home.html'; return; }
-    } catch(e) {}
-  }
-  document.getElementById('loader').classList.add('out');
-});
-
-// Section navigation
+// ── SECTION NAVIGATION ──
 var SEC_ORDER = ['sec-hero','sec-register','sec-login'];
 function goSec(targetId) {
   var all = document.querySelectorAll('.snap-sec');
@@ -185,9 +273,7 @@ function goSec(targetId) {
   var goRight = tgtIdx > curIdx;
   all.forEach(function(s) {
     s.classList.remove('sec-active','sec-left','sec-right');
-    if (s.id === targetId) s.classList.add('sec-active');
-    else if (goRight) s.classList.add('sec-left');
-    else s.classList.add('sec-right');
+    s.classList.add(s.id === targetId ? 'sec-active' : (goRight ? 'sec-left' : 'sec-right'));
   });
   var tgt = document.getElementById(targetId);
   if (tgt) tgt.scrollTop = 0;
