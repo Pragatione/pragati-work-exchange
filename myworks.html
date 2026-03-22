@@ -7,11 +7,14 @@
 <title>My Works — Pragati Work Exchange</title>
 <link rel="stylesheet" href="style.css"/>
 <style>
-.bni .ico svg { display:block; transition:transform .2s; }
-.bni.on .ico svg { stroke:var(--blue2); transform:scale(1.12); }
-.bni .ico { display:flex; align-items:center; justify-content:center; font-size:22px; }
-.bni .lbl { font-size:10px; font-weight:600; color:var(--s5); margin-top:1px; }
-.bni.on .lbl { color:var(--blue2); }
+.bni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 4px;flex:1;border:none;background:none;position:relative;}
+.bni .ico{width:26px;height:26px;display:flex;align-items:center;justify-content:center;transition:transform .18s;}
+.bni .ico svg{stroke:var(--s5);transition:stroke .18s,transform .18s;}
+.bni .lbl{font-size:10px;font-weight:600;color:var(--s5);transition:color .18s;letter-spacing:.01em;}
+.bni.on .ico svg{stroke:var(--blue2);transform:scale(1.15);}
+.bni.on .lbl{color:var(--blue2);}
+.bni:active .ico{transform:scale(.9);}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--s7);display:flex;z-index:50;padding:8px 0 max(env(safe-area-inset-bottom),12px);box-shadow:0 -2px 16px rgba(0,0,0,.07);}
 </style>
 </head>
 <body>
@@ -26,7 +29,7 @@
 <div style="display:flex;flex-direction:column;min-height:100vh;">
   <div class="tbar"><button class="tbk" onclick="history.back()">←</button><h2>My Works</h2><button class="btn btn-o btn-sm" onclick="location.href='post.html'">+ Post</button></div>
   <div class="pscr pb90" style="padding:12px 16px 0;" id="myw-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
-  <nav class="bnav n4"><div class="bni" onclick="location.href='main.html'"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></div><div class="lbl">Home</div></div><div class="bni" onclick="location.href='post.html'"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div><div class="lbl">Post Work</div></div><div class="bni on" onclick="location.href='myworks.html'"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><path d="M12 12v4M10 14h4"/></svg></div><div class="lbl">My Works</div></div><div class="bni" onclick="location.href='chat.html'"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="lbl">Messages</div></div></nav>
+  <nav class="bnav"><div class="bni" onclick="location.href='main.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div class="lbl">Home</div></div><div class="bni" onclick="location.href='post.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg></div><div class="lbl">Post Work</div></div><div class="bni on" onclick="location.href='myworks.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div><div class="lbl">My Works</div></div><div class="bni" onclick="location.href='chat.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg></div><div class="lbl">Messages</div></div></nav>
 </div>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>

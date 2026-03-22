@@ -6,6 +6,16 @@
 <meta name="theme-color" content="#1D4ED8"/>
 <title>Post New Work — Pragati Work Exchange</title>
 <link rel="stylesheet" href="style.css"/>
+<style>
+.bni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 4px;flex:1;border:none;background:none;position:relative;}
+.bni .ico{width:26px;height:26px;display:flex;align-items:center;justify-content:center;transition:transform .18s;}
+.bni .ico svg{stroke:var(--s5);transition:stroke .18s,transform .18s;}
+.bni .lbl{font-size:10px;font-weight:600;color:var(--s5);transition:color .18s;letter-spacing:.01em;}
+.bni.on .ico svg{stroke:var(--blue2);transform:scale(1.15);}
+.bni.on .lbl{color:var(--blue2);}
+.bni:active .ico{transform:scale(.9);}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--s7);display:flex;z-index:50;padding:8px 0 max(env(safe-area-inset-bottom),12px);box-shadow:0 -2px 16px rgba(0,0,0,.07);}
+</style>
 </head>
 <body>
 <div id="loader">

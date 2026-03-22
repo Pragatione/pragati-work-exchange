@@ -7,11 +7,14 @@
 <title>Messages — Pragati Work Exchange</title>
 <link rel="stylesheet" href="style.css"/>
 <style>
-.bni .ico svg { display:block; transition:transform .2s; }
-.bni.on .ico svg { stroke:var(--blue2); transform:scale(1.12); }
-.bni .ico { display:flex; align-items:center; justify-content:center; font-size:22px; }
-.bni .lbl { font-size:10px; font-weight:600; color:var(--s5); margin-top:1px; }
-.bni.on .lbl { color:var(--blue2); }
+.bni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 4px;flex:1;border:none;background:none;position:relative;}
+.bni .ico{width:26px;height:26px;display:flex;align-items:center;justify-content:center;transition:transform .18s;}
+.bni .ico svg{stroke:var(--s5);transition:stroke .18s,transform .18s;}
+.bni .lbl{font-size:10px;font-weight:600;color:var(--s5);transition:color .18s;letter-spacing:.01em;}
+.bni.on .ico svg{stroke:var(--blue2);transform:scale(1.15);}
+.bni.on .lbl{color:var(--blue2);}
+.bni:active .ico{transform:scale(.9);}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--s7);display:flex;z-index:50;padding:8px 0 max(env(safe-area-inset-bottom),12px);box-shadow:0 -2px 16px rgba(0,0,0,.07);}
 </style>
 </head>
 <body>
@@ -366,6 +369,31 @@ function buildBnavHTML(isMain, activeKey) {
     return '<div class="bni'+on+'" onclick="location.href=\''+it.href+'\'">' +
       '<div class="ico">'+it.ico+'</div><div class="lbl">'+it.lbl+'</div></div>';
   }).join('') + '</nav>';
+}
+function buildDynBnav(isMain, activeKey) {
+  var petty = [
+    {h:'home.html',  i:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',  l:'Home',      k:'home'},
+    {h:'find.html',  i:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',  l:'Find Work', k:'find'},
+    {h:'apps.html',  i:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>',  l:'My Bids',   k:'apps'},
+    {h:'chat.html',  i:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg>',  l:'Messages',  k:'chat'},
+  ];
+  var main = [
+    {h:'main.html',    i:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',  l:'Home',      k:'home'},
+    {h:'post.html',    i:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>',  l:'Post Work', k:'post'},
+    {h:'myworks.html', i:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',  l:'My Works',  k:'myworks'},
+    {h:'chat.html',    i:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg>',  l:'Messages',  k:'chat'},
+  ];
+  var items = isMain ? main : petty;
+  var html = '<nav class="bnav">';
+  items.forEach(function(it) {
+    var on = it.k === activeKey ? ' on' : '';
+    html += '<div class="bni'+on+'" onclick="location.href=\''+it.h+'\'"><div class="ico">'+it.i+'</div><div class="lbl">'+it.l+'</div></div>';
+  });
+  if (activeKey === 'profile') {
+    html += '<div class="bni on"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg></div><div class="lbl">Profile</div></div>';
+  }
+  html += '</nav>';
+  return html;
 }
 </script>
 </body></html>
