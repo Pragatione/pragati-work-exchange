@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#FFFBF5"/>
+<title>Pragati Work Exchange — India's Construction Marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --orange:#F97316;--orange2:#EA580C;--orange-soft:#FFF1E6;--orange-pale:#FFEDD5;
+  --blue:#1D4ED8;--blue-lt:#EFF6FF;--green:#16A34A;
+  --slate:#1C2B3A;--slate2:#2E3F52;--slate3:#5A6E82;--slate4:#94A3B8;
+  --border:#E8EDF3;--card:#FFFFFF;--bg:#FFFBF5;
+  --h:'Baloo 2',cursive;--b:'Poppins',sans-serif;
+  --sh:0 2px 16px rgba(0,0,0,.07);--sh2:0 8px 32px rgba(0,0,0,.10);
+}
+html,body{height:100%;font-family:var(--b);background:var(--bg);color:var(--slate);overflow-x:hidden;}
+
+/* LOADER */
+#loader{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s;}
+#loader.out{opacity:0;visibility:hidden;}
+.ld-emoji{font-size:52px;margin-bottom:10px;animation:ldBounce 1s ease-in-out infinite;}
+@keyframes ldBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.ld-brand{font-family:var(--h);font-size:30px;font-weight:900;color:var(--slate);}
+.ld-brand span{color:var(--orange);}
+.ld-sub{font-size:12px;color:var(--slate3);margin-top:3px;letter-spacing:.04em;}
+.ld-bar{width:140px;height:3px;background:#E8EDF3;border-radius:99px;margin-top:20px;overflow:hidden;}
+.ld-fill{height:100%;width:0;background:linear-gradient(90deg,var(--orange),#FB923C);border-radius:99px;animation:ldFill 1.5s ease forwards;}
+@keyframes ldFill{0%{width:0}60%{width:75%}100%{width:100%}}
+
+/* SNAP */
+.snap-wrap{height:100vh;overflow:hidden;position:relative;}
+.snap-sec{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:transform .44s cubic-bezier(.4,0,.2,1),opacity .38s ease;}
+.snap-sec::-webkit-scrollbar{display:none;}
+.snap-sec.sec-active{transform:translateX(0);opacity:1;pointer-events:auto;z-index:2;}
+.snap-sec.sec-left{transform:translateX(-100%);opacity:0;pointer-events:none;z-index:1;}
+.snap-sec.sec-right{transform:translateX(100%);opacity:0;pointer-events:none;z-index:1;}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--slate);color:#fff;font-size:13px;font-weight:600;font-family:var(--b);padding:10px 20px;border-radius:99px;z-index:9998;white-space:nowrap;opacity:0;transition:all .3s;pointer-events:none;}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast.ok{background:var(--green);}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes cloudDrift{0%{transform:translateX(0)}50%{transform:translateX(10px)}100%{transform:translateX(0)}}
+@keyframes craneSwing{0%,100%{transform:rotate(-1.5deg) translateX(0)}50%{transform:rotate(1.5deg) translateX(0)}}
+@keyframes workerBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes sparkle{0%,100%{opacity:0;transform:scale(0)}40%,60%{opacity:1;transform:scale(1)}}
+@keyframes sunPulse{0%,100%{box-shadow:0 0 0 10px rgba(251,191,36,.12),0 0 0 22px rgba(251,191,36,.06)}50%{box-shadow:0 0 0 16px rgba(251,191,36,.16),0 0 0 30px rgba(251,191,36,.07)}}
+
+.a1{animation:fadeUp .6s .05s both;}
+.a2{animation:fadeUp .6s .18s both;}
+.a3{animation:fadeUp .6s .32s both;}
+.a4{animation:fadeUp .6s .46s both;}
+.a5{animation:fadeUp .6s .60s both;}
+.a6{animation:fadeUp .6s .74s both;}
+
+/* HERO */
+#sec-hero{background:var(--bg);}
+.hero-wrap{min-height:100vh;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.sky-strip{position:absolute;top:0;left:0;right:0;height:54%;background:linear-gradient(180deg,#B0E0FF 0%,#D4EDFF 50%,#FEFCF5 100%);z-index:0;}
+.ground-strip{position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(180deg,#FEFCF5 0%,#FFFBF5 100%);z-index:0;}
+
+/* NAV */
+.nav{position:relative;z-index:10;padding:48px 20px 0;display:flex;justify-content:space-between;align-items:center;}
+.logo-row{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#F97316,#EA580C);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(249,115,22,.38);font-size:22px;}
+.logo-text{font-family:var(--h);font-size:23px;font-weight:900;color:var(--slate);}
+.logo-text span{color:var(--orange);}
+.nav-btn{background:#fff;color:var(--slate);border:2px solid var(--border);border-radius:22px;padding:8px 20px;font-size:13px;font-weight:700;font-family:var(--b);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:all .2s;}
+.nav-btn:hover{border-color:var(--orange);color:var(--orange2);}
+
+/* CARTOON SCENE */
+.scene-wrap{position:absolute;bottom:0;left:0;right:0;height:60%;z-index:1;pointer-events:none;}
+.scene-wrap svg{width:100%;height:100%;}
+
+/* HERO BODY */
+.hero-body{position:relative;z-index:10;flex:1;display:flex;flex-direction:column;padding:20px 20px 0;}
+
+.pill{display:inline-flex;align-items:center;gap:7px;background:#FFF1E6;border:1.5px solid #FED7AA;border-radius:22px;padding:5px 14px;margin-bottom:14px;width:fit-content;}
+.pill-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 3px rgba(249,115,22,.2);animation:blink 1.6s infinite;}
+.pill-txt{font-size:11px;font-weight:700;color:var(--orange2);letter-spacing:.06em;text-transform:uppercase;}
+
+.hero-h1{font-family:var(--h);font-size:33px;font-weight:900;color:var(--slate);line-height:1.08;letter-spacing:-.02em;margin-bottom:11px;}
+.hero-h1 .acc{color:var(--orange);}
+.hero-sub{font-size:13.5px;color:var(--slate3);line-height:1.75;margin-bottom:18px;max-width:320px;font-weight:500;}
+.hero-sub strong{color:var(--slate2);}
+
+/* Scrolling feature chips */
+.chips-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:20px;scrollbar-width:none;}
+.chips-scroll::-webkit-scrollbar{display:none;}
+.chip-item{flex-shrink:0;display:flex;align-items:center;gap:7px;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:8px 13px;box-shadow:0 1px 5px rgba(0,0,0,.05);}
+.chip-item .ci{font-size:16px;}
+.chip-item .ct strong{display:block;font-size:11.5px;font-weight:700;color:var(--slate);white-space:nowrap;}
+.chip-item .ct span{font-size:10px;color:var(--slate3);white-space:nowrap;}
+
+/* CTAs */
+.cta-stack{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.btn-orange{background:linear-gradient(135deg,#F97316,#EA580C);color:#fff;border:none;border-radius:16px;padding:16px 20px;font-size:15.5px;font-weight:800;font-family:var(--b);cursor:pointer;width:100%;text-align:center;box-shadow:0 6px 22px rgba(249,115,22,.38);transition:all .22s;letter-spacing:.01em;}
+.btn-orange:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(249,115,22,.45);}
+.btn-white{background:#fff;color:var(--slate);border:2px solid var(--border);border-radius:16px;padding:14px 20px;font-size:14.5px;font-weight:700;font-family:var(--b);cursor:pointer;width:100%;text-align:center;box-shadow:var(--sh);transition:all .22s;}
+.btn-white:hover{border-color:var(--orange);color:var(--orange2);}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding-bottom:290px;}
+.stat-box{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:12px 6px;text-align:center;box-shadow:var(--sh);}
+.sv{font-family:var(--h);font-size:19px;font-weight:900;color:var(--orange2);}
+.sl{font-size:9px;color:var(--slate3);margin-top:2px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+
+/* AUTH SECTIONS */
+.ahero{background:linear-gradient(155deg,#FFF7ED 0%,#FFFBF5 100%);padding:58px 22px 22px;text-align:center;border-bottom:1.5px solid var(--border);}
+.ahero .big-icon{font-size:44px;margin-bottom:10px;display:block;}
+.ahero h2{font-family:var(--h);font-size:27px;font-weight:900;color:var(--slate);margin-bottom:4px;}
+.ahero p{font-size:14px;color:var(--slate3);}
+.abody{padding:20px;background:var(--bg);}
+
+.field{margin-bottom:14px;}
+.flbl{font-size:11.5px;font-weight:700;color:var(--slate2);letter-spacing:.03em;display:block;margin-bottom:5px;text-transform:uppercase;}
+.fin{width:100%;background:#fff;border:1.5px solid var(--border);border-radius:13px;padding:13px 14px;font-size:14px;font-family:var(--b);color:var(--slate);outline:none;transition:border-color .2s,box-shadow .2s;}
+.fin:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(249,115,22,.1);}
+select.fin{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235A6E82' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ferr{font-size:12px;color:#DC2626;font-weight:600;min-height:16px;margin-bottom:6px;display:none;}
+.ferr.on{display:block;}
+
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.rcard{border:2px solid var(--border);border-radius:15px;padding:16px 12px;text-align:center;cursor:pointer;background:#fff;transition:all .22s;}
+.rcard:hover,.rcard.sel{border-color:var(--orange);background:#FFF1E6;box-shadow:0 0 0 3px rgba(249,115,22,.1);}
+.ri{font-size:30px;margin-bottom:7px;}
+.rcard h4{font-size:13px;font-weight:700;color:var(--slate);margin-bottom:2px;}
+.rcard p{font-size:11px;color:var(--slate3);}
+
+.divdr{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--slate4);font-size:12px;}
+.divdr::before,.divdr::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.btn-p{background:linear-gradient(135deg,#F97316,#EA580C);color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:800;font-family:var(--b);cursor:pointer;width:100%;box-shadow:0 4px 18px rgba(249,115,22,.35);transition:all .2s;}
+.btn-p:hover{transform:translateY(-1px);}
+.btn-g{background:#fff;color:var(--slate3);border:1.5px solid var(--border);border-radius:14px;padding:13px;font-size:14px;font-weight:700;font-family:var(--b);cursor:pointer;width:100%;transition:all .2s;}
+.btn-ld{opacity:.65;pointer-events:none;}
+
+/* OVERLAY */
+.ovl{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);display:flex;align-items:flex-end;transition:opacity .3s;}
+.ovl.off{opacity:0;pointer-events:none;}
+.sheet{background:#fff;border-radius:26px 26px 0 0;padding:24px 22px 42px;width:100%;}
+.shdl{width:36px;height:4px;border-radius:99px;background:var(--border);margin:0 auto 20px;}
+.shtit{font-family:var(--h);font-size:21px;font-weight:800;color:var(--slate);margin-bottom:10px;}
+.fp-ok{display:none;background:#F0FDF4;border:1.5px solid #A7F3D0;border-radius:12px;padding:12px;font-size:13px;color:var(--green);margin-bottom:14px;font-weight:600;}
+
+/* link style */
+.lnk{color:var(--orange2);font-weight:700;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="ld-emoji">🏗️</div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange · PragatiOne</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<div class="snap-wrap" id="auth-wrap">
+
+<!-- ═══ HERO ═══ -->
+<section class="snap-sec sec-active" id="sec-hero">
+<div class="hero-wrap">
+  <div class="sky-strip"></div>
+  <div class="ground-strip"></div>
+
+  <!-- ────────── CARTOON SCENE SVG ────────── -->
+  <div class="scene-wrap">
+    <svg viewBox="0 0 390 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+      <defs>
+        <filter id="softShadow" x="-10%" y="-10%" width="120%" height="130%">
+          <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="rgba(0,0,0,0.12)"/>
+        </filter>
+      </defs>
+
+      <!-- SUN -->
+      <circle cx="340" cy="34" r="28" fill="#FEF08A" style="animation:sunPulse 3s ease-in-out infinite;"/>
+      <circle cx="340" cy="34" r="20" fill="#FDE047"/>
+      <!-- Sun rays -->
+      <g style="transform-origin:340px 34px;animation:sunPulse 6s linear infinite;">
+        <line x1="340" y1="0" x2="340" y2="10" stroke="#FDE047" stroke-width="3" stroke-linecap="round"/>
+        <line x1="340" y1="58" x2="340" y2="68" stroke="#FDE047" stroke-width="3" stroke-linecap="round"/>
+        <line x1="306" y1="34" x2="296" y2="34" stroke="#FDE047" stroke-width="3" stroke-linecap="round"/>
+        <line x1="374" y1="34" x2="364" y2="34" stroke="#FDE047" stroke-width="3" stroke-linecap="round"/>
+        <line x1="316" y1="10" x2="310" y2="4" stroke="#FDE047" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="364" y1="58" x2="370" y2="64" stroke="#FDE047" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="316" y1="58" x2="310" y2="64" stroke="#FDE047" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="364" y1="10" x2="370" y2="4" stroke="#FDE047" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+
+      <!-- CLOUDS -->
+      <g style="animation:cloudDrift 8s ease-in-out infinite;">
+        <ellipse cx="68" cy="30" rx="38" ry="16" fill="white" opacity=".95"/>
+        <ellipse cx="46" cy="35" rx="24" ry="13" fill="white" opacity=".95"/>
+        <ellipse cx="88" cy="35" rx="22" ry="12" fill="white" opacity=".9"/>
+      </g>
+      <g style="animation:cloudDrift 11s ease-in-out infinite reverse 2s;">
+        <ellipse cx="195" cy="18" rx="32" ry="13" fill="white" opacity=".8"/>
+        <ellipse cx="174" cy="23" rx="20" ry="10" fill="white" opacity=".8"/>
+        <ellipse cx="216" cy="22" rx="18" ry="9" fill="white" opacity=".8"/>
+      </g>
+
+      <!-- GROUND -->
+      <rect x="0" y="258" width="390" height="102" fill="#E2EAF4"/>
+      <rect x="0" y="258" width="390" height="5" fill="#CBD5E1"/>
+      <!-- Road dashes -->
+      <rect x="20"  y="276" width="36" height="4" rx="2" fill="white" opacity=".5"/>
+      <rect x="90"  y="276" width="36" height="4" rx="2" fill="white" opacity=".5"/>
+      <rect x="160" y="276" width="36" height="4" rx="2" fill="white" opacity=".5"/>
+      <rect x="230" y="276" width="36" height="4" rx="2" fill="white" opacity=".5"/>
+      <rect x="300" y="276" width="36" height="4" rx="2" fill="white" opacity=".5"/>
+      <rect x="370" y="276" width="36" height="4" rx="2" fill="white" opacity=".5"/>
+
+      <!-- ── LEFT BUILDING UNDER CONSTRUCTION ── -->
+      <!-- Floors -->
+      <rect x="10" y="178" width="102" height="82" rx="4" fill="#FED7AA" stroke="#FDBA74" stroke-width="1.5" filter="url(#softShadow)"/>
+      <line x1="10" y1="205" x2="112" y2="205" stroke="#FDBA74" stroke-width="1.5"/>
+      <line x1="10" y1="232" x2="112" y2="232" stroke="#FDBA74" stroke-width="1.5"/>
+      <!-- Windows row 1 -->
+      <rect x="20" y="185" width="20" height="15" rx="3" fill="#93C5FD" stroke="#60A5FA" stroke-width="1"/>
+      <rect x="48" y="185" width="20" height="15" rx="3" fill="#FDE68A" stroke="#FCD34D" stroke-width="1"/>
+      <rect x="76" y="185" width="20" height="15" rx="3" fill="#93C5FD" stroke="#60A5FA" stroke-width="1"/>
+      <!-- Windows row 2 -->
+      <rect x="20" y="212" width="20" height="15" rx="3" fill="#A7F3D0" stroke="#6EE7B7" stroke-width="1"/>
+      <rect x="48" y="212" width="20" height="15" rx="3" fill="#93C5FD" stroke="#60A5FA" stroke-width="1"/>
+      <rect x="76" y="212" width="20" height="15" rx="3" fill="#FCA5A5" stroke="#F87171" stroke-width="1"/>
+      <!-- Door -->
+      <rect x="46" y="237" width="30" height="23" rx="3" fill="#F97316" stroke="#EA580C" stroke-width="1.5"/>
+      <circle cx="70" cy="249" r="2" fill="#fff"/>
+      <!-- Unfinished top floor -->
+      <rect x="10" y="146" width="102" height="36" rx="3" fill="#FEFCE8" stroke="#FCD34D" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <!-- Brick pattern -->
+      <rect x="18" y="154" width="20" height="10" rx="2" fill="#FDE68A" opacity=".9"/>
+      <rect x="42" y="154" width="20" height="10" rx="2" fill="#FDE68A" opacity=".9"/>
+      <rect x="66" y="154" width="20" height="10" rx="2" fill="#FCA5A5" opacity=".85"/>
+      <rect x="90" y="154" width="16" height="10" rx="2" fill="#FDE68A" opacity=".9"/>
+      <rect x="30" y="165" width="20" height="10" rx="2" fill="#FCA5A5" opacity=".75"/>
+      <rect x="54" y="165" width="20" height="10" rx="2" fill="#FDE68A" opacity=".8"/>
+      <rect x="78" y="165" width="20" height="10" rx="2" fill="#FCA5A5" opacity=".75"/>
+      <!-- Scaffold poles -->
+      <line x1="6" y1="144" x2="6" y2="260" stroke="#94A3B8" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="116" y1="144" x2="116" y2="260" stroke="#94A3B8" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="6" y1="182" x2="116" y2="182" stroke="#94A3B8" stroke-width="2" opacity=".7"/>
+      <line x1="6" y1="218" x2="116" y2="218" stroke="#94A3B8" stroke-width="2" opacity=".7"/>
+      <rect x="2" y="141" width="118" height="5" rx="2.5" fill="#A16207" opacity=".65"/>
+
+      <!-- ── CRANE (CENTER) ── -->
+      <g style="transform-origin:196px 65px;animation:craneSwing 5s ease-in-out infinite;">
+        <!-- Mast -->
+        <rect x="191" y="60" width="9" height="205" rx="4" fill="#F97316" filter="url(#softShadow)"/>
+        <!-- Top cabin -->
+        <rect x="184" y="52" width="23" height="14" rx="4" fill="#EA580C"/>
+        <!-- Main jib -->
+        <rect x="100" y="52" width="190" height="9" rx="4" fill="#F97316"/>
+        <!-- Counter jib -->
+        <rect x="96" y="52" width="54" height="9" rx="4" fill="#EA580C"/>
+        <!-- Counterweight -->
+        <rect x="84" y="44" width="26" height="22" rx="5" fill="#1C2B3A"/>
+        <rect x="88" y="48" width="18" height="14" rx="3" fill="#334155"/>
+        <!-- Cable -->
+        <line x1="256" y1="61" x2="256" y2="124" stroke="#64748B" stroke-width="2.5"/>
+        <!-- Hook + load -->
+        <path d="M253 124 Q253 138 262 138 Q271 138 271 124" fill="none" stroke="#64748B" stroke-width="3" stroke-linecap="round"/>
+        <rect x="242" y="112" width="30" height="15" rx="4" fill="#FCA5A5" stroke="#F87171" stroke-width="1.5"/>
+        <line x1="242" y1="119" x2="272" y2="119" stroke="#F87171" stroke-width="1" opacity=".5"/>
+        <!-- Operator cab window -->
+        <rect x="187" y="55" width="17" height="10" rx="2" fill="#BAE6FD" opacity=".8"/>
+        <!-- Tip sparkle -->
+        <circle cx="290" cy="48" r="4" fill="#FCD34D" style="animation:sparkle 2.2s .4s ease-in-out infinite;"/>
+        <circle cx="100" cy="48" r="3" fill="#FCD34D" style="animation:sparkle 2.2s 1.1s ease-in-out infinite;"/>
+      </g>
+
+      <!-- ── RIGHT TALL BUILDING ── -->
+      <rect x="276" y="106" width="112" height="154" rx="6" fill="#DBEAFE" stroke="#BAE6FD" stroke-width="2" filter="url(#softShadow)"/>
+      <!-- Horizontal floors -->
+      <line x1="276" y1="138" x2="388" y2="138" stroke="#BAE6FD" stroke-width="1.5"/>
+      <line x1="276" y1="170" x2="388" y2="170" stroke="#BAE6FD" stroke-width="1.5"/>
+      <line x1="276" y1="202" x2="388" y2="202" stroke="#BAE6FD" stroke-width="1.5"/>
+      <line x1="276" y1="234" x2="388" y2="234" stroke="#BAE6FD" stroke-width="1.5"/>
+      <!-- Windows col 1 -->
+      <rect x="285" y="113" width="17" height="20" rx="3" fill="#93C5FD" stroke="#60A5FA" stroke-width="1"/>
+      <rect x="285" y="145" width="17" height="20" rx="3" fill="#FDE68A" stroke="#FCD34D" stroke-width="1"/>
+      <rect x="285" y="177" width="17" height="20" rx="3" fill="#93C5FD" stroke="#60A5FA" stroke-width="1"/>
+      <rect x="285" y="209" width="17" height="20" rx="3" fill="#A7F3D0" stroke="#6EE7B7" stroke-width="1"/>
+      <!-- col 2 -->
+      <rect x="312" y="113" width="17" height="20" rx="3" fill="#FCA5A5" stroke="#F87171" stroke-width="1"/>
+      <rect x="312" y="145" width="17" height="20" rx="3" fill="#93C5FD" stroke="#60A5FA" stroke-width="1"/>
+      <rect x="312" y="177" width="17" height="20" rx="3" fill="#FDE68A" stroke="#FCD34D" stroke-width="1"/>
+      <rect x="312" y="209" width="17" height="20" rx="3" fill="#93C5FD" stroke="#60A5FA" stroke-width="1"/>
+      <!-- col 3 -->
+      <rect x="339" y="113" width="17" height="20" rx="3" fill="#93C5FD" stroke="#60A5FA" stroke-width="1"/>
+      <rect x="339" y="145" width="17" height="20" rx="3" fill="#A7F3D0" stroke="#6EE7B7" stroke-width="1"/>
+      <rect x="339" y="177" width="17" height="20" rx="3" fill="#FCA5A5" stroke="#F87171" stroke-width="1"/>
+      <rect x="339" y="209" width="17" height="20" rx="3" fill="#FDE68A" stroke="#FCD34D" stroke-width="1"/>
+      <!-- col 4 -->
+      <rect x="366" y="113" width="17" height="20" rx="3" fill="#FDE68A" stroke="#FCD34D" stroke-width="1"/>
+      <rect x="366" y="145" width="17" height="20" rx="3" fill="#93C5FD" stroke="#60A5FA" stroke-width="1"/>
+      <rect x="366" y="177" width="17" height="20" rx="3" fill="#93C5FD" stroke="#60A5FA" stroke-width="1"/>
+      <rect x="366" y="209" width="17" height="20" rx="3" fill="#A7F3D0" stroke="#6EE7B7" stroke-width="1"/>
+      <!-- Entrance -->
+      <rect x="312" y="236" width="44" height="24" rx="3" fill="#1D4ED8" stroke="#1E40AF" stroke-width="1.5"/>
+      <rect x="312" y="236" width="22" height="24" rx="3" fill="#2563EB"/>
+      <!-- Rooftop -->
+      <rect x="276" y="100" width="112" height="10" rx="4" fill="#7DD3FC"/>
+      <rect x="314" y="84" width="36" height="20" rx="4" fill="#38BDF8"/>
+      <!-- Indian Flag -->
+      <line x1="332" y1="78" x2="332" y2="100" stroke="#94A3B8" stroke-width="2"/>
+      <rect x="332" y="78" width="18" height="6" rx="1" fill="#FF6600"/>
+      <rect x="332" y="84" width="18" height="6" rx="1" fill="#fff"/>
+      <rect x="332" y="90" width="18" height="6" rx="1" fill="#138808"/>
+      <circle cx="341" cy="87" r="2.5" fill="#000088" opacity=".55"/>
+      <!-- AC units on side -->
+      <rect x="388" y="128" width="8" height="6" rx="1" fill="#94A3B8"/>
+      <rect x="388" y="162" width="8" height="6" rx="1" fill="#94A3B8"/>
+      <rect x="388" y="196" width="8" height="6" rx="1" fill="#94A3B8"/>
+
+      <!-- ── CEMENT MIXER ── -->
+      <g style="animation:float 3.5s ease-in-out infinite 1.2s;" filter="url(#softShadow)">
+        <rect x="148" y="216" width="50" height="34" rx="6" fill="#F97316"/>
+        <ellipse cx="173" cy="220" rx="20" ry="11" fill="#FB923C"/>
+        <ellipse cx="173" cy="215" rx="20" ry="11" fill="#FDBA74"/>
+        <path d="M157 215 L173 228 L189 215" fill="#FFF7ED" opacity=".4"/>
+        <circle cx="158" cy="250" r="8" fill="#334155" stroke="#1C2B3A" stroke-width="2"/>
+        <circle cx="188" cy="250" r="8" fill="#334155" stroke="#1C2B3A" stroke-width="2"/>
+        <circle cx="158" cy="250" r="3.5" fill="#64748B"/>
+        <circle cx="188" cy="250" r="3.5" fill="#64748B"/>
+        <rect x="155" y="242" width="7" height="11" rx="3" fill="#1C2B3A"/>
+        <rect x="184" y="242" width="7" height="11" rx="3" fill="#1C2B3A"/>
+        <ellipse cx="173" cy="258" rx="14" ry="4" fill="rgba(0,0,0,.1)"/>
+      </g>
+
+      <!-- ── WORKER 1 (Shovel / left) ── -->
+      <g style="animation:workerBob 2.2s ease-in-out infinite .3s;" filter="url(#softShadow)">
+        <ellipse cx="55" cy="258" rx="13" ry="5" fill="rgba(0,0,0,.1)"/>
+        <!-- body orange -->
+        <rect x="44" y="226" width="22" height="26" rx="5" fill="#F97316"/>
+        <!-- legs -->
+        <rect x="44" y="249" width="9" height="11" rx="4" fill="#1C2B3A"/>
+        <rect x="59" y="249" width="9" height="11" rx="4" fill="#1C2B3A"/>
+        <ellipse cx="48" cy="260" rx="7" ry="4" fill="#0F172A"/>
+        <ellipse cx="63" cy="260" rx="7" ry="4" fill="#0F172A"/>
+        <!-- head -->
+        <circle cx="55" cy="220" r="10" fill="#FBBF24"/>
+        <!-- orange helmet -->
+        <path d="M45 217 Q55 203 65 217 Z" fill="#F97316"/>
+        <rect x="45" y="215" width="20" height="5" rx="2.5" fill="#EA580C"/>
+        <circle cx="55" cy="213" r="2" fill="#FB923C"/>
+        <!-- face -->
+        <circle cx="51" cy="219" r="1.8" fill="#1C2B3A"/>
+        <circle cx="59" cy="219" r="1.8" fill="#1C2B3A"/>
+        <path d="M51 223 Q55 226 59 223" fill="none" stroke="#1C2B3A" stroke-width="1.3" stroke-linecap="round"/>
+        <!-- shovel -->
+        <line x1="66" y1="232" x2="82" y2="254" stroke="#92400E" stroke-width="3.5" stroke-linecap="round"/>
+        <ellipse cx="83" cy="257" rx="8" ry="5" fill="#94A3B8" transform="rotate(-18 83 257)"/>
+        <!-- arm -->
+        <line x1="66" y1="235" x2="68" y2="232" stroke="#FBBF24" stroke-width="3" stroke-linecap="round"/>
+      </g>
+
+      <!-- ── WORKER 2 (Blueprint / center-left) ── -->
+      <g style="animation:workerBob 2.7s ease-in-out infinite .8s;" filter="url(#softShadow)">
+        <ellipse cx="132" cy="258" rx="12" ry="5" fill="rgba(0,0,0,.1)"/>
+        <rect x="122" y="227" width="20" height="25" rx="5" fill="#2563EB"/>
+        <line x1="132" y1="227" x2="132" y2="252" stroke="#60A5FA" stroke-width="1.5"/>
+        <rect x="122" y="249" width="8" height="11" rx="4" fill="#334155"/>
+        <rect x="136" y="249" width="8" height="11" rx="4" fill="#334155"/>
+        <ellipse cx="126" cy="260" rx="7" ry="4" fill="#0F172A"/>
+        <ellipse cx="140" cy="260" rx="7" ry="4" fill="#0F172A"/>
+        <!-- head -->
+        <circle cx="132" cy="220" r="10" fill="#FDE68A"/>
+        <!-- yellow helmet -->
+        <path d="M122 217 Q132 203 142 217 Z" fill="#FBBF24"/>
+        <rect x="122" y="215" width="20" height="5" rx="2.5" fill="#F59E0B"/>
+        <circle cx="132" cy="213" r="2" fill="#FEF08A"/>
+        <!-- face -->
+        <circle cx="128" cy="219" r="1.8" fill="#1C2B3A"/>
+        <circle cx="136" cy="219" r="1.8" fill="#1C2B3A"/>
+        <path d="M128 223 Q132 227 136 223" fill="none" stroke="#1C2B3A" stroke-width="1.3" stroke-linecap="round"/>
+        <!-- blueprint -->
+        <rect x="141" y="227" width="26" height="18" rx="3" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.2"/>
+        <line x1="144" y1="232" x2="164" y2="232" stroke="#3B82F6" stroke-width="1"/>
+        <line x1="144" y1="236" x2="161" y2="236" stroke="#3B82F6" stroke-width="1"/>
+        <line x1="144" y1="240" x2="164" y2="240" stroke="#3B82F6" stroke-width="1"/>
+        <rect x="151" y="228" width="6" height="6" rx="1" fill="#3B82F6" opacity=".4"/>
+        <!-- arm -->
+        <line x1="141" y1="235" x2="143" y2="235" stroke="#FDE68A" stroke-width="3" stroke-linecap="round"/>
+      </g>
+
+      <!-- ── WORKER 3 (Painter / right of mixer) ── -->
+      <g style="animation:workerBob 1.9s ease-in-out infinite 0s;" filter="url(#softShadow)">
+        <ellipse cx="246" cy="258" rx="12" ry="5" fill="rgba(0,0,0,.1)"/>
+        <rect x="236" y="227" width="20" height="26" rx="5" fill="#ECFDF5"/>
+        <line x1="246" y1="227" x2="246" y2="253" stroke="#86EFAC" stroke-width="1.5"/>
+        <rect x="236" y="249" width="8" height="11" rx="4" fill="#334155"/>
+        <rect x="250" y="249" width="8" height="11" rx="4" fill="#334155"/>
+        <ellipse cx="240" cy="260" rx="7" ry="4" fill="#0F172A"/>
+        <ellipse cx="254" cy="260" rx="7" ry="4" fill="#0F172A"/>
+        <!-- head -->
+        <circle cx="246" cy="220" r="10" fill="#FDE68A"/>
+        <!-- green helmet -->
+        <path d="M236 217 Q246 203 256 217 Z" fill="#16A34A"/>
+        <rect x="236" y="215" width="20" height="5" rx="2.5" fill="#15803D"/>
+        <circle cx="246" cy="213" r="2" fill="#86EFAC"/>
+        <!-- face -->
+        <circle cx="242" cy="219" r="1.8" fill="#1C2B3A"/>
+        <circle cx="250" cy="219" r="1.8" fill="#1C2B3A"/>
+        <path d="M242 223 Q246 227 250 223" fill="none" stroke="#1C2B3A" stroke-width="1.3" stroke-linecap="round"/>
+        <!-- paint roller arm -->
+        <line x1="236" y1="235" x2="220" y2="237" stroke="#FDE68A" stroke-width="3" stroke-linecap="round"/>
+        <rect x="208" y="230" width="14" height="13" rx="3" fill="#C4B5FD" stroke="#A78BFA" stroke-width="1"/>
+        <ellipse cx="204" cy="236" rx="6" ry="9" fill="#A78BFA" opacity=".55"/>
+      </g>
+
+      <!-- ── MATERIAL STACKS ── -->
+      <!-- Brick pile left -->
+      <g>
+        <rect x="8"  y="244" width="26" height="8"  rx="2" fill="#FCA5A5" stroke="#F87171" stroke-width="1"/>
+        <rect x="10" y="236" width="24" height="8"  rx="2" fill="#F87171" stroke="#EF4444" stroke-width="1"/>
+        <rect x="12" y="228" width="20" height="8"  rx="2" fill="#FCA5A5" stroke="#F87171" stroke-width="1"/>
+        <text x="21" y="265" font-size="7.5" fill="#5A6E82" font-family="Poppins" text-anchor="middle" font-weight="700">Bricks</text>
+      </g>
+      <!-- Sand pile right -->
+      <g>
+        <ellipse cx="350" cy="254" rx="28" ry="11" fill="#FDE68A"/>
+        <ellipse cx="350" cy="250" rx="22" ry="8" fill="#FCD34D"/>
+        <ellipse cx="350" cy="248" rx="13" ry="5" fill="#F59E0B" opacity=".7"/>
+        <text x="350" y="268" font-size="7.5" fill="#5A6E82" font-family="Poppins" text-anchor="middle" font-weight="700">Sand</text>
+      </g>
+
+      <!-- ── TREES ── -->
+      <!-- Left -->
+      <g>
+        <rect x="0" y="222" width="7" height="38" rx="3.5" fill="#92400E"/>
+        <circle cx="3" cy="213" r="18" fill="#4ADE80" opacity=".85"/>
+        <circle cx="0" cy="220" r="11" fill="#22C55E" opacity=".75"/>
+        <circle cx="12" cy="218" r="11" fill="#16A34A" opacity=".8"/>
+      </g>
+      <!-- Right palm -->
+      <g style="animation:float 5s ease-in-out infinite 2s;">
+        <rect x="381" y="212" width="7" height="48" rx="3.5" fill="#92400E"/>
+        <ellipse cx="376" cy="207" rx="16" ry="9" fill="#4ADE80" opacity=".85" transform="rotate(-22 376 207)"/>
+        <ellipse cx="388" cy="202" rx="16" ry="9" fill="#22C55E" opacity=".8" transform="rotate(14 388 202)"/>
+        <ellipse cx="384" cy="212" rx="11" ry="7" fill="#16A34A" opacity=".75" transform="rotate(-4 384 212)"/>
+      </g>
+      <!-- Small bush center -->
+      <circle cx="205" cy="256" r="8" fill="#4ADE80" opacity=".65"/>
+      <circle cx="214" cy="258" r="6" fill="#22C55E" opacity=".6"/>
+      <rect x="207" y="258" width="4" height="8" rx="2" fill="#92400E"/>
+
+      <!-- ── SIGNBOARD ── -->
+      <g filter="url(#softShadow)">
+        <rect x="140" y="290" width="110" height="42" rx="9" fill="#fff" stroke="#F97316" stroke-width="2.5"/>
+        <rect x="140" y="290" width="110" height="16" rx="9" fill="#F97316"/>
+        <rect x="140" y="298" width="110" height="8" fill="#F97316"/>
+        <text x="195" y="302" font-size="9" fill="#fff" font-family="Baloo 2" text-anchor="middle" font-weight="900" letter-spacing=".5">PRAGATI</text>
+        <text x="195" y="317" font-size="8" fill="#F97316" font-family="Poppins" text-anchor="middle" font-weight="700">Work Exchange</text>
+        <text x="195" y="327" font-size="7" fill="#94A3B8" font-family="Poppins" text-anchor="middle">India's #1 Platform</text>
+        <line x1="158" y1="332" x2="158" y2="348" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="232" y1="332" x2="232" y2="348" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+
+      <!-- ── SMALL DECORATIVE ELEMENTS ── -->
+      <!-- Helmet on ground -->
+      <ellipse cx="100" cy="258" rx="10" ry="5" fill="#FBBF24" opacity=".8"/>
+      <rect x="94" y="252" width="12" height="7" rx="6" fill="#F59E0B"/>
+      <!-- Tool box -->
+      <rect x="118" y="250" width="18" height="10" rx="3" fill="#334155"/>
+      <rect x="118" y="247" width="18" height="5" rx="2" fill="#475569"/>
+      <line x1="127" y1="247" x2="127" y2="260" stroke="#94A3B8" stroke-width="1"/>
+      <!-- Water pot (matka) -->
+      <ellipse cx="389" cy="268" rx="10" ry="6" fill="#FDE68A"/>
+      <ellipse cx="389" cy="263" rx="8" ry="9" fill="#FCD34D"/>
+      <ellipse cx="389" cy="256" rx="5" ry="4" fill="#F59E0B"/>
+    </svg>
+  </div>
+  <!-- ── END SVG ── -->
+
+  <!-- NAV -->
+  <div class="nav a1">
+    <div class="logo-row">
+      <div class="logo-mark">🏗️</div>
+      <span class="logo-text">Pragati<span>.</span></span>
+    </div>
+    <button class="nav-btn" onclick="goSec('sec-login')">Login →</button>
+  </div>
+
+  <!-- HERO BODY -->
+  <div class="hero-body">
+    <div class="pill a2">
+      <div class="pill-dot"></div>
+      <span class="pill-txt">India's #1 Construction Marketplace</span>
+    </div>
+
+    <h1 class="hero-h1 a3">
+      Find Construction<br/><span class="acc">Work Faster 🚀</span>
+    </h1>
+
+    <p class="hero-sub a4">
+      Connect with verified contractors across India. Post work, submit bids, award projects — <strong>free forever.</strong>
+    </p>
+
+    <div class="chips-scroll a4">
+      <div class="chip-item"><span class="ci">✅</span><div class="ct"><strong>Free Forever</strong><span>No hidden fees</span></div></div>
+      <div class="chip-item"><span class="ci">🛡️</span><div class="ct"><strong>Verified Pros</strong><span>Background checked</span></div></div>
+      <div class="chip-item"><span class="ci">⚡</span><div class="ct"><strong>Fast Bids</strong><span>Within 24 hours</span></div></div>
+      <div class="chip-item"><span class="ci">⭐</span><div class="ct"><strong>4.9 Rated</strong><span>50K+ reviews</span></div></div>
+      <div class="chip-item"><span class="ci">🇮🇳</span><div class="ct"><strong>28 States</strong><span>Pan India</span></div></div>
+    </div>
+
+    <div class="cta-stack a5">
+      <button class="btn-orange" onclick="goSec('sec-register')">Get Started Free — Join करें →</button>
+      <button class="btn-white" onclick="goSec('sec-login')">Already have an account? Login</button>
+    </div>
+
+    <div class="stats-grid a6">
+      <div class="stat-box"><div class="sv">10K+</div><div class="sl">Contractors</div></div>
+      <div class="stat-box"><div class="sv">₹200Cr+</div><div class="sl">Work Awarded</div></div>
+      <div class="stat-box"><div class="sv">28</div><div class="sl">States</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ REGISTER ═══ -->
+<section class="snap-sec sec-right" id="sec-register" style="display:flex;flex-direction:column;background:var(--bg);">
+  <div class="ahero">
+    <span class="big-icon">👷</span>
+    <h2>Create Account</h2>
+    <p>Join 10,000+ contractors on Pragati</p>
+  </div>
+  <div class="abody" style="flex:1;overflow-y:auto;">
+    <p style="font-size:11px;font-weight:700;color:var(--slate3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">I am a…</p>
+    <div class="rgrid">
+      <div class="rcard sel" id="rc-petty" onclick="selRole('petty')"><div class="ri">👷</div><h4>Petty Contractor</h4><p>Find & apply for work</p></div>
+      <div class="rcard" id="rc-main" onclick="selRole('main')"><div class="ri">🏗️</div><h4>Main Contractor</h4><p>Post work & hire</p></div>
+    </div>
+    <input type="hidden" id="rg-role" value="petty"/>
+    <div class="field"><label class="flbl">Full Name *</label><input class="fin" id="rg-name" placeholder="e.g. Rajesh Patil"/></div>
+    <div class="g2">
+      <div class="field"><label class="flbl">Phone *</label><input class="fin" id="rg-phone" type="tel" placeholder="+91 98765 43210" inputmode="tel"/></div>
+      <div class="field"><label class="flbl">City *</label><input class="fin" id="rg-city" placeholder="Pune, MH"/></div>
+    </div>
+    <div class="field" id="rg-tw">
+      <label class="flbl">Primary Trade</label>
+      <select class="fin" id="rg-trade">
+        <option value="">Select…</option><option>Plastering</option><option>Flooring</option>
+        <option>Painting</option><option>Electrical</option><option>Plumbing</option>
+        <option>Masonry</option><option>Carpentry</option><option>Tiling</option>
+        <option>Waterproofing</option><option>Civil Work</option><option>Other</option>
+      </select>
+    </div>
+    <div class="field"><label class="flbl">Email *</label><input class="fin" id="rg-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
+    <div class="field"><label class="flbl">Password *</label><input class="fin" id="rg-pass" type="password" placeholder="Min 6 characters"/></div>
+    <div class="ferr" id="rg-err"></div>
+    <button class="btn-p" id="rg-btn" onclick="doRegister()" style="margin-top:8px;">Create Account →</button>
+    <div class="divdr">or</div>
+    <p style="text-align:center;font-size:14px;color:var(--slate3);">Already registered? <span class="lnk" onclick="goSec('sec-login')">Login here</span></p>
+    <p style="text-align:center;font-size:12px;color:var(--slate4);margin-top:10px;cursor:pointer;" onclick="goSec('sec-hero')">← Back to home</p>
+    <div style="height:28px;"></div>
+  </div>
+</section>
+
+<!-- ═══ LOGIN ═══ -->
+<section class="snap-sec sec-right" id="sec-login" style="display:flex;flex-direction:column;background:var(--bg);">
+  <div class="ahero">
+    <span class="big-icon">🔑</span>
+    <h2>Welcome Back</h2>
+    <p>Login to your Pragati account</p>
+  </div>
+  <div class="abody" style="flex:1;overflow-y:auto;">
+    <div class="field"><label class="flbl">Email Address</label><input class="fin" id="li-email" type="email" placeholder="you@example.com" inputmode="email"/></div>
+    <div class="field"><label class="flbl">Password</label><input class="fin" id="li-pass" type="password" placeholder="Your password"/></div>
+    <div class="ferr" id="li-err"></div>
+    <div style="text-align:right;margin-bottom:14px;"><span class="lnk" style="font-size:13px;" onclick="showForgot()">Forgot Password?</span></div>
+    <button class="btn-p" id="li-btn" onclick="doLogin()">Login →</button>
+    <div class="divdr">or</div>
+    <p style="text-align:center;font-size:14px;color:var(--slate3);">No account? <span class="lnk" onclick="goSec('sec-register')">Register Free</span></p>
+    <p style="text-align:center;font-size:12px;color:var(--slate4);margin-top:10px;cursor:pointer;" onclick="goSec('sec-hero')">← Back to home</p>
+    <div style="height:28px;"></div>
+  </div>
+</section>
+
+</div>
+
+<!-- FORGOT PASSWORD SHEET -->
+<div class="ovl off" id="forgot-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Reset Password 🔑</div>
+    <p style="font-size:14px;color:var(--slate3);margin-bottom:16px;line-height:1.6;">Enter your registered email. We'll send a reset link to your inbox.</p>
+    <div class="field"><label class="flbl">Email Address</label><input class="fin" id="fp-email" type="email" placeholder="you@example.com"/></div>
+    <div class="ferr" id="fp-err"></div>
+    <div class="fp-ok" id="fp-ok">✅ Reset link sent! Check your email inbox.</div>
+    <button class="btn-p" id="fp-btn" onclick="doReset()">Send Reset Link →</button>
+    <button class="btn-g" style="margin-top:10px;" onclick="closeForgot()">Cancel</button>
+  </div>
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script>
+var firebase_cfg={apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",authDomain:"pragati-work-exchange.firebaseapp.com",projectId:"pragati-work-exchange",storageBucket:"pragati-work-exchange.firebasestorage.app",messagingSenderId:"422215240765",appId:"1:422215240765:web:eefb239420262c9d822e54"};
+if(!firebase.apps.length)firebase.initializeApp(firebase_cfg);
+var auth=firebase.auth(),db=firebase.firestore();
+auth.onAuthStateChanged(async function(u){if(u){try{var s=await db.collection('users').doc(u.uid).get();var d=s.exists?s.data():null;if(d){window.location.href=d.role==='main'?'main.html':'home.html';return;}}catch(e){}}document.getElementById('loader').classList.add('out');});
+var SEC_ORDER=['sec-hero','sec-register','sec-login'];
+function goSec(id){var all=document.querySelectorAll('.snap-sec'),cur=document.querySelector('.snap-sec.sec-active'),ci=cur?SEC_ORDER.indexOf(cur.id):0,ti=SEC_ORDER.indexOf(id),fwd=ti>ci;all.forEach(function(s){s.classList.remove('sec-active','sec-left','sec-right');s.classList.add(s.id===id?'sec-active':(fwd?'sec-left':'sec-right'));});var t=document.getElementById(id);if(t)t.scrollTop=0;}
+function selRole(r){document.getElementById('rg-role').value=r;document.getElementById('rc-petty').classList.toggle('sel',r==='petty');document.getElementById('rc-main').classList.toggle('sel',r==='main');document.getElementById('rg-tw').style.display=r==='petty'?'block':'none';}
+async function doLogin(){var e=document.getElementById('li-email').value.trim(),p=document.getElementById('li-pass').value,err=document.getElementById('li-err'),btn=document.getElementById('li-btn');err.textContent='';err.classList.remove('on');if(!e||!p){err.textContent='Please enter email and password.';err.classList.add('on');return;}btn.classList.add('btn-ld');btn.textContent='Logging in…';try{var uc=await auth.signInWithEmailAndPassword(e,p),sn=await db.collection('users').doc(uc.user.uid).get(),cd=sn.exists?sn.data():null;window.location.href=cd&&cd.role==='main'?'main.html':'home.html';}catch(ex){err.textContent=ex.code==='auth/user-not-found'?'No account found with this email.':ex.code==='auth/wrong-password'?'Incorrect password. Try again.':ex.code==='auth/invalid-credential'?'Incorrect email or password.':ex.code==='auth/too-many-requests'?'Too many attempts. Try again later.':ex.code==='auth/network-request-failed'?'Network error. Check your connection.':'Login failed: '+ex.message;err.classList.add('on');btn.classList.remove('btn-ld');btn.textContent='Login →';}}
+async function doRegister(){var n=document.getElementById('rg-name').value.trim(),ph=document.getElementById('rg-phone').value.trim(),c=document.getElementById('rg-city').value.trim(),e=document.getElementById('rg-email').value.trim(),p=document.getElementById('rg-pass').value,r=document.getElementById('rg-role').value,tr=document.getElementById('rg-trade').value,err=document.getElementById('rg-err'),btn=document.getElementById('rg-btn');err.textContent='';err.classList.remove('on');if(!n||!e||!c||p.length<6){err.textContent='Please fill all required fields (password min 6 chars).';err.classList.add('on');return;}btn.classList.add('btn-ld');btn.textContent='Creating…';try{var uc=await auth.createUserWithEmailAndPassword(e,p);await db.collection('users').doc(uc.user.uid).set({name:n,email:e,phone:ph,city:c,role:r,trade:tr,exp:'',bio:'',company:r==='main'?n:'',createdAt:firebase.firestore.FieldValue.serverTimestamp()});window.location.href=r==='main'?'main.html':'home.html';}catch(ex){err.textContent=ex.code==='auth/email-already-in-use'?'Email already registered. Please login.':ex.code==='auth/weak-password'?'Password too weak. Use at least 6 characters.':'Error: '+ex.message;err.classList.add('on');btn.classList.remove('btn-ld');btn.textContent='Create Account →';}}
+function showForgot(){document.getElementById('fp-email').value=document.getElementById('li-email').value||'';document.getElementById('fp-err').textContent='';document.getElementById('fp-err').classList.remove('on');document.getElementById('fp-ok').style.display='none';document.getElementById('fp-btn').style.display='';document.getElementById('fp-btn').textContent='Send Reset Link →';document.getElementById('forgot-ovl').classList.remove('off');}
+function closeForgot(){document.getElementById('forgot-ovl').classList.add('off');}
+async function doReset(){var e=document.getElementById('fp-email').value.trim(),err=document.getElementById('fp-err'),btn=document.getElementById('fp-btn');if(!e||!e.includes('@')){err.textContent='Enter a valid email.';err.classList.add('on');return;}btn.classList.add('btn-ld');btn.textContent='Sending…';try{await auth.sendPasswordResetEmail(e);document.getElementById('fp-ok').style.display='block';btn.style.display='none';toast('Reset link sent! Check your inbox.','ok');}catch(ex){err.textContent=ex.code==='auth/user-not-found'?'No account with this email.':'Error: '+ex.message;err.classList.add('on');btn.classList.remove('btn-ld');btn.textContent='Send Reset Link →';}}
+function toast(msg,type){var el=document.getElementById('toast');el.textContent=msg;el.className=type?'on '+type:'on';setTimeout(function(){el.className='';},3000);}
+document.addEventListener('DOMContentLoaded',function(){document.getElementById('li-pass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});document.getElementById('rg-pass').addEventListener('keydown',function(e){if(e.key==='Enter')doRegister();});document.getElementById('forgot-ovl').addEventListener('click',function(e){if(e.target===this)closeForgot();});});
+</script>
+</body>
+</html>
