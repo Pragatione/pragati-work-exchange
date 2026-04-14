@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<title>Contractor Profile — Pragati Work Exchange</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+/* PROFILE HERO */
+.cp-hero{background:linear-gradient(135deg,#1E293B,#334155);padding:24px 18px 22px;color:#fff;flex-shrink:0;position:relative;overflow:hidden;}
+.cp-hero::after{content:'';position:absolute;bottom:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.05);}
+.cp-hero::before{content:'';position:absolute;top:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.04);}
+.cp-av-wrap{position:relative;display:inline-block;margin-bottom:14px;}
+.cp-av{width:80px;height:80px;border-radius:22px;border:3px solid rgba(255,255,255,.3);object-fit:cover;display:block;background:var(--s5);}
+.cp-av-placeholder{width:80px;height:80px;border-radius:22px;border:3px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:24px;font-weight:800;color:#fff;}
+.cp-verified{position:absolute;bottom:-4px;right:-4px;background:var(--green2);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid #fff;}
+.cp-name{font-family:var(--h);font-size:22px;font-weight:800;margin-bottom:3px;}
+.cp-trade{font-size:13px;opacity:.8;margin-bottom:10px;}
+.cp-stats{display:flex;gap:20px;}
+.cp-stat{text-align:center;}
+.cp-stat-n{font-family:var(--h);font-size:18px;font-weight:800;}
+.cp-stat-l{font-size:10px;opacity:.7;letter-spacing:.04em;text-transform:uppercase;}
+
+/* SECTION */
+.psec{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid var(--s7);box-shadow:var(--sh);}
+.psec-tit{font-family:var(--h);font-size:14px;font-weight:700;color:var(--s2);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.psec-tit-ico{width:28px;height:28px;border-radius:8px;background:var(--blue5);display:flex;align-items:center;justify-content:center;font-size:13px;}
+
+/* SKILL PILLS */
+.skill-wrap{display:flex;flex-wrap:wrap;gap:7px;}
+.skill-pill{background:var(--blue5);color:var(--blue);border:1px solid #BFDBFE;border-radius:20px;font-size:12px;font-weight:600;padding:5px 12px;}
+
+/* WORK PHOTOS */
+.photo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+.photo-thumb{aspect-ratio:1;border-radius:9px;overflow:hidden;background:var(--s7);cursor:pointer;}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;}
+.photo-empty{aspect-ratio:1;border-radius:9px;background:var(--s8);border:2px dashed var(--s6);display:flex;align-items:center;justify-content:center;font-size:22px;opacity:.4;}
+
+/* EXP ROW */
+.exp-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--s7);}
+.exp-row:last-child{border-bottom:none;padding-bottom:0;}
+.exp-dot{width:10px;height:10px;border-radius:50%;background:var(--blue2);margin-top:5px;flex-shrink:0;}
+.exp-co{font-weight:700;font-size:13px;margin-bottom:2px;}
+.exp-dt{font-size:11px;color:var(--s4);}
+
+/* STARS */
+.star-lg{font-size:22px;}
+
+/* AVAIL BANNER */
+.avail-banner{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:11px;margin-bottom:12px;}
+.avail-banner.yes{background:var(--green4);color:var(--green);}
+.avail-banner.no{background:var(--orange4);color:var(--orange);}
+
+/* CTA STICKY */
+.scta2{position:fixed;bottom:0;left:0;right:0;padding:12px 16px 28px;background:#fff;border-top:1px solid var(--s7);display:flex;gap:10px;z-index:50;box-shadow:0 -4px 20px rgba(0,0,0,.08);}
+</style>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange · PragatiOne</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<div style="display:flex;flex-direction:column;min-height:100vh;">
+  <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(30,41,59,.9);position:sticky;top:0;z-index:10;">
+    <button class="tbk" onclick="history.back()" style="background:rgba(255,255,255,.15);color:#fff;">←</button>
+    <div style="flex:1;font-family:var(--h);font-size:14px;font-weight:700;color:#fff;" id="cp-topname">Contractor Profile</div>
+    <button class="tbk" style="background:rgba(255,255,255,.15);color:#fff;font-size:16px;" onclick="shareProfile()">↗</button>
+  </div>
+
+  <div class="cp-hero">
+    <div class="cp-av-wrap" id="cp-av-wrap">
+      <div class="cp-av-placeholder" id="cp-av-ph" style="background:#374151;">?</div>
+    </div>
+    <div class="cp-name" id="cp-name">Loading…</div>
+    <div class="cp-trade" id="cp-trade">—</div>
+    <div class="cp-stats">
+      <div class="cp-stat"><div class="cp-stat-n" id="cp-rating">—</div><div class="cp-stat-l">Rating</div></div>
+      <div class="cp-stat"><div class="cp-stat-n" id="cp-projects">—</div><div class="cp-stat-l">Projects</div></div>
+      <div class="cp-stat"><div class="cp-stat-n" id="cp-exp">—</div><div class="cp-stat-l">Yrs Exp</div></div>
+      <div class="cp-stat"><div class="cp-stat-n" id="cp-labour">—</div><div class="cp-stat-l">Workers</div></div>
+    </div>
+  </div>
+
+  <div class="pscr" style="padding:14px 16px 110px;" id="cp-body">
+    <!-- Content loaded dynamically -->
+    <div class="empty"><div class="spin" style="margin:0 auto;"></div></div>
+  </div>
+
+  <div class="scta2">
+    <button class="btn btn-g" style="width:48px;padding:0;font-size:20px;" id="chat-btn" onclick="chatContractor()">💬</button>
+    <button class="btn btn-o" style="flex:1;" id="hire-btn" onclick="showHireSheet()">Hire Directly →</button>
+  </div>
+</div>
+
+<!-- HIRE SHEET -->
+<div class="ovl off" id="hire-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Send Hire Request 🤝</div>
+    <p style="font-size:13px;color:var(--s3);margin-bottom:16px;line-height:1.6;" id="hire-sub">The contractor will receive your details and respond within 24 hours.</p>
+    <div class="field"><label class="flbl">Work Description *</label>
+      <textarea class="fin" id="hire-desc" rows="3" placeholder="e.g. Plastering work for 50 flats in Phase 2 block…"></textarea></div>
+    <div class="g2">
+      <div class="field"><label class="flbl">Start Date</label><input class="fin" id="hire-date" type="date"/></div>
+      <div class="field"><label class="flbl">Duration (Days)</label><input class="fin" id="hire-dur" type="number" placeholder="30"/></div>
+    </div>
+    <div class="field"><label class="flbl">Budget (₹)</label><input class="fin" id="hire-bud" type="number" placeholder="250000"/></div>
+    <button class="btn btn-o btn-bl btn-lg" onclick="confirmHire()" style="margin-bottom:10px;">Send Hire Request →</button>
+    <button class="btn btn-g btn-bl" onclick="document.getElementById('hire-ovl').classList.add('off')">Cancel</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="shared.js"></script>
+<script>
+const firebase_cfg = {
+  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
+  authDomain:"pragati-work-exchange.firebaseapp.com",
+  projectId:"pragati-work-exchange",
+  storageBucket:"pragati-work-exchange.firebasestorage.app",
+  messagingSenderId:"422215240765",
+  appId:"1:422215240765:web:eefb239420262c9d822e54"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+const FS   = firebase.firestore;
+var CU=null, CD=null, CP=null;
+auth.onAuthStateChanged(async function(user){
+  if(!user){location.href='index.html';return;}
+  CU=user;
+  try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
+  if(!CD){location.href='index.html';return;}
+  document.getElementById('loader').classList.add('out');
+  loadProfile();
+});
+function toast(msg,type){var el=document.getElementById('toast');el.textContent=msg;el.className=type?'on '+type:'on';setTimeout(function(){el.className='';},3000);}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).join('').toUpperCase().slice(0,2);}
+</script>
+<script>
+var COLORS=['#1D4ED8','#059669','#7C3AED','#EA580C','#DC2626','#0891B2'];
+
+function getP(k){return new URLSearchParams(window.location.search).get(k);}
+
+async function loadProfile(){
+  var uid=getP('uid');
+  if(!uid){history.back();return;}
+
+  // Try Firestore first
+  try{var s=await db.collection('users').doc(uid).get(); if(s.exists) CP=Object.assign({uid:s.id},s.data());}catch(e){}
+  // Fall back to demo
+  if(!CP) CP=DEMO_CONTRACTORS.find(function(c){return c.uid===uid;});
+  if(!CP){history.back();return;}
+
+  renderHero();
+  renderBody();
+}
+
+function renderHero(){
+  var c=CP;
+  document.getElementById('cp-topname').textContent=c.name||'Contractor';
+  document.getElementById('cp-name').textContent=c.name||'Contractor';
+  document.getElementById('cp-trade').textContent=(c.trade||'General Contractor')+' · '+(c.city||c.location||'India');
+  document.getElementById('cp-rating').textContent=c.rating?c.rating.toFixed(1):'New';
+  document.getElementById('cp-projects').textContent=c.projects||0;
+  document.getElementById('cp-exp').textContent=c.expYears||'—';
+  document.getElementById('cp-labour').textContent=c.labour||'—';
+
+  var wrap=document.getElementById('cp-av-wrap');
+  var col=COLORS[Math.floor(Math.random()*COLORS.length)];
+  if(c.photo){
+    wrap.innerHTML='<img class="cp-av" src="'+esc(c.photo)+'" alt="'+esc(c.name)+'" onerror="this.outerHTML=\'<div class=\\"cp-av-placeholder\\" style=\\"background:'+col+';\\">\'+\''+initials(c.name||'C')+'\'+\'</div>\'"/>'+
+      (c.verified?'<div class="cp-verified">✓</div>':'');
+  } else {
+    wrap.innerHTML='<div class="cp-av-placeholder" style="background:'+col+';">'+initials(c.name||'C')+'</div>'+
+      (c.verified?'<div class="cp-verified">✓</div>':'');
+  }
+}
+
+function renderBody(){
+  var c=CP;
+  var avail=c.available!==false;
+  var html='';
+
+  // Availability banner
+  html+='<div class="avail-banner '+(avail?'yes':'no')+'" style="margin-bottom:14px;">'+
+    '<span style="font-size:20px;">'+(avail?'✅':'⏳')+'</span>'+
+    '<div><div style="font-weight:700;font-size:14px;">'+(avail?'Available for Work':'Currently Busy')+'</div>'+
+    '<div style="font-size:12px;opacity:.8;">'+(avail?'Ready to start immediately':'Taking on work from next month')+'</div></div></div>';
+
+  // About / Bio
+  if(c.bio){
+    html+='<div class="psec">'+
+      '<div class="psec-tit"><div class="psec-tit-ico">👤</div>About</div>'+
+      '<div style="font-size:13px;color:var(--s2);line-height:1.7;">'+esc(c.bio)+'</div></div>';
+  }
+
+  // Key Info
+  html+='<div class="psec">'+
+    '<div class="psec-tit"><div class="psec-tit-ico">📋</div>Details</div>'+
+    '<div class="irow"><span class="ik">Trade</span><span class="iv">'+esc(c.trade||'General')+'</span></div>'+
+    '<div class="irow"><span class="ik">Experience</span><span class="iv">'+(c.expYears||'—')+' years</span></div>'+
+    '<div class="irow"><span class="ik">Location</span><span class="iv">'+esc(c.city||c.location||'—')+'</span></div>'+
+    (c.labour?'<div class="irow"><span class="ik">Team Size</span><span class="iv">'+esc(c.labour)+' workers</span></div>':'')+
+    (c.dailyRate?'<div class="irow"><span class="ik">Daily Rate</span><span class="iv" style="color:var(--green2);font-weight:700;">₹'+Number(c.dailyRate).toLocaleString('en-IN')+'/day</span></div>':'')+
+    (c.phone?'<div class="irow"><span class="ik">Phone</span><span class="iv">'+esc(c.phone)+'</span></div>':'')+
+    '</div>';
+
+  // Skills
+  if(c.skills&&c.skills.length){
+    html+='<div class="psec">'+
+      '<div class="psec-tit"><div class="psec-tit-ico">⚡</div>Skills & Expertise</div>'+
+      '<div class="skill-wrap">'+c.skills.map(function(s){return '<span class="skill-pill">'+esc(s)+'</span>';}).join('')+'</div></div>';
+  }
+
+  // Work Photos
+  if(c.photos&&c.photos.length){
+    html+='<div class="psec">'+
+      '<div class="psec-tit"><div class="psec-tit-ico">📸</div>Work Photos</div>'+
+      '<div class="photo-grid">'+
+      c.photos.map(function(p){return '<div class="photo-thumb"><img src="'+esc(p)+'" alt="Work photo" onerror="this.parentElement.innerHTML=\'<div class=photo-empty>🏗️</div>\'"/></div>';}).join('')+
+      '</div></div>';
+  } else {
+    html+='<div class="psec">'+
+      '<div class="psec-tit"><div class="psec-tit-ico">📸</div>Work Photos</div>'+
+      '<div class="photo-grid">'+
+      '<div class="photo-empty">🧱</div><div class="photo-empty">🏗️</div><div class="photo-empty">📸</div>'+
+      '</div><div style="font-size:11px;color:var(--s5);text-align:center;margin-top:8px;">No photos uploaded yet</div></div>';
+  }
+
+  // Past Experience
+  if(c.experience&&c.experience.length){
+    html+='<div class="psec">'+
+      '<div class="psec-tit"><div class="psec-tit-ico">🏢</div>Past Work Experience</div>'+
+      c.experience.map(function(ex){return '<div class="exp-row"><div class="exp-dot"></div><div><div class="exp-co">'+esc(ex.company||'—')+'</div><div style="font-size:12px;color:var(--s3);margin-bottom:2px;">'+esc(ex.role||'Contractor')+'</div><div class="exp-dt">'+esc(ex.duration||'—')+'</div></div></div>';}).join('')+
+      '</div>';
+  }
+
+  // Certifications / Documents
+  if(c.certifications&&c.certifications.length){
+    html+='<div class="psec">'+
+      '<div class="psec-tit"><div class="psec-tit-ico">📜</div>Certifications</div>'+
+      c.certifications.map(function(cert){return '<div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--s7);"><div style="font-size:20px;">🏆</div><div><div style="font-size:13px;font-weight:600;">'+esc(cert)+'</div></div></div>';}).join('')+
+      '</div>';
+  }
+
+  // Reviews
+  if(c.reviewsList&&c.reviewsList.length){
+    html+='<div class="psec">'+
+      '<div class="psec-tit"><div class="psec-tit-ico">⭐</div>Reviews ('+(c.reviews||c.reviewsList.length)+')</div>'+
+      c.reviewsList.map(function(r){
+        var stars='';for(var i=1;i<=5;i++) stars+='<span style="color:'+(i<=r.rating?'#F59E0B':'#E2E8F0')+';">★</span>';
+        return '<div style="padding:11px 0;border-bottom:1px solid var(--s7);">'+
+          '<div style="display:flex;justify-content:space-between;margin-bottom:5px;">'+
+          '<div style="font-weight:600;font-size:13px;">'+esc(r.reviewer||'Contractor')+'</div>'+
+          '<div style="font-size:13px;">'+stars+'</div></div>'+
+          '<div style="font-size:12px;color:var(--s3);line-height:1.55;">'+esc(r.text||'')+'</div></div>';
+      }).join('')+'</div>';
+  }
+
+  document.getElementById('cp-body').innerHTML=html;
+}
+
+function showHireSheet(){
+  document.getElementById('hire-sub').textContent='Send a hire request to '+(CP.name||'this contractor')+'. They will respond within 24 hours.';
+  document.getElementById('hire-ovl').classList.remove('off');
+}
+
+async function confirmHire(){
+  var desc=document.getElementById('hire-desc').value.trim();
+  if(!desc){toast('Please describe the work','err');return;}
+  if(!CP){return;}
+  if(CP.uid.startsWith('demo')){
+    toast('Hire request sent! 🎉','ok');
+    document.getElementById('hire-ovl').classList.add('off'); return;
+  }
+  try{
+    await db.collection('hire_requests').add({
+      fromUid:CU.uid, fromName:CD.name||'Main Contractor', fromCompany:CD.name||'',
+      toUid:CP.uid, toName:CP.name||'Contractor',
+      description:desc,
+      startDate:document.getElementById('hire-date').value||'',
+      duration:document.getElementById('hire-dur').value||'',
+      budget:Number(document.getElementById('hire-bud').value)||0,
+      status:'pending', createdAt:FS.FieldValue.serverTimestamp()
+    });
+    toast('Hire request sent to '+(CP.name||'contractor')+'! 🎉','ok');
+    document.getElementById('hire-ovl').classList.add('off');
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+
+async function chatContractor(){
+  if(!CP||!CU){toast('Please login first','err');return;}
+  if(CP.uid.startsWith('demo')){toast('Chat not available for demo profiles','err');return;}
+  try{
+    var snap=await db.collection('conversations').where('participants','array-contains',CU.uid).get();
+    var existing=snap.docs.find(function(d){return (d.data().participants||[]).includes(CP.uid);});
+    if(!existing){
+      await db.collection('conversations').add({
+        participants:[CU.uid,CP.uid],
+        participantNames:{[CU.uid]:CD.name||'Main Contractor',[CP.uid]:CP.name||'Contractor'},
+        workId:'', workTitle:'Direct Hire Inquiry',
+        lastMsg:'', lastMsgTime:FS.FieldValue.serverTimestamp(),
+        unread:{[CU.uid]:0,[CP.uid]:0}, createdAt:FS.FieldValue.serverTimestamp()
+      });
+    }
+    localStorage.setItem('pg_chatTarget',JSON.stringify({uid:CP.uid,name:CP.name}));
+    location.href='chat.html';
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+
+function shareProfile(){
+  if(navigator.share){navigator.share({title:CP.name+' – Pragati',text:'Check this contractor on Pragati Work Exchange',url:window.location.href});}
+  else{navigator.clipboard.writeText(window.location.href);toast('Link copied!','ok');}
+}
+
+document.getElementById('hire-ovl').addEventListener('click',function(e){if(e.target===this)this.classList.add('off');});
+</script>
+</body>
+</html>

@@ -42,6 +42,10 @@
       <div class="met"><div class="mn pu" id="st-sh">0</div><div class="ml">Shortlisted</div></div>
     </div>
     <div id="home-ntc" style="display:none;" class="ntc">⚡ <span id="home-ntxt"></span></div>
+    <div id="profile-banner" style="display:none;margin:10px 16px 0;background:linear-gradient(135deg,var(--orange5),#fff);border:1px solid #FED7AA;border-radius:14px;padding:14px 16px;cursor:pointer;" onclick="location.href='register-profile.html'">
+      <div style="font-family:var(--h);font-size:14px;font-weight:700;color:var(--orange);margin-bottom:3px;">👷 Complete Your Profile!</div>
+      <div style="font-size:12px;color:var(--s3);line-height:1.55;">Main contractors can hire you directly. Add your experience & photos to get discovered. <span style="color:var(--orange2);font-weight:700;">Set up now →</span></div>
+    </div>
     <div style="padding:12px 16px 0;"><div class="sh"><h3>Browse by Trade</h3></div></div>
     <div class="istrip">
       <div class="icard" onclick="location.href='find.html?trade=Plastering'"><div class="icico">🧱</div><div class="ictit">Plastering</div><div class="icsub">Wall & ceiling</div></div>
@@ -130,6 +134,8 @@ async function loadHome(){
   var list=document.getElementById('hw-list');
   list.innerHTML=works.slice(0,4).map(mkCard).join('')||emptyHTML('🏗️','No works yet','Check back soon');
   if(works.length){document.getElementById('home-ntc').style.display='flex';document.getElementById('home-ntxt').textContent=works.length+' open works available near you!';}
+  // Show profile completion banner if not complete
+  if(CD && !CD.profileComplete){document.getElementById('profile-banner').style.display='block';}
   try{
     var snap=await db.collection('applications').where('applicantId','==',CU.uid).get();
     var apps=snap.docs.map(function(d){return d.data();});

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<title>Find Contractors — Pragati Work Exchange</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.bni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 4px;flex:1;border:none;background:none;position:relative;}
+.bni .ico{width:26px;height:26px;display:flex;align-items:center;justify-content:center;transition:transform .18s;}
+.bni .ico svg{stroke:var(--s5);transition:stroke .18s,transform .18s;}
+.bni .lbl{font-size:10px;font-weight:600;color:var(--s5);transition:color .18s;letter-spacing:.01em;}
+.bni.on .ico svg{stroke:var(--blue2);transform:scale(1.15);}
+.bni.on .lbl{color:var(--blue2);}
+.bni:active .ico{transform:scale(.9);}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--s7);display:flex;z-index:50;padding:8px 0 max(env(safe-area-inset-bottom),12px);box-shadow:0 -2px 16px rgba(0,0,0,.07);}
+
+/* CONTRACTOR CARD */
+.ctr-card{background:#fff;border:1px solid var(--s7);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:var(--sh);cursor:pointer;transition:.2s;position:relative;overflow:hidden;}
+.ctr-card:active{transform:scale(.98);}
+.ctr-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue2),var(--orange3));}
+.ctr-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;}
+.ctr-av{width:52px;height:52px;border-radius:15px;object-fit:cover;flex-shrink:0;background:var(--s7);}
+.ctr-av-placeholder{width:52px;height:52px;border-radius:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:17px;font-weight:700;color:#fff;}
+.ctr-name{font-family:var(--h);font-size:15px;font-weight:700;margin-bottom:2px;}
+.ctr-trade{font-size:12px;color:var(--s4);margin-bottom:5px;}
+.ctr-stars{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--s3);font-weight:600;}
+.ctr-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.ctr-chip{font-size:11px;background:var(--s8);color:var(--s3);padding:4px 9px;border-radius:20px;font-weight:600;}
+.ctr-bio{font-size:12px;color:var(--s3);line-height:1.55;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.ctr-foot{display:flex;justify-content:space-between;align-items:center;}
+.ctr-rate{font-family:var(--h);font-size:14px;font-weight:800;color:var(--green2);}
+.avail-dot{width:7px;height:7px;border-radius:50%;background:var(--green2);display:inline-block;margin-right:4px;flex-shrink:0;}
+.avail-dot.busy{background:var(--orange3);}
+.avail-txt{font-size:11px;color:var(--s4);font-weight:600;display:flex;align-items:center;}
+
+/* FILTER BAR */
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding:10px 16px 0;scrollbar-width:none;flex-shrink:0;}
+.filter-row::-webkit-scrollbar{display:none;}
+
+/* VERIFIED BADGE */
+.vbadge{background:linear-gradient(90deg,#065F46,#059669);color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;letter-spacing:.04em;}
+
+/* HIRE DIRECT BADGE */
+.hd-badge{position:absolute;top:10px;right:12px;background:linear-gradient(90deg,var(--orange2),var(--orange3));color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:20px;letter-spacing:.04em;}
+
+/* SORT ROW */
+.sort-row{display:flex;align-items:center;gap:8px;padding:8px 16px 4px;flex-shrink:0;}
+.sort-lbl{font-size:12px;color:var(--s4);font-weight:600;white-space:nowrap;}
+.sort-sel{background:var(--s8);border:1.5px solid var(--s7);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--s0);font-family:var(--b);outline:none;cursor:pointer;}
+</style>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange · PragatiOne</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<div style="display:flex;flex-direction:column;min-height:100vh;">
+  <div class="tbar">
+    <button class="tbk" onclick="history.back()">←</button>
+    <h2>Find Contractors</h2>
+    <span id="ctr-cnt" class="tag t-bl" style="flex-shrink:0;">0</span>
+  </div>
+
+  <!-- Search -->
+  <div style="padding:12px 16px 0;flex-shrink:0;">
+    <div class="sbar-wrap">
+      <input class="sbar" id="s-inp" placeholder="Name, trade, city, skill…" oninput="renderContractors()"/>
+    </div>
+  </div>
+
+  <!-- Trade Filter Chips -->
+  <div class="filter-row" id="trade-chips">
+    <div class="chip on" onclick="setChip(this,'')">All Trades</div>
+    <div class="chip" onclick="setChip(this,'Plastering')">🧱 Plastering</div>
+    <div class="chip" onclick="setChip(this,'Flooring')">⬜ Flooring</div>
+    <div class="chip" onclick="setChip(this,'Electrical')">⚡ Electrical</div>
+    <div class="chip" onclick="setChip(this,'Painting')">🎨 Painting</div>
+    <div class="chip" onclick="setChip(this,'Plumbing')">🔧 Plumbing</div>
+    <div class="chip" onclick="setChip(this,'Masonry')">🏗️ Masonry</div>
+    <div class="chip" onclick="setChip(this,'Carpentry')">🪵 Carpentry</div>
+    <div class="chip" onclick="setChip(this,'Waterproofing')">💧 Waterproofing</div>
+  </div>
+
+  <!-- Sort + Availability Filter -->
+  <div class="sort-row">
+    <span class="sort-lbl">Sort:</span>
+    <select class="sort-sel" id="sort-sel" onchange="renderContractors()">
+      <option value="rating">Top Rated</option>
+      <option value="exp">Most Experienced</option>
+      <option value="projects">Most Projects</option>
+      <option value="rate">Lowest Rate</option>
+    </select>
+    <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--s3);font-weight:600;margin-left:auto;cursor:pointer;">
+      <input type="checkbox" id="avail-only" onchange="renderContractors()" style="accent-color:var(--green2);"/>
+      Available only
+    </label>
+  </div>
+
+  <!-- List -->
+  <div class="pscr pb90" style="padding:8px 16px 0;" id="ctr-list">
+    <div class="empty"><div class="spin" style="margin:0 auto;"></div></div>
+  </div>
+
+  <nav class="bnav">
+    <div class="bni on" onclick="location.href='main.html'">
+      <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="lbl">Home</div>
+    </div>
+    <div class="bni" onclick="location.href='post.html'">
+      <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg></div>
+      <div class="lbl">Post Work</div>
+    </div>
+    <div class="bni" onclick="location.href='myworks.html'">
+      <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+      <div class="lbl">My Works</div>
+    </div>
+    <div class="bni" onclick="location.href='chat.html'">
+      <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg></div>
+      <div class="lbl">Messages</div>
+    </div>
+  </nav>
+</div>
+
+<!-- HIRE DIRECT SHEET -->
+<div class="ovl off" id="hire-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Hire Directly 🤝</div>
+    <div id="hire-content"></div>
+    <button class="btn btn-o btn-bl btn-lg" onclick="confirmHire()" style="margin-bottom:10px;">Send Hire Request →</button>
+    <button class="btn btn-g btn-bl" onclick="document.getElementById('hire-ovl').classList.add('off')">Cancel</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="shared.js"></script>
+<script>
+const firebase_cfg = {
+  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
+  authDomain:"pragati-work-exchange.firebaseapp.com",
+  projectId:"pragati-work-exchange",
+  storageBucket:"pragati-work-exchange.firebasestorage.app",
+  messagingSenderId:"422215240765",
+  appId:"1:422215240765:web:eefb239420262c9d822e54"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+const FS   = firebase.firestore;
+var CU=null, CD=null;
+auth.onAuthStateChanged(async function(user){
+  if(!user){location.href='index.html';return;}
+  CU=user;
+  try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
+  if(!CD){location.href='index.html';return;}
+  if(!CD || CD.role!=='main'){location.href='home.html';return;}
+  document.getElementById('loader').classList.add('out');
+  loadContractors();
+});
+function toast(msg,type){var el=document.getElementById('toast');el.textContent=msg;el.className=type?'on '+type:'on';setTimeout(function(){el.className='';},3000);}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).join('').toUpperCase().slice(0,2);}
+</script>
+<script>
+var allContractors=[], filterTrade='', pendingHireUid=null, pendingHireName=null;
+var COLORS=['#1D4ED8','#059669','#7C3AED','#EA580C','#DC2626','#0891B2','#CA8A04','#BE185D'];
+
+async function loadContractors(){
+  try{
+    var snap=await db.collection('users').where('role','==','contractor').get();
+    allContractors=snap.docs.map(function(d){return Object.assign({uid:d.id},d.data());});
+  }catch(e){allContractors=[];}
+  // Merge with demo contractors
+  allContractors = allContractors.concat(DEMO_CONTRACTORS.filter(function(dc){
+    return !allContractors.find(function(ac){return ac.uid===dc.uid;});
+  }));
+  renderContractors();
+}
+
+function renderContractors(){
+  var q=document.getElementById('s-inp').value.toLowerCase();
+  var sort=document.getElementById('sort-sel').value;
+  var availOnly=document.getElementById('avail-only').checked;
+  var arr=allContractors.filter(function(c){
+    var searchStr=(c.name+' '+c.trade+' '+(c.city||c.location||'')+' '+(c.skills||[]).join(' ')+(c.bio||'')).toLowerCase();
+    var matchQ=!q||searchStr.includes(q);
+    var matchTrade=!filterTrade||c.trade===filterTrade;
+    var matchAvail=!availOnly||c.available!==false;
+    return matchQ&&matchTrade&&matchAvail;
+  });
+  // Sort
+  arr.sort(function(a,b){
+    if(sort==='rating') return (b.rating||0)-(a.rating||0);
+    if(sort==='exp') return (parseInt(b.expYears)||0)-(parseInt(a.expYears)||0);
+    if(sort==='projects') return (b.projects||0)-(a.projects||0);
+    if(sort==='rate') return (a.dailyRate||0)-(b.dailyRate||0);
+    return 0;
+  });
+  document.getElementById('ctr-cnt').textContent=arr.length;
+  var el=document.getElementById('ctr-list');
+  if(!arr.length){el.innerHTML='<div class="empty"><div class="ei">👷</div><h3>No contractors found</h3><p>Try different filters or trade</p></div>';return;}
+  el.innerHTML=arr.map(function(c,i){return mkCtrCard(c,i);}).join('');
+}
+
+function mkCtrCard(c,i){
+  var col=COLORS[i%COLORS.length];
+  var avail=c.available!==false;
+  var av=c.photo?
+    '<img class="ctr-av" src="'+esc(c.photo)+'" onerror="this.style.display=\'none\'" alt=""/>':
+    '<div class="ctr-av-placeholder" style="background:'+col+';">'+initials(c.name)+'</div>';
+  var stars='';
+  if(c.rating){for(var s=1;s<=5;s++) stars+='<span style="color:'+(s<=Math.round(c.rating)?'#F59E0B':'#E2E8F0')+';">★</span>';}
+  return '<div class="ctr-card" onclick="goProfile(\''+esc(c.uid)+'\')">' +
+    (c.hireDirect||avail?'<div class="hd-badge">HIRE DIRECT</div>':'')+
+    '<div class="ctr-top">'+av+
+    '<div style="flex:1;min-width:0;">' +
+    '<div class="ctr-name">'+esc(c.name||'Contractor')+(c.verified?'&nbsp;<span class="vbadge">✓ VERIFIED</span>':'')+' </div>'+
+    '<div class="ctr-trade">'+esc(c.trade||'General Contractor')+' · '+(c.expYears||'—')+' yrs exp</div>'+
+    (c.rating?'<div class="ctr-stars">'+stars+'&nbsp;'+c.rating.toFixed(1)+' &nbsp;<span style="color:var(--s5);">('+( c.reviews||0)+' reviews)</span></div>':'')+
+    '</div></div>'+
+    '<div class="ctr-meta">'+
+    (c.city||c.location?'<span class="ctr-chip">📍 '+esc(c.city||c.location)+'</span>':'')+
+    (c.projects?'<span class="ctr-chip">🏗️ '+c.projects+' projects</span>':'')+
+    (c.labour?'<span class="ctr-chip">👷 '+esc(c.labour)+' workers</span>':'')+
+    ((c.skills||[]).slice(0,2).map(function(sk){return '<span class="ctr-chip">'+esc(sk)+'</span>';}).join(''))+
+    '</div>'+
+    (c.bio?'<div class="ctr-bio">'+esc(c.bio)+'</div>':'')+
+    '<div class="ctr-foot">'+
+    (c.dailyRate?'<div class="ctr-rate">₹'+Number(c.dailyRate).toLocaleString('en-IN')+'/day</div>':'<div class="ctr-rate">Rate: Negotiable</div>')+
+    '<div style="display:flex;gap:7px;" onclick="event.stopPropagation()">'+
+    '<button class="btn btn-g btn-sm" onclick="chatContractor(\''+esc(c.uid)+'\',\''+esc(c.name||'Contractor')+'\')">💬</button>'+
+    '<button class="btn btn-o btn-sm" onclick="showHire(\''+esc(c.uid)+'\',\''+esc(c.name||'Contractor')+'\')">Hire →</button>'+
+    '</div></div>'+
+    '<div class="avail-txt" style="margin-top:9px;">'+
+    '<span class="avail-dot'+(avail?'':' busy')+'"></span>'+
+    (avail?'Available Now':'Currently Busy')+
+    '</div>'+
+    '</div>';
+}
+
+function setChip(el,t){
+  document.querySelectorAll('#trade-chips .chip').forEach(function(c){c.classList.remove('on');});
+  el.classList.add('on'); filterTrade=t; renderContractors();
+}
+
+function goProfile(uid){
+  location.href='contractor-profile.html?uid='+uid;
+}
+
+async function chatContractor(uid, name){
+  if(!uid||uid.startsWith('demo')){toast('Chat not available for demo profiles','err');return;}
+  toast('Opening chat with '+name+'…');
+  try{
+    var snap=await db.collection('conversations').where('participants','array-contains',CU.uid).get();
+    var existing=snap.docs.find(function(d){return (d.data().participants||[]).includes(uid);});
+    if(!existing){
+      await db.collection('conversations').add({
+        participants:[CU.uid,uid],
+        participantNames:{[CU.uid]:CD.name||'Main Contractor',[uid]:name},
+        workId:'', workTitle:'Direct Hire Inquiry',
+        lastMsg:'', lastMsgTime:FS.FieldValue.serverTimestamp(),
+        unread:{[CU.uid]:0,[uid]:0}, createdAt:FS.FieldValue.serverTimestamp()
+      });
+    }
+    localStorage.setItem('pg_chatTarget',JSON.stringify({uid:uid,name:name}));
+    location.href='chat.html';
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+
+function showHire(uid, name){
+  pendingHireUid=uid; pendingHireName=name;
+  document.getElementById('hire-content').innerHTML=
+    '<div style="background:var(--orange5);border:1px solid #FED7AA;border-radius:12px;padding:14px;margin-bottom:16px;">'+
+    '<div style="font-family:var(--h);font-size:15px;font-weight:700;margin-bottom:4px;">'+esc(name)+'</div>'+
+    '<div style="font-size:12px;color:var(--s3);">You\'re about to send a direct hire request. The contractor will receive your contact info and can accept or decline.</div>'+
+    '</div>'+
+    '<div class="field"><label class="flbl">Work Description</label>'+
+    '<textarea class="fin" id="hire-desc" rows="3" placeholder="Brief description of the work you need…"></textarea></div>'+
+    '<div class="g2">'+
+    '<div class="field"><label class="flbl">Start Date</label><input class="fin" id="hire-date" type="date"/></div>'+
+    '<div class="field"><label class="flbl">Duration (Days)</label><input class="fin" id="hire-dur" type="number" placeholder="30"/></div>'+
+    '</div>';
+  document.getElementById('hire-ovl').classList.remove('off');
+}
+
+async function confirmHire(){
+  var desc=document.getElementById('hire-desc').value.trim();
+  if(!desc){toast('Please describe the work','err');return;}
+  if(!pendingHireUid||pendingHireUid.startsWith('demo')){
+    toast('Hire request sent to '+pendingHireName+'! 🎉','ok');
+    document.getElementById('hire-ovl').classList.add('off'); return;
+  }
+  try{
+    await db.collection('hire_requests').add({
+      fromUid:CU.uid, fromName:CD.name||'Main Contractor',
+      toUid:pendingHireUid, toName:pendingHireName,
+      description:desc,
+      startDate:document.getElementById('hire-date').value||'',
+      duration:document.getElementById('hire-dur').value||'',
+      status:'pending', createdAt:FS.FieldValue.serverTimestamp()
+    });
+    toast('Hire request sent to '+pendingHireName+'! 🎉','ok');
+    document.getElementById('hire-ovl').classList.add('off');
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+
+document.getElementById('hire-ovl').addEventListener('click',function(e){if(e.target===this)this.classList.add('off');});
+</script>
+</body>
+</html>

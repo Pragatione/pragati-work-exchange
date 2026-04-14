@@ -42,7 +42,12 @@
     </div>
     <div style="padding:0 16px;"><div class="sh" style="margin-top:4px;"><h3>My Recent Works</h3><a onclick="location.href='myworks.html'">View all →</a></div></div>
     <div style="padding:0 16px;" id="mw-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
-    <div style="padding:10px 16px 4px;"><button class="btn btn-o btn-bl btn-lg" onclick="location.href='post.html'">+ Post New Work Requirement</button></div>
+    <div style="padding:8px 16px 0;"><div class="sh" style="margin-top:4px;"><h3>Find Contractors Directly</h3><a onclick="location.href='contractors.html'">View all →</a></div></div>
+    <div style="padding:0 16px 4px;" id="ctr-preview"></div>
+    <div style="padding:10px 16px 4px;display:flex;gap:10px;">
+      <button class="btn btn-g" onclick="location.href='contractors.html'" style="flex:1;font-size:13px;">👷 Browse<br/>Contractors</button>
+      <button class="btn btn-o btn-bl btn-lg" onclick="location.href='post.html'" style="flex:2;">+ Post New Work</button>
+    </div>
   </div>
   <nav class="bnav"><div class="bni on" onclick="location.href='main.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div class="lbl">Home</div></div><div class="bni" onclick="location.href='post.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg></div><div class="lbl">Post Work</div></div><div class="bni" onclick="location.href='myworks.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div><div class="lbl">My Works</div></div><div class="bni" onclick="location.href='chat.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg></div><div class="lbl">Messages</div></div></nav>
 </div>
@@ -134,5 +139,22 @@ async function loadMainDash(){
 }
 function goDetail(id){location.href='detail.html?id='+id;}
 function goBids(id){location.href='bids.html?id='+id;}
+
+// Quick contractor preview on dashboard
+(function loadCtrPreview(){
+  var COLORS=['#1D4ED8','#059669','#7C3AED','#EA580C','#DC2626'];
+  var ctrs=DEMO_CONTRACTORS.filter(function(c){return c.available!==false;}).slice(0,3);
+  var el=document.getElementById('ctr-preview');
+  if(!el) return;
+  el.innerHTML=ctrs.map(function(c,i){
+    var col=COLORS[i%5];
+    var av=c.photo?'<img style="width:38px;height:38px;border-radius:11px;object-fit:cover;" src="'+c.photo+'"/>':
+      '<div style="width:38px;height:38px;border-radius:11px;background:'+col+';display:flex;align-items:center;justify-content:center;font-family:var(--h);font-size:13px;font-weight:700;color:#fff;">'+(c.name||'C').split(' ').map(function(x){return x[0];}).join('').toUpperCase().slice(0,2)+'</div>';
+    return '<div style="background:#fff;border:1px solid var(--s7);border-radius:12px;padding:11px 13px;margin-bottom:8px;display:flex;align-items:center;gap:11px;cursor:pointer;box-shadow:var(--sh);" onclick="location.href=\'contractor-profile.html?uid='+c.uid+'\'">'+
+      av+'<div style="flex:1;"><div style="font-family:var(--h);font-size:13px;font-weight:700;">'+c.name+'</div>'+
+      '<div style="font-size:11px;color:var(--s4);">'+c.trade+' · '+(c.expYears||0)+' yrs · ⭐'+(c.rating||'—')+'</div></div>'+
+      '<button class="btn btn-o btn-sm" onclick="event.stopPropagation();location.href=\'contractors.html\'">Hire</button></div>';
+  }).join('');
+})();
 </script>
 </body></html>

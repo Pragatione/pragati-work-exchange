@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<title>Complete Profile — Pragati Work Exchange</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+/* PHOTO UPLOAD */
+.photo-upload{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:20px;}
+.photo-circle{width:90px;height:90px;border-radius:50%;background:var(--s7);border:3px dashed var(--s5);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;transition:.2s;}
+.photo-circle:active{border-color:var(--blue2);}
+.photo-circle img{width:100%;height:100%;object-fit:cover;}
+.photo-circle .ph-ico{font-size:32px;}
+.photo-circle .ph-overlay{position:absolute;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;color:#fff;font-size:22px;}
+.photo-circle:hover .ph-overlay{display:flex;}
+.photo-lbl{font-size:13px;font-weight:600;color:var(--blue2);cursor:pointer;}
+
+/* SKILL TOGGLE */
+.skill-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.skill-tog{font-size:12px;font-weight:600;padding:7px 13px;border-radius:20px;border:1.5px solid var(--s6);background:#fff;cursor:pointer;transition:.15s;color:var(--s3);}
+.skill-tog.on{background:var(--blue5);border-color:var(--blue2);color:var(--blue2);}
+
+/* PHOTO WORK GRID */
+.work-photo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.work-photo-item{aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--s8);border:2px dashed var(--s6);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:24px;transition:.2s;}
+.work-photo-item:active{border-color:var(--blue2);}
+.work-photo-item img{width:100%;height:100%;object-fit:cover;}
+.work-photo-added{border-color:var(--green2);border-style:solid;}
+
+/* PROGRESS INDICATOR */
+.prog-steps{display:flex;gap:4px;padding:14px 16px 0;flex-shrink:0;}
+.prog-step{height:3px;flex:1;border-radius:99px;background:var(--s7);transition:.3s;}
+.prog-step.done{background:var(--blue2);}
+.prog-step.active{background:var(--orange3);}
+
+/* EXP ENTRY */
+.exp-entry{background:var(--s8);border-radius:11px;padding:12px;margin-bottom:10px;position:relative;}
+.exp-rm{position:absolute;top:10px;right:10px;background:var(--red4);color:var(--red2);border:none;border-radius:7px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;}
+</style>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange · PragatiOne</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<div style="display:flex;flex-direction:column;min-height:100vh;">
+  <div class="tbar"><button class="tbk" onclick="history.back()">←</button><h2>Complete Your Profile</h2></div>
+
+  <!-- Progress Steps -->
+  <div class="prog-steps" id="prog-steps">
+    <div class="prog-step active" id="ps0"></div>
+    <div class="prog-step" id="ps1"></div>
+    <div class="prog-step" id="ps2"></div>
+    <div class="prog-step" id="ps3"></div>
+  </div>
+
+  <div class="pscr" style="padding:18px 16px 100px;" id="form-wrap">
+    <!-- Step 0: Photo + Basic -->
+    <div id="step-0">
+      <div style="text-align:center;margin-bottom:6px;padding:0 10px;">
+        <div style="font-family:var(--h);font-size:18px;font-weight:800;margin-bottom:6px;">👷 Your Contractor Profile</div>
+        <div style="font-size:13px;color:var(--s4);line-height:1.6;">Main contractors will discover you and hire you directly — no bidding needed!</div>
+      </div>
+
+      <div class="photo-upload">
+        <div class="photo-circle" id="photo-circle" onclick="document.getElementById('photo-inp').click()">
+          <div class="ph-ico" id="ph-ico">📷</div>
+          <div class="ph-overlay">✏️</div>
+        </div>
+        <input type="file" id="photo-inp" accept="image/*" style="display:none;" onchange="previewPhoto(this)"/>
+        <div class="photo-lbl" onclick="document.getElementById('photo-inp').click()">Upload Profile Photo</div>
+        <div style="font-size:11px;color:var(--s5);">JPG, PNG · Max 5MB · Recommended</div>
+      </div>
+
+      <div class="slbl"><div class="snm">1</div>Basic Information</div>
+      <div class="field"><label class="flbl">Full Name *</label><input class="fin" id="r-name" placeholder="e.g. Mohan Kumar"/></div>
+      <div class="g2">
+        <div class="field"><label class="flbl">Phone *</label><input class="fin" id="r-phone" type="tel" placeholder="9876543210" inputmode="numeric"/></div>
+        <div class="field"><label class="flbl">City *</label><input class="fin" id="r-city" placeholder="Pune"/></div>
+      </div>
+      <div class="field"><label class="flbl">Primary Trade *</label>
+        <select class="fin" id="r-trade">
+          <option value="">Select your main trade…</option>
+          <option>Plastering</option><option>Flooring</option><option>Electrical</option>
+          <option>Painting</option><option>Plumbing</option><option>Masonry</option>
+          <option>Carpentry</option><option>Tiling</option><option>Waterproofing</option>
+          <option>Civil Work</option><option>Other</option>
+        </select>
+      </div>
+      <div class="g2">
+        <div class="field"><label class="flbl">Yrs of Experience *</label><input class="fin" id="r-exp" type="number" placeholder="8" inputmode="numeric"/></div>
+        <div class="field"><label class="flbl">Team Size</label><input class="fin" id="r-labour" placeholder="8–12 workers"/></div>
+      </div>
+      <div class="field"><label class="flbl">Daily Rate (₹/day) — Optional</label><input class="fin" id="r-rate" type="number" placeholder="5000" inputmode="numeric"/></div>
+      <button class="btn btn-p btn-bl btn-lg" onclick="nextStep(1)">Next →</button>
+    </div>
+
+    <!-- Step 1: Bio + Skills -->
+    <div id="step-1" style="display:none;">
+      <div class="slbl"><div class="snm">2</div>Your Bio & Skills</div>
+      <div class="field">
+        <label class="flbl">About You *</label>
+        <textarea class="fin" id="r-bio" rows="4" placeholder="Describe your experience, specialization, quality standards, and why contractors should hire you…"></textarea>
+        <div style="font-size:11px;color:var(--s5);margin-top:4px;">This is your pitch to main contractors. Be specific and professional.</div>
+      </div>
+      <div class="field">
+        <label class="flbl">Skills & Specializations</label>
+        <div class="skill-grid" id="skill-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+      <div class="field"><label class="flbl">Add Custom Skill</label>
+        <div style="display:flex;gap:8px;">
+          <input class="fin" id="custom-skill" placeholder="e.g. POP Punning, Damp Proofing…" style="flex:1;"/>
+          <button class="btn btn-g" onclick="addCustomSkill()" style="flex-shrink:0;padding:12px 14px;">+ Add</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-g" onclick="prevStep(0)" style="flex:1;">← Back</button>
+        <button class="btn btn-p" onclick="nextStep(2)" style="flex:2;">Next →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Experience + Certifications -->
+    <div id="step-2" style="display:none;">
+      <div class="slbl"><div class="snm">3</div>Past Experience</div>
+      <div id="exp-list">
+        <div class="exp-entry" id="exp-0">
+          <div class="field"><label class="flbl">Company / Project Name</label><input class="fin" exp-field="company" placeholder="e.g. Lodha Group, Pune"/></div>
+          <div class="g2">
+            <div class="field"><label class="flbl">Role</label><input class="fin" exp-field="role" placeholder="Plastering Contractor"/></div>
+            <div class="field"><label class="flbl">Duration</label><input class="fin" exp-field="duration" placeholder="2021–2023"/></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-g" onclick="addExpEntry()" style="margin-bottom:18px;width:100%;">+ Add Another Experience</button>
+
+      <div class="slbl"><div class="snm">4</div>Certifications (Optional)</div>
+      <div class="field"><label class="flbl">Certifications / Documents</label>
+        <textarea class="fin" id="r-certs" rows="2" placeholder="e.g. ISO 9001, Safety Training Certificate, Jaquar Certified Plumber…"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-g" onclick="prevStep(1)" style="flex:1;">← Back</button>
+        <button class="btn btn-p" onclick="nextStep(3)" style="flex:2;">Next →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Work Photos + Submit -->
+    <div id="step-3" style="display:none;">
+      <div class="slbl"><div class="snm">5</div>Work Photos</div>
+      <div style="font-size:13px;color:var(--s4);margin-bottom:14px;line-height:1.6;">Photos of your past work increase your hire chances by 3×. Add up to 6 photos.</div>
+      <div class="work-photo-grid" id="work-photo-grid">
+        <div class="work-photo-item" onclick="triggerPhotoUpload(0)">📸</div>
+        <div class="work-photo-item" onclick="triggerPhotoUpload(1)">📸</div>
+        <div class="work-photo-item" onclick="triggerPhotoUpload(2)">📸</div>
+        <div class="work-photo-item" onclick="triggerPhotoUpload(3)">📸</div>
+        <div class="work-photo-item" onclick="triggerPhotoUpload(4)">📸</div>
+        <div class="work-photo-item" onclick="triggerPhotoUpload(5)">📸</div>
+      </div>
+      <input type="file" id="work-photo-inp" accept="image/*" style="display:none;" onchange="previewWorkPhoto(this)"/>
+      <div style="margin-top:16px;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px;background:var(--s8);border-radius:11px;margin-bottom:16px;">
+          <input type="checkbox" id="r-avail" checked style="accent-color:var(--green2);width:18px;height:18px;"/>
+          <div>
+            <div style="font-weight:700;font-size:13px;">Available for Work Now</div>
+            <div style="font-size:11px;color:var(--s4);">Main contractors will see you as available immediately</div>
+          </div>
+        </label>
+      </div>
+      <div class="ferr" id="r-err"></div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-g" onclick="prevStep(2)" style="flex:1;">← Back</button>
+        <button class="btn btn-o" id="submit-btn" onclick="submitProfile()" style="flex:2;">Save Profile →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="shared.js"></script>
+<script>
+const firebase_cfg = {
+  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
+  authDomain:"pragati-work-exchange.firebaseapp.com",
+  projectId:"pragati-work-exchange",
+  storageBucket:"pragati-work-exchange.firebasestorage.app",
+  messagingSenderId:"422215240765",
+  appId:"1:422215240765:web:eefb239420262c9d822e54"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+const FS   = firebase.firestore;
+var CU=null, CD=null;
+auth.onAuthStateChanged(async function(user){
+  if(!user){location.href='index.html';return;}
+  CU=user;
+  try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
+  if(!CD){location.href='index.html';return;}
+  if(CD && CD.role==='main'){location.href='main.html';return;}
+  document.getElementById('loader').classList.add('out');
+  prefillForm();
+  initSkillGrid();
+});
+function toast(msg,type){var el=document.getElementById('toast');el.textContent=msg;el.className=type?'on '+type:'on';setTimeout(function(){el.className='';},3000);}
+</script>
+<script>
+var currentStep=0, photoB64=null, workPhotosB64=[], selectedSkills=[], currentWorkPhotoIdx=0;
+var expCount=1;
+
+var ALL_SKILLS=[
+  'Cement Plastering','POP Punning','Gypsum Plaster','Chicken Mesh Work','Texture Finish',
+  'Italian Marble','Vitrified Tiles','Granite Flooring','Epoxy Flooring','Carpet Flooring',
+  'Wiring & Conduit','DB Board Fitting','CCTV Installation','Solar Panels','Earthing',
+  'Interior Painting','Exterior Painting','Texture Painting','Waterproof Coating','PU Coating',
+  'HDPE Piping','Sanitary Fitting','Water Heater','Sewage System','Borewell',
+  'Brickwork','RCC Work','Shuttering','Centering','Block Work',
+  'False Ceiling','Modular Furniture','Doors & Windows','Partition','Wood Polish',
+  'Terrace Waterproofing','Bathroom Waterproofing','Crystalline Coating','Membrane Waterproofing'
+];
+
+function initSkillGrid(){
+  var grid=document.getElementById('skill-grid');
+  grid.innerHTML=ALL_SKILLS.slice(0,20).map(function(s){
+    return '<div class="skill-tog" onclick="toggleSkill(this,\''+s+'\')">'+ s +'</div>';
+  }).join('');
+}
+
+function toggleSkill(el, skill){
+  if(el.classList.contains('on')){
+    el.classList.remove('on');
+    selectedSkills=selectedSkills.filter(function(s){return s!==skill;});
+  } else {
+    el.classList.add('on');
+    selectedSkills.push(skill);
+  }
+}
+
+function addCustomSkill(){
+  var inp=document.getElementById('custom-skill');
+  var val=inp.value.trim();
+  if(!val){toast('Enter a skill first','err');return;}
+  if(selectedSkills.includes(val)){toast('Skill already added','err');return;}
+  selectedSkills.push(val);
+  var grid=document.getElementById('skill-grid');
+  var tog=document.createElement('div');
+  tog.className='skill-tog on'; tog.textContent=val;
+  tog.onclick=function(){toggleSkill(tog,val);};
+  grid.appendChild(tog);
+  inp.value='';
+  toast('Skill added!','ok');
+}
+
+function previewPhoto(inp){
+  if(!inp.files||!inp.files[0]) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    photoB64=e.target.result;
+    var circle=document.getElementById('photo-circle');
+    circle.innerHTML='<img src="'+photoB64+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/><div class="ph-overlay">✏️</div>';
+  };
+  reader.readAsDataURL(inp.files[0]);
+}
+
+function triggerPhotoUpload(idx){
+  currentWorkPhotoIdx=idx;
+  document.getElementById('work-photo-inp').click();
+}
+
+function previewWorkPhoto(inp){
+  if(!inp.files||!inp.files[0]) return;
+  var reader=new FileReader();
+  var idx=currentWorkPhotoIdx;
+  reader.onload=function(e){
+    workPhotosB64[idx]=e.target.result;
+    var items=document.querySelectorAll('.work-photo-item');
+    if(items[idx]){
+      items[idx].innerHTML='<img src="'+e.target.result+'"/>';
+      items[idx].classList.add('work-photo-added');
+    }
+  };
+  reader.readAsDataURL(inp.files[0]);
+  inp.value='';
+}
+
+function addExpEntry(){
+  var list=document.getElementById('exp-list');
+  var div=document.createElement('div');
+  div.className='exp-entry'; div.id='exp-'+expCount;
+  div.innerHTML='<button class="exp-rm" onclick="this.parentElement.remove()">✕</button>'+
+    '<div class="field"><label class="flbl">Company / Project Name</label><input class="fin" exp-field="company" placeholder="e.g. Godrej Properties, Mumbai"/></div>'+
+    '<div class="g2"><div class="field"><label class="flbl">Role</label><input class="fin" exp-field="role" placeholder="Flooring Contractor"/></div>'+
+    '<div class="field"><label class="flbl">Duration</label><input class="fin" exp-field="duration" placeholder="2022–2024"/></div></div>';
+  list.appendChild(div);
+  expCount++;
+}
+
+function nextStep(n){
+  // Validate current step
+  if(n===1){
+    var name=document.getElementById('r-name').value.trim();
+    var phone=document.getElementById('r-phone').value.trim();
+    var city=document.getElementById('r-city').value.trim();
+    var trade=document.getElementById('r-trade').value;
+    var exp=document.getElementById('r-exp').value;
+    if(!name||!phone||!city||!trade||!exp){toast('Please fill all required fields','err');return;}
+  }
+  if(n===2){
+    var bio=document.getElementById('r-bio').value.trim();
+    if(!bio){toast('Please add your bio / about section','err');return;}
+  }
+  document.getElementById('step-'+currentStep).style.display='none';
+  currentStep=n;
+  document.getElementById('step-'+n).style.display='block';
+  updateProgress(n);
+  window.scrollTo(0,0);
+}
+function prevStep(n){
+  document.getElementById('step-'+currentStep).style.display='none';
+  currentStep=n;
+  document.getElementById('step-'+n).style.display='block';
+  updateProgress(n);
+  window.scrollTo(0,0);
+}
+function updateProgress(n){
+  for(var i=0;i<4;i++){
+    var el=document.getElementById('ps'+i);
+    if(i<n) el.className='prog-step done';
+    else if(i===n) el.className='prog-step active';
+    else el.className='prog-step';
+  }
+}
+
+function prefillForm(){
+  if(CD){
+    if(CD.name) document.getElementById('r-name').value=CD.name;
+    if(CD.phone) document.getElementById('r-phone').value=CD.phone;
+    if(CD.city) document.getElementById('r-city').value=CD.city;
+    if(CD.trade) document.getElementById('r-trade').value=CD.trade;
+    if(CD.expYears) document.getElementById('r-exp').value=CD.expYears;
+    if(CD.labour) document.getElementById('r-labour').value=CD.labour;
+    if(CD.dailyRate) document.getElementById('r-rate').value=CD.dailyRate;
+    if(CD.bio) document.getElementById('r-bio').value=CD.bio;
+    if(CD.certifications) document.getElementById('r-certs').value=(CD.certifications||[]).join(', ');
+    if(CD.skills) selectedSkills=CD.skills.slice();
+    if(CD.available===false) document.getElementById('r-avail').checked=false;
+  }
+}
+
+async function submitProfile(){
+  var btn=document.getElementById('submit-btn');
+  var err=document.getElementById('r-err');
+  err.textContent=''; err.classList.remove('on');
+  btn.classList.add('btn-ld'); btn.textContent='Saving…';
+
+  // Collect experience
+  var expEntries=[];
+  document.querySelectorAll('.exp-entry').forEach(function(entry){
+    var obj={};
+    entry.querySelectorAll('[exp-field]').forEach(function(inp){
+      if(inp.value.trim()) obj[inp.getAttribute('exp-field')]=inp.value.trim();
+    });
+    if(obj.company||obj.role) expEntries.push(obj);
+  });
+
+  // Certs
+  var certText=document.getElementById('r-certs').value.trim();
+  var certArr=certText?certText.split(',').map(function(s){return s.trim();}).filter(Boolean):[];
+
+  var profileData={
+    name:document.getElementById('r-name').value.trim(),
+    phone:document.getElementById('r-phone').value.trim(),
+    city:document.getElementById('r-city').value.trim(),
+    trade:document.getElementById('r-trade').value,
+    expYears:Number(document.getElementById('r-exp').value)||0,
+    labour:document.getElementById('r-labour').value.trim(),
+    dailyRate:Number(document.getElementById('r-rate').value)||0,
+    bio:document.getElementById('r-bio').value.trim(),
+    skills:selectedSkills,
+    experience:expEntries,
+    certifications:certArr,
+    available:document.getElementById('r-avail').checked,
+    hireDirect:true,
+    role:'contractor',
+    profileComplete:true,
+    updatedAt:FS.FieldValue.serverTimestamp()
+  };
+
+  // Attach photo (base64, small — in production use Storage)
+  if(photoB64) profileData.photo=photoB64;
+  if(workPhotosB64.filter(Boolean).length) profileData.photos=workPhotosB64.filter(Boolean);
+
+  try{
+    await db.collection('users').doc(CU.uid).set(profileData,{merge:true});
+    toast('Profile saved! You\'re now discoverable 🎉','ok');
+    setTimeout(function(){location.href='home.html';},1300);
+  }catch(e){
+    err.textContent='Error: '+e.message; err.classList.add('on');
+    btn.classList.remove('btn-ld'); btn.textContent='Save Profile →';
+  }
+}
+</script>
+</body>
+</html>
