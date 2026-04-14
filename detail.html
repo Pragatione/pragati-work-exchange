@@ -22,6 +22,7 @@
       <button class="tbk" onclick="history.back()" style="background:rgba(255,255,255,.2);color:#fff;">←</button>
       <div style="flex:1;"></div>
       <button class="tbk" id="save-btn" style="background:rgba(255,255,255,.2);" onclick="toggleSave()">🔖</button>
+      <button class="tbk" id="share-btn" style="background:rgba(255,255,255,.2);" onclick="shareWork()">↗</button>
     </div>
     <div class="tags" id="det-tags"></div>
     <h1 id="det-title" style="margin-top:6px;">Loading…</h1>
@@ -31,6 +32,7 @@
       <span id="det-bt"></span><span id="det-dl"></span>
     </div>
   </div>
+
   <div class="pscr" style="padding-bottom:0;" id="det-body">
     <div class="dsec"><h4>Work Details</h4>
       <div class="irow"><span class="ik">Budget</span><span class="iv" style="color:var(--green2);" id="det-bud">—</span></div>
@@ -41,86 +43,66 @@
       <div class="irow"><span class="ik">Labour</span><span class="iv" id="det-lab">—</span></div>
     </div>
     <div class="dsec"><h4>Scope of Work</h4><div id="det-scope"></div></div>
+    <!-- Already applied box (petty contractor) -->
     <div class="dsec" id="det-abox" style="display:none;text-align:center;padding:16px;">
       <div style="font-size:32px;margin-bottom:8px;">✅</div>
       <div style="font-family:var(--h);font-size:15px;font-weight:700;color:var(--green2);">Already Applied!</div>
       <div style="font-size:12px;color:var(--s4);margin-top:4px;">You will be notified when status changes.</div>
+      <div id="det-app-status" style="margin-top:10px;"></div>
+    </div>
+    <!-- Main contractor: bids summary box -->
+    <div class="dsec" id="det-mbox" style="display:none;text-align:center;padding:16px;">
+      <div style="font-size:32px;margin-bottom:8px;">📋</div>
+      <div style="font-family:var(--h);font-size:15px;font-weight:700;color:var(--blue2);" id="det-bid-count">0 bids received</div>
+      <div style="font-size:12px;color:var(--s4);margin-top:4px;">This is your own work posting.</div>
     </div>
     <div style="height:100px;"></div>
   </div>
+
+  <!-- CTA: role-aware -->
   <div class="scta" id="det-cta">
-    <button class="btn btn-g" style="width:46px;font-size:20px;padding:0;" onclick="startChatPoster()">💬</button>
+    <button class="btn btn-g" style="width:46px;font-size:20px;padding:0;" id="chat-btn" onclick="startChatPoster()">💬</button>
     <button class="btn btn-p" style="flex:1;" id="apply-btn" onclick="goApply()">Submit Quotation →</button>
   </div>
+  <!-- Main contractor CTA -->
+  <div class="scta" id="det-main-cta" style="display:none;">
+    <button class="btn btn-g" style="flex:1;" onclick="location.href='myworks.html'">← My Works</button>
+    <button class="btn btn-o" style="flex:2;" id="view-bids-btn" onclick="goViewBids()">View All Bids →</button>
+  </div>
 </div>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="shared.js"></script>
 <script>
-
-const firebase_cfg = {
-  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
-  authDomain:"pragati-work-exchange.firebaseapp.com",
-  projectId:"pragati-work-exchange",
-  storageBucket:"pragati-work-exchange.firebasestorage.app",
-  messagingSenderId:"422215240765",
-  appId:"1:422215240765:web:eefb239420262c9d822e54"
-};
+var firebase_cfg={apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",authDomain:"pragati-work-exchange.firebaseapp.com",projectId:"pragati-work-exchange",storageBucket:"pragati-work-exchange.firebasestorage.app",messagingSenderId:"422215240765",appId:"1:422215240765:web:eefb239420262c9d822e54"};
 if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
-const auth = firebase.auth();
-const db   = firebase.firestore();
-const FS   = firebase.firestore;
-var CU=null, CD=null;
+var auth=firebase.auth(), db=firebase.firestore(), FS=firebase.firestore;
+var CU=null,CD=null,CW=null;
+var SL={pending:'Under Review',review:'Shortlisted ✓',shortlisted:'Shortlisted ✓',awarded:'Awarded 🎉',rejected:'Not Selected'};
+var SM={pending:'pend',review:'rev',shortlisted:'rev',awarded:'awd',rejected:'rej'};
+
 auth.onAuthStateChanged(async function(user){
   if(!user){location.href='index.html';return;}
   CU=user;
-  try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
+  try{var s=await db.collection('users').doc(user.uid).get();CD=s.exists?s.data():null;}catch(e){}
   if(!CD){location.href='index.html';return;}
-  
   document.getElementById('loader').classList.add('out');
   loadDetail();
 });
 
-function toast(msg,type){
-  var el=document.getElementById('toast'); el.textContent=msg;
-  el.className=type?'on '+type:'on'; setTimeout(function(){el.className='';},3000);
-}
 function getP(k){return new URLSearchParams(window.location.search).get(k);}
-function saveLS(k,v){try{localStorage.setItem('pg_'+k,JSON.stringify(v));}catch(e){}}
-function getLS(k){try{return JSON.parse(localStorage.getItem('pg_'+k));}catch(e){return null;}}
-function clearLS(k){localStorage.removeItem('pg_'+k);}
-function fmtBud(w){
-  var f=function(n){return n>=100000?'₹'+(n/100000).toFixed(1).replace('.0','')+'L':'₹'+n.toLocaleString('en-IN');};
-  return(w.minBudget&&w.maxBudget)?f(w.minBudget)+'–'+f(w.maxBudget):w.minBudget?f(w.minBudget):'TBD';
-}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).join('').toUpperCase().slice(0,2);}
-function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
-function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
-function mkCard(w){
-  return '<div class="wcard" onclick="goDetail('+JSON.stringify(w.id)+')">'+
-    '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
-    '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
-    '<div class="wt">'+esc(w.title)+'</div>'+
-    '<div class="wco">🏢 '+esc(w.company||w.postedByName||'Main Contractor')+'</div></div>'+
-    '<div class="wb"><div class="wmeta"><span>📍 '+esc(w.location||'—')+'</span>'+
-    '<span>⏱ '+esc(w.startDate||'TBD')+'</span>'+
-    '<span>👷 '+esc(w.experience||'—')+'</span></div></div>'+
-    '<div class="wf"><span class="wbud">'+fmtBud(w)+'</span>'+
-    '<span class="wbids">'+(w.bids||0)+' bids</span></div></div>';
-}
-</script>
-<script>
-var CW=null;
+
 async function loadDetail(){
   var id=getP('id');
   if(!id){history.back();return;}
-  try{var s=await db.collection('works').doc(id).get(); CW=s.exists?Object.assign({id:s.id},s.data()):null;}catch(e){}
+  try{var s=await db.collection('works').doc(id).get();CW=s.exists?Object.assign({id:s.id},s.data()):null;}catch(e){}
   if(!CW) CW=DEMO_WORKS.find(function(w){return w.id===id;});
   if(!CW){history.back();return;}
   saveLS('currentWork',CW);
-  // Fill header
+
+  // Header
   document.getElementById('det-tags').innerHTML=
     '<span class="tag" style="background:rgba(255,255,255,.2);color:#fff;">'+esc(CW.trade||'')+'</span>'+
     (CW.urgency&&CW.urgency!=='Normal'?'<span class="tag t-or">'+esc(CW.urgency.toUpperCase())+'</span>':'');
@@ -135,33 +117,91 @@ async function loadDetail(){
   document.getElementById('det-bt').textContent=(CW.bids||0)+' bids received';
   document.getElementById('det-dl').textContent=CW.startDate?'Start: '+CW.startDate:'';
   document.getElementById('det-pf').style.width=Math.min(100,((CW.bids||0)/12)*100)+'%';
+
   // Scope
   var scope=CW.scope||'';
   document.getElementById('det-scope').innerHTML=scope?
     scope.split('\n').filter(function(s){return s.trim();}).map(function(s){return '<div class="blit"><div class="bdo"></div>'+esc(s.trim())+'</div>';}).join(''):
     '<p style="color:var(--s4);font-size:13px;">No scope details provided.</p>';
-  // Check if already applied
-  try{
-    var snap=await db.collection('applications').where('workId','==',id).where('applicantId','==',CU.uid).get();
-    if(!snap.empty){document.getElementById('det-abox').style.display='block'; document.getElementById('det-cta').style.display='none';}
-  }catch(e){}
+
+  var isMainUser=CD.role==='main';
+  var isOwner=CW.postedBy&&CW.postedBy===CU.uid;
+
+  if(isMainUser){
+    // Main contractor view
+    document.getElementById('det-cta').style.display='none';
+    document.getElementById('det-main-cta').style.display='flex';
+    if(isOwner){
+      document.getElementById('det-mbox').style.display='block';
+      document.getElementById('det-bid-count').textContent=(CW.bids||0)+' bids received';
+      document.getElementById('chat-btn').style.display='none';
+    } else {
+      // Viewing someone else's work as main contractor - show contact button
+      document.getElementById('det-main-cta').innerHTML='<button class="btn btn-g" style="flex:1;" onclick="history.back()">← Back</button><button class="btn btn-o" style="flex:2;" onclick="startChatPoster()">💬 Contact Poster</button>';
+    }
+  } else {
+    // Petty contractor view
+    // Check saved bookmark
+    var saved=getLS('savedWorks')||[];
+    if(saved.includes(CW.id)) document.getElementById('save-btn').textContent='🔖✓';
+
+    try{
+      var snap=await db.collection('applications').where('workId','==',id).where('applicantId','==',CU.uid).get();
+      if(!snap.empty){
+        document.getElementById('det-abox').style.display='block';
+        document.getElementById('det-cta').style.display='none';
+        var appData=snap.docs[0].data();
+        var st=appData.status||'pending';
+        document.getElementById('det-app-status').innerHTML=
+          '<span class="sts '+(SM[st]||'pend')+'">'+( SL[st]||'Under Review')+'</span>'+
+          '<div style="font-size:11px;color:var(--s4);margin-top:6px;">Quoted ₹'+Number(appData.amount||0).toLocaleString('en-IN')+' · '+(appData.days||'—')+' days</div>';
+      }
+    }catch(e){}
+  }
 }
+
 function goApply(){
   if(CW) saveLS('currentWork',CW);
   location.href='quote.html?id='+(CW?CW.id:'');
 }
+
+function goViewBids(){
+  if(CW) location.href='bids.html?id='+CW.id;
+}
+
 function toggleSave(){
   var b=document.getElementById('save-btn');
-  b.textContent=b.textContent==='🔖'?'🔖✓':'🔖';
-  toast('Saved to bookmarks','ok');
+  var saved=getLS('savedWorks')||[];
+  if(CW&&!saved.includes(CW.id)){saved.push(CW.id);b.textContent='🔖✓';toast('Saved!','ok');}
+  else if(CW){saved=saved.filter(function(s){return s!==CW.id;});b.textContent='🔖';toast('Removed from saved','ok');}
+  saveLS('savedWorks',saved);
 }
+
+function shareWork(){
+  if(navigator.share){navigator.share({title:(CW?CW.title:'')+' – Pragati',text:'Check out this work on Pragati Work Exchange',url:window.location.href});}
+  else{navigator.clipboard.writeText(window.location.href).then(function(){toast('Link copied!','ok');});}
+}
+
 async function startChatPoster(){
   if(!CW||!CU){toast('Please login first','err');return;}
   var otherId=CW.postedBy, otherName=CW.company||CW.postedByName||'Main Contractor';
-  if(!otherId||otherId===CU.uid){toast('Cannot start chat','err');return;}
-  saveLS('chatTarget',{uid:otherId,name:otherName,workId:CW.id,workTitle:CW.title});
-  location.href='chat.html';
+  if(!otherId||otherId===CU.uid){toast('Cannot chat with yourself','err');return;}
+  try{
+    var snap=await db.collection('conversations').where('participants','array-contains',CU.uid).get();
+    var existing=snap.docs.find(function(d){return (d.data().participants||[]).includes(otherId);});
+    if(!existing){
+      await db.collection('conversations').add({
+        participants:[CU.uid,otherId],
+        participantNames:{[CU.uid]:CD.name||'Contractor',[otherId]:otherName},
+        workId:CW.id,workTitle:CW.title,
+        lastMsg:'',lastMsgTime:FS.FieldValue.serverTimestamp(),
+        unread:{[CU.uid]:0,[otherId]:0},createdAt:FS.FieldValue.serverTimestamp()
+      });
+    }
+    saveLS('chatTarget',{uid:otherId,name:otherName,workId:CW.id,workTitle:CW.title});
+    location.href='chat.html';
+  }catch(e){toast('Error: '+e.message,'err');}
 }
-function goDetail(id){location.href='detail.html?id='+id;}
 </script>
-</body></html>
+</body>
+</html>

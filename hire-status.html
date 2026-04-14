@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D4ED8"/>
+<title>Hire Requests — Pragati Work Exchange</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.bni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 4px;flex:1;border:none;background:none;}
+.bni .ico svg{stroke:var(--s5);transition:stroke .18s;}
+.bni .lbl{font-size:10px;font-weight:600;color:var(--s5);}
+.bni.on .ico svg{stroke:var(--blue2);}
+.bni.on .lbl{color:var(--blue2);}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--s7);display:flex;z-index:50;padding:8px 0 max(env(safe-area-inset-bottom),12px);box-shadow:0 -2px 16px rgba(0,0,0,.07);}
+.hr-card{background:#fff;border:1px solid var(--s7);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:var(--sh);position:relative;overflow:hidden;}
+.hr-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.hr-card.accepted::before{background:var(--green2);}
+.hr-card.pending::before{background:var(--orange2);}
+.hr-card.declined::before{background:var(--red2);}
+</style>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-icon"><img src="https://lh3.googleusercontent.com/d/16oZcVd80uLrux2B-jN84sTUlmOqGoPQd" alt="Pragati" onerror="this.style.display='none'"/></div>
+  <div class="ld-brand">Pragati<span>.</span></div>
+  <div class="ld-sub">Work Exchange · PragatiOne</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+<div id="toast"></div>
+
+<div style="display:flex;flex-direction:column;min-height:100vh;">
+  <div class="tbar"><button class="tbk" onclick="history.back()">←</button><h2>Sent Hire Requests</h2><span id="cnt-badge" class="tag t-bl" style="flex-shrink:0;">0</span></div>
+  <div class="pscr pb90" style="padding:12px 16px 0;" id="hr-list">
+    <div class="empty"><div class="spin" style="margin:0 auto;"></div></div>
+  </div>
+  <nav class="bnav">
+    <div class="bni" onclick="location.href='main.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div class="lbl">Home</div></div>
+    <div class="bni" onclick="location.href='contractors.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div class="lbl">Contractors</div></div>
+    <div class="bni" onclick="location.href='myworks.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div><div class="lbl">My Works</div></div>
+    <div class="bni" onclick="location.href='chat.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="lbl">Messages</div></div>
+  </nav>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="shared.js"></script>
+<script>
+var firebase_cfg={apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",authDomain:"pragati-work-exchange.firebaseapp.com",projectId:"pragati-work-exchange",storageBucket:"pragati-work-exchange.firebasestorage.app",messagingSenderId:"422215240765",appId:"1:422215240765:web:eefb239420262c9d822e54"};
+if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
+var auth=firebase.auth(), db=firebase.firestore(), FS=firebase.firestore;
+var CU=null,CD=null;
+
+auth.onAuthStateChanged(async function(user){
+  if(!user){location.href='index.html';return;}
+  CU=user;
+  try{var s=await db.collection('users').doc(user.uid).get();CD=s.exists?s.data():null;}catch(e){}
+  if(!CD||CD.role!=='main'){location.href='home.html';return;}
+  document.getElementById('loader').classList.add('out');
+  loadHireRequests();
+});
+
+async function loadHireRequests(){
+  var el=document.getElementById('hr-list');
+  var hires=[];
+  try{
+    var snap=await db.collection('hire_requests').where('fromUid','==',CU.uid).orderBy('createdAt','desc').get();
+    hires=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
+  }catch(e){}
+  document.getElementById('cnt-badge').textContent=hires.length;
+  if(!hires.length){
+    el.innerHTML=emptyHTML('🤝','No hire requests sent','Browse contractors and send direct hire requests from their profile')+
+      '<div style="padding:10px 0;"><button class="btn btn-o btn-bl" onclick="location.href=\'contractors.html\'">Browse Contractors →</button></div>';
+    return;
+  }
+  var stMap={pending:{cls:'pend',txt:'Awaiting Response'},accepted:{cls:'awd',txt:'Accepted ✓'},declined:{cls:'rej',txt:'Declined'}};
+  el.innerHTML=hires.map(function(h){
+    var st=h.status||'pending';
+    var stInfo=stMap[st]||{cls:'pend',txt:'Pending'};
+    return '<div class="hr-card '+st+'">'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">'+
+        '<div style="width:40px;height:40px;border-radius:12px;background:var(--blue5);display:flex;align-items:center;justify-content:center;font-size:18px;">👷</div>'+
+        '<div style="flex:1;"><div style="font-family:var(--h);font-size:14px;font-weight:700;">'+esc(h.toName||'Contractor')+'</div>'+
+        '<div style="font-size:11px;color:var(--s4);">Sent hire request</div></div>'+
+        '<span class="sts '+stInfo.cls+'">'+stInfo.txt+'</span>'+
+      '</div>'+
+      '<div style="font-size:13px;color:var(--s3);line-height:1.6;margin-bottom:8px;">'+esc(h.description||'No description')+'</div>'+
+      '<div style="display:flex;gap:10px;font-size:12px;color:var(--s4);flex-wrap:wrap;margin-bottom:10px;">'+
+        (h.startDate?'<span>📅 '+esc(h.startDate)+'</span>':'')+
+        (h.duration?'<span>⏱ '+esc(h.duration)+' days</span>':'')+
+        (h.budget?'<span>💰 ₹'+Number(h.budget).toLocaleString('en-IN')+'</span>':'')+
+      '</div>'+
+      '<div style="display:flex;gap:8px;">'+
+        (st==='accepted'?'<button class="btn btn-p btn-sm" onclick="chatAccepted(\''+esc(h.toUid||'')+'\',\''+esc(h.toName||'Contractor')+'\')">💬 Chat Now</button>':'<button class="btn btn-g btn-sm" onclick="location.href=\'contractor-profile.html?uid='+esc(h.toUid||'')+'\'" >View Profile →</button>')+
+        (st==='pending'?'<button class="btn btn-sm" style="background:var(--red5);color:var(--red2);border:1px solid #FECACA;" onclick="cancelHire(\''+h.id+'\')">Cancel</button>':'')+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+async function chatAccepted(uid, name){
+  if(!uid){toast('Cannot open chat','err');return;}
+  try{
+    var snap=await db.collection('conversations').where('participants','array-contains',CU.uid).get();
+    var existing=snap.docs.find(function(d){return (d.data().participants||[]).includes(uid);});
+    if(!existing){
+      await db.collection('conversations').add({
+        participants:[CU.uid,uid],
+        participantNames:{[CU.uid]:CD.name||'Main Contractor',[uid]:name},
+        workId:'',workTitle:'Direct Hire',
+        lastMsg:'',lastMsgTime:FS.FieldValue.serverTimestamp(),
+        unread:{[CU.uid]:0,[uid]:0},createdAt:FS.FieldValue.serverTimestamp()
+      });
+    }
+    saveLS('chatTarget',{uid:uid,name:name});
+    location.href='chat.html';
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+
+async function cancelHire(id){
+  try{
+    await db.collection('hire_requests').doc(id).delete();
+    toast('Hire request cancelled','ok');
+    loadHireRequests();
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+</script>
+</body>
+</html>

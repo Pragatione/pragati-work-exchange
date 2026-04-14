@@ -6,6 +6,17 @@
 <meta name="theme-color" content="#1D4ED8"/>
 <title>Bid Management — Pragati Work Exchange</title>
 <link rel="stylesheet" href="style.css"/>
+<style>
+.bni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 4px;flex:1;border:none;background:none;}
+.bni .ico{width:26px;height:26px;display:flex;align-items:center;justify-content:center;}
+.bni .ico svg{stroke:var(--s5);transition:stroke .18s;}
+.bni .lbl{font-size:10px;font-weight:600;color:var(--s5);letter-spacing:.01em;}
+.bni.on .ico svg{stroke:var(--blue2);transform:scale(1.12);}
+.bni.on .lbl{color:var(--blue2);}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--s7);display:flex;z-index:50;padding:8px 0 max(env(safe-area-inset-bottom),12px);box-shadow:0 -2px 16px rgba(0,0,0,.07);}
+.sort-bar{display:flex;gap:8px;padding:8px 16px 4px;flex-shrink:0;align-items:center;}
+.sort-sel{background:var(--s8);border:1.5px solid var(--s7);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--s0);font-family:var(--b);outline:none;}
+</style>
 </head>
 <body>
 <div id="loader">
@@ -22,8 +33,24 @@
     <div style="font-family:var(--h);font-size:13px;font-weight:700;color:var(--blue2);" id="bw-tit">Loading…</div>
     <div style="font-size:11px;color:var(--s4);" id="bw-meta">—</div>
   </div>
-  <div class="pscr pb90" style="padding:12px 16px 0;" id="bids-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
+  <div class="sort-bar">
+    <span style="font-size:12px;color:var(--s4);font-weight:600;">Sort:</span>
+    <select class="sort-sel" id="sort-sel" onchange="sortBids()">
+      <option value="amount_asc">Price: Low to High</option>
+      <option value="amount_desc">Price: High to Low</option>
+      <option value="days_asc">Fastest Delivery</option>
+      <option value="rating">Top Rated</option>
+    </select>
+    <select class="sort-sel" id="status-sel" onchange="sortBids()">
+      <option value="all">All Bids</option>
+      <option value="pending">Pending</option>
+      <option value="shortlisted">Shortlisted</option>
+      <option value="awarded">Awarded</option>
+    </select>
+  </div>
+  <div class="pscr pb90" style="padding:4px 16px 0;" id="bids-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
 </div>
+
 <!-- AWARD SHEET -->
 <div class="ovl off" id="award-ovl">
   <div class="sheet">
@@ -34,74 +61,52 @@
     <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="document.getElementById('award-ovl').classList.add('off')">Cancel</button>
   </div>
 </div>
+
+<!-- SHORTLIST SHEET -->
+<div class="ovl off" id="shortlist-ovl">
+  <div class="sheet">
+    <div class="shdl"></div>
+    <div class="shtit">Shortlist Contractor ✓</div>
+    <p style="font-size:14px;color:var(--s3);margin-bottom:20px;line-height:1.6;" id="shortlist-txt">—</p>
+    <button class="btn btn-p btn-bl btn-lg" onclick="confirmShortlist()">Yes, Shortlist</button>
+    <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="document.getElementById('shortlist-ovl').classList.add('off')">Cancel</button>
+  </div>
+</div>
+
 <!-- BID DETAIL SHEET -->
 <div class="ovl off" id="bid-detail-ovl">
-  <div class="sheet" style="max-height:90vh;">
+  <div class="sheet" style="max-height:90vh;overflow-y:auto;">
     <div class="shdl"></div>
     <div id="bid-detail-content"></div>
     <button class="btn btn-g btn-bl" style="margin-top:10px;" onclick="document.getElementById('bid-detail-ovl').classList.add('off')">Close</button>
   </div>
 </div>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="shared.js"></script>
 <script>
-
-const firebase_cfg = {
-  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
-  authDomain:"pragati-work-exchange.firebaseapp.com",
-  projectId:"pragati-work-exchange",
-  storageBucket:"pragati-work-exchange.firebasestorage.app",
-  messagingSenderId:"422215240765",
-  appId:"1:422215240765:web:eefb239420262c9d822e54"
-};
+var firebase_cfg={apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",authDomain:"pragati-work-exchange.firebaseapp.com",projectId:"pragati-work-exchange",storageBucket:"pragati-work-exchange.firebasestorage.app",messagingSenderId:"422215240765",appId:"1:422215240765:web:eefb239420262c9d822e54"};
 if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
-const auth = firebase.auth();
-const db   = firebase.firestore();
-const FS   = firebase.firestore;
-var CU=null, CD=null;
+var auth=firebase.auth(), db=firebase.firestore(), FS=firebase.firestore;
+var CU=null,CD=null;
+
 auth.onAuthStateChanged(async function(user){
   if(!user){location.href='index.html';return;}
   CU=user;
-  try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
+  try{var s=await db.collection('users').doc(user.uid).get();CD=s.exists?s.data():null;}catch(e){}
   if(!CD){location.href='index.html';return;}
-  if(!CD || CD.role!=='main'){location.href='home.html';return;}
+  if(!CD||CD.role!=='main'){location.href='home.html';return;}
   document.getElementById('loader').classList.add('out');
   loadBids();
 });
 
-function toast(msg,type){
-  var el=document.getElementById('toast'); el.textContent=msg;
-  el.className=type?'on '+type:'on'; setTimeout(function(){el.className='';},3000);
-}
+var pendingAward=null,pendingShortlist=null,_currentWork=null,_allApps=[];
+var COLS=['#1D4ED8','#059669','#7C3AED','#EA580C','#DC2626'];
+
 function getP(k){return new URLSearchParams(window.location.search).get(k);}
-function saveLS(k,v){try{localStorage.setItem('pg_'+k,JSON.stringify(v));}catch(e){}}
-function getLS(k){try{return JSON.parse(localStorage.getItem('pg_'+k));}catch(e){return null;}}
-function clearLS(k){localStorage.removeItem('pg_'+k);}
-function fmtBud(w){
-  var f=function(n){return n>=100000?'₹'+(n/100000).toFixed(1).replace('.0','')+'L':'₹'+n.toLocaleString('en-IN');};
-  return(w.minBudget&&w.maxBudget)?f(w.minBudget)+'–'+f(w.maxBudget):w.minBudget?f(w.minBudget):'TBD';
-}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).join('').toUpperCase().slice(0,2);}
-function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
-function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
-function mkCard(w){
-  return '<div class="wcard" onclick="goDetail('+JSON.stringify(w.id)+')">'+
-    '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
-    '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
-    '<div class="wt">'+esc(w.title)+'</div>'+
-    '<div class="wco">🏢 '+esc(w.company||w.postedByName||'Main Contractor')+'</div></div>'+
-    '<div class="wb"><div class="wmeta"><span>📍 '+esc(w.location||'—')+'</span>'+
-    '<span>⏱ '+esc(w.startDate||'TBD')+'</span>'+
-    '<span>👷 '+esc(w.experience||'—')+'</span></div></div>'+
-    '<div class="wf"><span class="wbud">'+fmtBud(w)+'</span>'+
-    '<span class="wbids">'+(w.bids||0)+' bids</span></div></div>';
-}
-</script>
-<script>
-var pendingAward=null, pendingChatUid=null, pendingChatName=null;
+
 async function loadBids(){
   var id=getP('id');
   if(!id){history.back();return;}
@@ -109,81 +114,173 @@ async function loadBids(){
   try{var s=await db.collection('works').doc(id).get();w=s.exists?Object.assign({id:s.id},s.data()):null;}catch(e){}
   if(!w) w=DEMO_WORKS.find(function(x){return x.id===id;});
   if(!w){history.back();return;}
+  _currentWork=w;
   document.getElementById('bw-tit').textContent=w.title;
   document.getElementById('bw-meta').textContent='📍 '+(w.location||'')+' · '+fmtBud(w)+' · '+(w.bids||0)+' quotations received';
   var apps=[];
   try{
     var snap=await db.collection('applications').where('workId','==',id).get();
     apps=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
-    apps.sort(function(a,b){return (b.amount||0)-(a.amount||0);});
   }catch(e){}
-  // Demo bids for demo works
   if(!apps.length&&id.startsWith('d')) apps=[
     {id:'b1',applicantId:'uid_mk',applicantName:'Mohan Kumar',amount:265000,days:40,labour:'9',terms:'30% advance · 40% mid · 30% completion',pitch:'15 years plastering experience across Pune and Mumbai. 12 major residential projects. POP certified. Full safety compliance.',rating:4.8,projects:12,status:'pending'},
     {id:'b2',applicantId:'uid_rp',applicantName:'Rajesh Patil',amount:275000,days:38,labour:'8',terms:'50% advance · 50% completion',pitch:'Expert plasterer with 8 years. High-end residential specialist. Full team safety-certified. ISO quality standards.',rating:4.7,projects:15,status:'pending'},
     {id:'b3',applicantId:'uid_sm',applicantName:'Suresh More',amount:280000,days:45,labour:'10',terms:'30% advance · 40% mid · 30% completion',pitch:'Quality work with 1 year warranty on workmanship. References from Lodha and Godrej available on request.',rating:4.5,projects:8,status:'pending'},
     {id:'b4',applicantId:'uid_vd',applicantName:'Vijay Deshmukh',amount:290000,days:48,labour:'8',terms:'100% on completion',pitch:'Honest contractor with dedicated team. Fully committed to quality delivery within timeline.',rating:4.2,projects:5,status:'pending'},
   ];
+  _allApps=apps;
   document.getElementById('bids-cnt').textContent=apps.length;
-  var cols=['#1D4ED8','#059669','#7C3AED','#EA580C','#DC2626'];
+  renderBids();
+}
+
+function sortBids(){renderBids();}
+
+function renderBids(){
+  var sort=document.getElementById('sort-sel').value;
+  var statusFilter=document.getElementById('status-sel').value;
+  var arr=_allApps.slice();
+  if(statusFilter!=='all') arr=arr.filter(function(a){return a.status===statusFilter;});
+  arr.sort(function(a,b){
+    if(sort==='amount_asc') return (a.amount||0)-(b.amount||0);
+    if(sort==='amount_desc') return (b.amount||0)-(a.amount||0);
+    if(sort==='days_asc') return (a.days||999)-(b.days||999);
+    if(sort==='rating') return (b.rating||0)-(a.rating||0);
+    return 0;
+  });
   var el=document.getElementById('bids-list');
-  if(!apps.length){el.innerHTML=emptyHTML('📬','No bids yet','Share your work posting to attract contractors');return;}
-  el.innerHTML=apps.map(function(a,i){
-    return '<div class="bcard '+(i===0?'top':'')+'" data-bid-id="'+a.id+'" onclick="showBidDetail(this.dataset.bidId)" style="cursor:pointer;">'+
-      (i===0?'<div class="bbadge">BEST MATCH</div>':'')+
+  if(!arr.length){el.innerHTML=emptyHTML('📬','No bids yet','Share your work posting to attract contractors');return;}
+  var lowestAmt=Math.min.apply(null,arr.filter(function(a){return a.amount;}).map(function(a){return a.amount;}));
+  el.innerHTML=arr.map(function(a,i){
+    var isLowest=a.amount&&a.amount===lowestAmt&&arr.length>1;
+    var isSL=a.status==='shortlisted'||a.status==='review';
+    var isAwd=a.status==='awarded';
+    return '<div class="bcard '+(i===0&&sort!=='amount_desc'?'top':'')+'" data-bid-id="'+a.id+'" onclick="showBidDetail(\''+a.id+\'\')" style="cursor:pointer;position:relative;">'+
+      (i===0&&sort!=='amount_desc'?'<div class="bbadge">BEST MATCH</div>':'')+
+      (isLowest&&!isAwd?'<div class="bbadge" style="background:var(--green2);">LOWEST PRICE</div>':'')+
       '<div style="display:flex;gap:11px;align-items:center;margin-bottom:10px;">'+
-      '<div class="bav" style="background:'+cols[i%5]+';">'+initials(a.applicantName||'C')+'</div>'+
-      '<div style="flex:1;"><div class="bnm">'+esc(a.applicantName||'Contractor')+'</div>'+
-      '<div class="bsb">'+(a.rating?'⭐ '+a.rating+' · ':'')+( a.projects||0)+' projects</div></div>'+
-      '<div style="text-align:right;"><div class="bpr">₹'+Number(a.amount||0).toLocaleString('en-IN')+'</div>'+
-      '<div style="font-size:10px;color:var(--s4);">'+(a.days||'—')+' days</div></div></div>'+
-      '<div class="bpit">"'+esc((a.pitch||'No pitch provided').substring(0,120))+(a.pitch&&a.pitch.length>120?'…':'')+'"</div>'+
-      '<div style="display:flex;gap:8px;" onclick="event.stopPropagation()">'+
-      (a.status==='awarded'?'<span class="sts awd" style="padding:8px 14px;">Awarded ✓</span>':
-        '<button class="btn btn-g btn-sm" style="flex:1;" data-uid="'+esc(a.applicantId||'')+'" data-nm="'+esc(a.applicantName||'Contractor')+'" onclick="chatWithBidderEl(this)">💬 Chat</button>'+
-        '<button class="btn btn-o btn-sm" data-aid="'+a.id+'" data-nm="'+esc(a.applicantName||'Contractor')+'" onclick="showAwardEl(this)">Award →</button>')+
-      '</div></div>';
+        '<div class="bav" style="background:'+COLS[i%5]+';">'+initials(a.applicantName||'C')+'</div>'+
+        '<div style="flex:1;"><div class="bnm">'+esc(a.applicantName||'Contractor')+'</div>'+
+        '<div class="bsb">'+(a.rating?'⭐ '+a.rating+' · ':'')+( a.projects||0)+' projects</div></div>'+
+        '<div style="text-align:right;"><div class="bpr">₹'+Number(a.amount||0).toLocaleString('en-IN')+'</div>'+
+        '<div style="font-size:10px;color:var(--s4);">'+(a.days||'—')+' days</div></div>'+
+      '</div>'+
+      '<div class="bpit">"'+esc((a.pitch||'No pitch provided').substring(0,130))+(a.pitch&&a.pitch.length>130?'…':'')+'"</div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;" onclick="event.stopPropagation()">'+
+        (isAwd?'<span class="sts awd" style="padding:8px 14px;flex:1;text-align:center;">Awarded ✓</span>':
+          '<button class="btn btn-g btn-sm" onclick="chatWithBidder(\''+esc(a.applicantId||'')+'\',\''+esc(a.applicantName||'Contractor')+'\')">💬 Chat</button>'+
+          (!isSL?'<button class="btn btn-sm" style="background:var(--blue5);color:var(--blue2);border:1px solid #BFDBFE;" onclick="showShortlist(\''+a.id+'\',\''+esc(a.applicantName||'Contractor')+'\')">Shortlist ✓</button>':'')+
+          '<button class="btn btn-o btn-sm" onclick="showAward(\''+a.id+'\',\''+esc(a.applicantName||'Contractor')+'\',\''+esc(a.applicantId||'')+'\')">Award →</button>')+
+      '</div>'+
+      (isSL&&!isAwd?'<div style="margin-top:6px;font-size:11px;color:var(--blue2);font-weight:700;">✓ Shortlisted</div>':'')+
+    '</div>';
   }).join('');
-  // Store apps for detail view
-  window._bidsApps=apps;
 }
 
 function showBidDetail(appId){
-  var app = window._bidsApps && window._bidsApps.find(function(a){return a.id===appId;});
+  var app=_allApps.find(function(a){return a.id===appId;});
   if(!app) return;
-  var cols=['#1D4ED8','#059669','#7C3AED','#EA580C','#DC2626'];
-  var idx = window._bidsApps.indexOf(app);
-  var html =
-    '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">' +
-    '<div class="bav" style="background:'+cols[idx%5]+';width:52px;height:52px;border-radius:15px;font-size:18px;">'+initials(app.applicantName||'C')+'</div>' +
-    '<div><div style="font-family:var(--h);font-size:18px;font-weight:700;">'+esc(app.applicantName||'Contractor')+'</div>' +
-    '<div style="font-size:13px;color:var(--s4);">'+(app.rating?'⭐ '+app.rating+' · ':'')+( app.projects||0)+' projects</div></div></div>' +
-    '<div class="dsec" style="margin:0 0 12px;"><h4>Quotation Details</h4>' +
-    '<div class="irow"><span class="ik">Quoted Amount</span><span class="iv" style="color:var(--green2);font-family:var(--h);font-size:15px;">₹'+Number(app.amount||0).toLocaleString('en-IN')+'</span></div>' +
-    '<div class="irow"><span class="ik">Timeline</span><span class="iv">'+(app.days||'—')+' Days</span></div>' +
-    '<div class="irow"><span class="ik">Labour</span><span class="iv">'+(app.labour||'—')+'</span></div>' +
-    '<div class="irow"><span class="ik">Terms</span><span class="iv">'+(app.terms||'—')+'</span></div></div>' +
+  var idx=_allApps.indexOf(app);
+  var html=
+    '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">'+
+    '<div class="bav" style="background:'+COLS[idx%5]+';width:52px;height:52px;border-radius:15px;font-size:18px;">'+initials(app.applicantName||'C')+'</div>'+
+    '<div><div style="font-family:var(--h);font-size:18px;font-weight:700;">'+esc(app.applicantName||'Contractor')+'</div>'+
+    '<div style="font-size:13px;color:var(--s4);">'+(app.rating?'⭐ '+app.rating+' · ':'')+( app.projects||0)+' projects</div></div></div>'+
+    '<div class="dsec" style="margin:0 0 12px;"><h4>Quotation Details</h4>'+
+    '<div class="irow"><span class="ik">Quoted Amount</span><span class="iv" style="color:var(--green2);font-family:var(--h);font-size:15px;">₹'+Number(app.amount||0).toLocaleString('en-IN')+'</span></div>'+
+    '<div class="irow"><span class="ik">Timeline</span><span class="iv">'+(app.days||'—')+' Days</span></div>'+
+    '<div class="irow"><span class="ik">Labour Count</span><span class="iv">'+(app.labour||'—')+'</span></div>'+
+    '<div class="irow"><span class="ik">Payment Terms</span><span class="iv">'+(app.terms||'—')+'</span></div></div>'+
     '<div style="background:var(--s8);border-radius:12px;padding:14px;margin-bottom:16px;font-size:14px;color:var(--s2);line-height:1.6;font-style:italic;">'+esc(app.pitch||'No pitch provided')+'</div>';
-  if(app.status !== 'awarded'){
-    html += '<div style="display:flex;gap:10px;">' +
-      '<button class="btn btn-g btn-bl" id="bd-chat-btn">💬 Chat</button>' +
-      '<button class="btn btn-o btn-bl" id="bd-award-btn">Award Work →</button>' +
-      '</div>';
+  if(app.status!=='awarded'){
+    html+='<div style="display:flex;gap:10px;flex-wrap:wrap;">'+
+      '<button class="btn btn-g btn-bl" style="flex:1;" id="bd-chat-btn">💬 Chat</button>'+
+      (app.status!=='shortlisted'&&app.status!=='review'?'<button class="btn btn-p btn-bl" style="flex:1;" id="bd-sl-btn">Shortlist ✓</button>':'')+
+      '<button class="btn btn-o btn-bl" style="flex:2;" id="bd-award-btn">Award Work →</button>'+
+    '</div>';
   }
-  document.getElementById('bid-detail-content').innerHTML = html;
-  // Set button handlers after render
+  document.getElementById('bid-detail-content').innerHTML=html;
   setTimeout(function(){
-    var cb = document.getElementById('bd-chat-btn');
-    var ab = document.getElementById('bd-award-btn');
-    if(cb) cb.onclick = function(){ chatWithBidder(app.applicantId||'', app.applicantName||'Contractor'); document.getElementById('bid-detail-ovl').classList.add('off'); };
-    if(ab) ab.onclick = function(){ showAward(app.id, app.applicantName||'Contractor'); document.getElementById('bid-detail-ovl').classList.add('off'); };
-  }, 50);
+    var cb=document.getElementById('bd-chat-btn');
+    var ab=document.getElementById('bd-award-btn');
+    var slb=document.getElementById('bd-sl-btn');
+    if(cb) cb.onclick=function(){chatWithBidder(app.applicantId||'',app.applicantName||'Contractor');document.getElementById('bid-detail-ovl').classList.add('off');};
+    if(ab) ab.onclick=function(){showAward(app.id,app.applicantName||'Contractor',app.applicantId||'');document.getElementById('bid-detail-ovl').classList.add('off');};
+    if(slb) slb.onclick=function(){showShortlist(app.id,app.applicantName||'Contractor');document.getElementById('bid-detail-ovl').classList.add('off');};
+  },50);
   document.getElementById('bid-detail-ovl').classList.remove('off');
 }
 
-async function chatWithBidder(otherUid, otherName){
-  if(!otherUid){toast('Bidder ID not available. Chat not possible for demo bids.','err');return;}
-  toast('Opening chat with '+otherName+'…','');
+function showAward(id,name,applicantId){
+  pendingAward={id:id,applicantId:applicantId,name:name};
+  document.getElementById('award-txt').textContent='Award this work to '+name+'? They will be notified immediately and you can finalize terms via chat.';
+  document.getElementById('award-ovl').classList.remove('off');
+}
+
+function showShortlist(id,name){
+  pendingShortlist={id:id,name:name};
+  document.getElementById('shortlist-txt').textContent='Shortlist '+name+' for this work? They will be notified to expect a decision soon.';
+  document.getElementById('shortlist-ovl').classList.remove('off');
+}
+
+async function confirmShortlist(){
+  if(!pendingShortlist) return;
+  try{
+    await db.collection('applications').doc(pendingShortlist.id).update({status:'shortlisted'});
+    // Notify contractor
+    var app=_allApps.find(function(a){return a.id===pendingShortlist.id;});
+    if(app&&app.applicantId){
+      await createNotification(db,FS,app.applicantId,'shortlisted','🎉 You are Shortlisted!',
+        'You have been shortlisted for "'+(_currentWork?_currentWork.title:'a work')+'" by '+esc(CD.name||'Main Contractor'),
+        'apps.html');
+    }
+    toast('Shortlisted! Contractor notified ✓','ok');
+    document.getElementById('shortlist-ovl').classList.add('off');
+    var a=_allApps.find(function(x){return x.id===pendingShortlist.id;});
+    if(a) a.status='shortlisted';
+    renderBids();
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+
+async function confirmAward(){
+  if(!pendingAward) return;
+  try{
+    await db.collection('applications').doc(pendingAward.id).update({status:'awarded',awardedAt:FS.FieldValue.serverTimestamp()});
+    // Update work status
+    if(_currentWork&&!_currentWork.id.startsWith('d')){
+      await db.collection('works').doc(_currentWork.id).update({status:'awarded',awardedTo:pendingAward.applicantId,awardedToName:pendingAward.name});
+    }
+    // Notify contractor
+    if(pendingAward.applicantId){
+      await createNotification(db,FS,pendingAward.applicantId,'awarded','🏆 Work Awarded to You!',
+        'Congratulations! You have been awarded "'+(_currentWork?_currentWork.title:'a work')+'" by '+esc(CD.name||'Main Contractor')+'. Chat to discuss next steps.',
+        'apps.html');
+    }
+    // Auto-open chat with awarded contractor
+    if(pendingAward.applicantId){
+      var snap=await db.collection('conversations').where('participants','array-contains',CU.uid).get();
+      var existing=snap.docs.find(function(d){return (d.data().participants||[]).includes(pendingAward.applicantId);});
+      if(!existing){
+        await db.collection('conversations').add({
+          participants:[CU.uid,pendingAward.applicantId],
+          participantNames:{[CU.uid]:CD.name||'Main Contractor',[pendingAward.applicantId]:pendingAward.name},
+          workId:_currentWork?_currentWork.id:'',workTitle:_currentWork?_currentWork.title:'Work',
+          lastMsg:'Work awarded! Let\'s finalize the start date.',
+          lastMsgTime:FS.FieldValue.serverTimestamp(),
+          unread:{[CU.uid]:0,[pendingAward.applicantId]:1},createdAt:FS.FieldValue.serverTimestamp()
+        });
+      }
+    }
+    toast('Work awarded! 🏆 Contractor notified.','ok');
+    document.getElementById('award-ovl').classList.add('off');
+    var a=_allApps.find(function(x){return x.id===pendingAward.id;});
+    if(a) a.status='awarded';
+    renderBids();
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+
+async function chatWithBidder(otherUid,otherName){
+  if(!otherUid){toast('Chat not available for demo bids','err');return;}
+  toast('Opening chat with '+otherName+'…');
   try{
     var snap=await db.collection('conversations').where('participants','array-contains',CU.uid).get();
     var existing=snap.docs.find(function(d){return (d.data().participants||[]).includes(otherUid);});
@@ -192,9 +289,9 @@ async function chatWithBidder(otherUid, otherName){
       await db.collection('conversations').add({
         participants:[CU.uid,otherUid],
         participantNames:{[CU.uid]:CD.name||'Main Contractor',[otherUid]:otherName},
-        workId:getP('id')||'', workTitle:workTitle,
-        lastMsg:'', lastMsgTime:FS.FieldValue.serverTimestamp(),
-        unread:{[CU.uid]:0,[otherUid]:0}, createdAt:FS.FieldValue.serverTimestamp()
+        workId:getP('id')||'',workTitle:workTitle,
+        lastMsg:'',lastMsgTime:FS.FieldValue.serverTimestamp(),
+        unread:{[CU.uid]:0,[otherUid]:0},createdAt:FS.FieldValue.serverTimestamp()
       });
     }
     saveLS('chatTarget',{uid:otherUid,name:otherName});
@@ -202,24 +299,7 @@ async function chatWithBidder(otherUid, otherName){
   }catch(e){toast('Error: '+e.message,'err');}
 }
 
-function showAward(id,name){
-  pendingAward=id;
-  document.getElementById('award-txt').textContent='Award this work to '+name+'? They will be notified immediately.';
-  document.getElementById('award-ovl').classList.remove('off');
-}
-async function confirmAward(){
-  if(!pendingAward)return;
-  try{
-    await db.collection('applications').doc(pendingAward).update({status:'awarded'});
-    toast('Work awarded! 🏆','ok');
-    document.getElementById('award-ovl').classList.add('off');
-    setTimeout(function(){location.href='myworks.html';},1200);
-  }catch(e){toast('Error: '+e.message,'err');}
-}
-document.getElementById('award-ovl').addEventListener('click',function(e){if(e.target===this)this.classList.add('off');});
-document.getElementById('bid-detail-ovl').addEventListener('click',function(e){if(e.target===this)this.classList.add('off');});
-function goDetail(id){location.href='detail.html?id='+id;}
-function chatBidDetail(el){chatWithBidder(el.dataset.uid,el.dataset.nm);document.getElementById('bid-detail-ovl').classList.add('off');}
-function awardBidDetail(el){showAward(el.dataset.aid,el.dataset.nm);document.getElementById('bid-detail-ovl').classList.add('off');}
+document.querySelectorAll('.ovl').forEach(function(o){o.addEventListener('click',function(e){if(e.target===this)this.classList.add('off');});});
 </script>
-</body></html>
+</body>
+</html>

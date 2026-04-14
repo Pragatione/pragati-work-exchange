@@ -15,6 +15,10 @@
 .bni.on .lbl{color:var(--blue2);}
 .bni:active .ico{transform:scale(.9);}
 .bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--s7);display:flex;z-index:50;padding:8px 0 max(env(safe-area-inset-bottom),12px);box-shadow:0 -2px 16px rgba(0,0,0,.07);}
+.notif-dot{position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:var(--red2);border:2px solid #fff;}
+.awarded-banner{background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border:1.5px solid var(--green3);border-radius:14px;padding:14px 16px;margin:10px 16px 0;cursor:pointer;position:relative;overflow:hidden;}
+.awarded-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green2),var(--green3));}
+.hire-req-banner{background:linear-gradient(135deg,#FFF7ED,#FEF3C7);border:1.5px solid #FED7AA;border-radius:14px;padding:14px 16px;margin:8px 16px 0;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -30,22 +34,49 @@
   <div class="hh">
     <div class="hh-top">
       <div><div class="hh-gr">Good day 👋</div><div class="hh-nm" id="hh-nm">—</div></div>
-      <div class="hh-av" id="hh-av" onclick="location.href='profile.html'">RP</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="position:relative;cursor:pointer;" onclick="location.href='notifications.html'">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:18px;">🔔</div>
+          <div class="notif-dot" id="notif-dot" style="display:none;"></div>
+        </div>
+        <div class="hh-av" id="hh-av" onclick="location.href='profile.html'">RP</div>
+      </div>
     </div>
     <div class="spill" onclick="location.href='find.html'"><span style="font-size:16px;opacity:.6;">🔍</span><span>Search work by trade, location…</span></div>
   </div>
+
   <div class="pscr pb90">
+    <!-- Metrics -->
     <div class="mets">
       <div class="met"><div class="mn bl" id="st-open">—</div><div class="ml">Open Works</div></div>
       <div class="met"><div class="mn or" id="st-app">0</div><div class="ml">Applied</div></div>
       <div class="met"><div class="mn gr" id="st-awd">0</div><div class="ml">Awarded</div></div>
       <div class="met"><div class="mn pu" id="st-sh">0</div><div class="ml">Shortlisted</div></div>
     </div>
-    <div id="home-ntc" style="display:none;" class="ntc">⚡ <span id="home-ntxt"></span></div>
+
+    <!-- Awarded notification banner -->
+    <div id="awarded-banner" style="display:none;" class="awarded-banner" onclick="location.href='apps.html'">
+      <div style="font-family:var(--h);font-size:14px;font-weight:700;color:var(--green);">🏆 Work Awarded!</div>
+      <div id="awarded-msg" style="font-size:12px;color:var(--s3);margin-top:3px;line-height:1.5;"></div>
+      <div style="font-size:11px;color:var(--green2);font-weight:700;margin-top:6px;">View in My Bids →</div>
+    </div>
+
+    <!-- Hire request banner -->
+    <div id="hire-req-banner" style="display:none;" class="hire-req-banner" onclick="location.href='apps.html'">
+      <div style="font-family:var(--h);font-size:14px;font-weight:700;color:var(--orange);">🤝 New Hire Request!</div>
+      <div id="hire-req-msg" style="font-size:12px;color:var(--s3);margin-top:3px;"></div>
+      <div style="font-size:11px;color:var(--orange2);font-weight:700;margin-top:6px;">View & Respond →</div>
+    </div>
+
+    <!-- Profile incomplete banner -->
     <div id="profile-banner" style="display:none;margin:10px 16px 0;background:linear-gradient(135deg,var(--orange5),#fff);border:1px solid #FED7AA;border-radius:14px;padding:14px 16px;cursor:pointer;" onclick="location.href='register-profile.html'">
       <div style="font-family:var(--h);font-size:14px;font-weight:700;color:var(--orange);margin-bottom:3px;">👷 Complete Your Profile!</div>
       <div style="font-size:12px;color:var(--s3);line-height:1.55;">Main contractors can hire you directly. Add your experience & photos to get discovered. <span style="color:var(--orange2);font-weight:700;">Set up now →</span></div>
     </div>
+
+    <div id="home-ntc" style="display:none;margin:8px 16px 0;" class="ntc">⚡ <span id="home-ntxt"></span></div>
+
+    <!-- Browse by Trade -->
     <div style="padding:12px 16px 0;"><div class="sh"><h3>Browse by Trade</h3></div></div>
     <div class="istrip">
       <div class="icard" onclick="location.href='find.html?trade=Plastering'"><div class="icico">🧱</div><div class="ictit">Plastering</div><div class="icsub">Wall & ceiling</div></div>
@@ -55,95 +86,103 @@
       <div class="icard" onclick="location.href='find.html?trade=Plumbing'"><div class="icico">🔧</div><div class="ictit">Plumbing</div><div class="icsub">Sanitary</div></div>
       <div class="icard" onclick="location.href='find.html?trade=Masonry'"><div class="icico">🏗️</div><div class="ictit">Masonry</div><div class="icsub">Brick & block</div></div>
     </div>
+
     <div style="padding:0 16px;"><div class="sh"><h3>Latest Works</h3><a onclick="location.href='find.html'">See all →</a></div></div>
     <div style="padding:0 16px;" id="hw-list"><div class="empty"><div class="spin" style="margin:0 auto;"></div></div></div>
   </div>
-  <nav class="bnav"><div class="bni on" onclick="location.href='home.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div class="lbl">Home</div></div><div class="bni" onclick="location.href='find.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div><div class="lbl">Find Work</div></div><div class="bni" onclick="location.href='apps.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></div><div class="lbl">My Bids</div></div><div class="bni" onclick="location.href='chat.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg></div><div class="lbl">Messages</div></div></nav>
+
+  <nav class="bnav">
+    <div class="bni on" onclick="location.href='home.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div class="lbl">Home</div></div>
+    <div class="bni" onclick="location.href='find.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div><div class="lbl">Find Work</div></div>
+    <div class="bni" id="bnav-apps" onclick="location.href='apps.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></div><div class="lbl">My Bids</div></div>
+    <div class="bni" onclick="location.href='chat.html'"><div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg></div><div class="lbl">Messages</div></div>
+  </nav>
 </div>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="shared.js"></script>
 <script>
-
-const firebase_cfg = {
-  apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",
-  authDomain:"pragati-work-exchange.firebaseapp.com",
-  projectId:"pragati-work-exchange",
-  storageBucket:"pragati-work-exchange.firebasestorage.app",
-  messagingSenderId:"422215240765",
-  appId:"1:422215240765:web:eefb239420262c9d822e54"
-};
+var firebase_cfg={apiKey:"AIzaSyBT465A_V0oe-8wkeWk8hee7NXUBSLZcyA",authDomain:"pragati-work-exchange.firebaseapp.com",projectId:"pragati-work-exchange",storageBucket:"pragati-work-exchange.firebasestorage.app",messagingSenderId:"422215240765",appId:"1:422215240765:web:eefb239420262c9d822e54"};
 if(!firebase.apps.length) firebase.initializeApp(firebase_cfg);
-const auth = firebase.auth();
-const db   = firebase.firestore();
-const FS   = firebase.firestore;
-var CU=null, CD=null;
+var auth=firebase.auth(), db=firebase.firestore(), FS=firebase.firestore;
+var CU=null,CD=null;
+
 auth.onAuthStateChanged(async function(user){
   if(!user){location.href='index.html';return;}
   CU=user;
-  try{var s=await db.collection('users').doc(user.uid).get(); CD=s.exists?s.data():null;}catch(e){}
+  try{var s=await db.collection('users').doc(user.uid).get();CD=s.exists?s.data():null;}catch(e){}
   if(!CD){location.href='index.html';return;}
-  if(CD && CD.role==='main'){location.href='main.html';return;}
+  if(CD.role==='main'){location.href='main.html';return;}
   document.getElementById('loader').classList.add('out');
-  
   var n=CD.name||'Contractor';
   document.getElementById('hh-nm').textContent=n.split(' ')[0];
   document.getElementById('hh-av').textContent=initials(n);
   loadHome();
-
+  checkNotifications();
 });
 
-function toast(msg,type){
-  var el=document.getElementById('toast'); el.textContent=msg;
-  el.className=type?'on '+type:'on'; setTimeout(function(){el.className='';},3000);
-}
-function getP(k){return new URLSearchParams(window.location.search).get(k);}
-function saveLS(k,v){try{localStorage.setItem('pg_'+k,JSON.stringify(v));}catch(e){}}
-function getLS(k){try{return JSON.parse(localStorage.getItem('pg_'+k));}catch(e){return null;}}
-function clearLS(k){localStorage.removeItem('pg_'+k);}
-function fmtBud(w){
-  var f=function(n){return n>=100000?'₹'+(n/100000).toFixed(1).replace('.0','')+'L':'₹'+n.toLocaleString('en-IN');};
-  return(w.minBudget&&w.maxBudget)?f(w.minBudget)+'–'+f(w.maxBudget):w.minBudget?f(w.minBudget):'TBD';
-}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function initials(n){return(n||'U').split(' ').map(function(x){return x[0];}).join('').toUpperCase().slice(0,2);}
-function tagClr(u){return u==='Urgent'?'t-or':u==='Critical'?'t-re':'t-gr';}
-function emptyHTML(ico,t,s){return '<div class="empty"><div class="ei">'+ico+'</div><h3>'+t+'</h3><p>'+s+'</p></div>';}
-function mkCard(w){
-  return '<div class="wcard" onclick="goDetail(\''+w.id+'\')">'+
-    '<div class="wh"><div class="tags"><span class="tag t-bl">'+esc(w.trade||'General')+'</span>'+
-    '<span class="tag '+tagClr(w.urgency)+'">'+esc(w.urgency||'Normal')+'</span></div>'+
-    '<div class="wt">'+esc(w.title)+'</div>'+
-    '<div class="wco">🏢 '+esc(w.company||w.postedByName||'Main Contractor')+'</div></div>'+
-    '<div class="wb"><div class="wmeta"><span>📍 '+esc(w.location||'—')+'</span>'+
-    '<span>⏱ '+esc(w.startDate||'TBD')+'</span>'+
-    '<span>👷 '+esc(w.experience||'—')+'</span></div></div>'+
-    '<div class="wf"><span class="wbud">'+fmtBud(w)+'</span>'+
-    '<span class="wbids">'+(w.bids||0)+' bids</span></div></div>';
-}
-</script>
-<script>
 async function loadHome(){
+  // Works list
   var works=[];
   try{
     var ws=await db.collection('works').orderBy('createdAt','desc').limit(6).get();
     works=ws.docs.map(function(d){return Object.assign({id:d.id},d.data());});
   }catch(e){works=DEMO_WORKS;}
+  if(!works.length) works=DEMO_WORKS;
   document.getElementById('st-open').textContent=works.length;
   var list=document.getElementById('hw-list');
   list.innerHTML=works.slice(0,4).map(mkCard).join('')||emptyHTML('🏗️','No works yet','Check back soon');
   if(works.length){document.getElementById('home-ntc').style.display='flex';document.getElementById('home-ntxt').textContent=works.length+' open works available near you!';}
-  // Show profile completion banner if not complete
-  if(CD && !CD.profileComplete){document.getElementById('profile-banner').style.display='block';}
+
+  // Profile banner
+  if(CD&&!CD.profileComplete) document.getElementById('profile-banner').style.display='block';
+
+  // Applications stats
   try{
     var snap=await db.collection('applications').where('applicantId','==',CU.uid).get();
     var apps=snap.docs.map(function(d){return d.data();});
     document.getElementById('st-app').textContent=apps.length;
     document.getElementById('st-awd').textContent=apps.filter(function(a){return a.status==='awarded';}).length;
     document.getElementById('st-sh').textContent=apps.filter(function(a){return a.status==='review'||a.status==='shortlisted';}).length;
+    // Show awarded banner for latest award
+    var awarded=apps.filter(function(a){return a.status==='awarded';});
+    if(awarded.length){
+      var latest=awarded[awarded.length-1];
+      document.getElementById('awarded-banner').style.display='block';
+      document.getElementById('awarded-msg').textContent='You were awarded "'+( latest.workTitle||'a work')+'" by '+(latest.workCompany||'a main contractor')+'. Chat to confirm start date!';
+    }
+  }catch(e){}
+
+  // Hire request banner
+  try{
+    var hireSnap=await db.collection('hire_requests').where('toUid','==',CU.uid).where('status','==','pending').get();
+    if(!hireSnap.empty){
+      var h=hireSnap.docs[0].data();
+      document.getElementById('hire-req-banner').style.display='block';
+      document.getElementById('hire-req-msg').textContent=(h.fromName||'A main contractor')+' wants to hire you directly for: '+(h.description||'a project').substring(0,80)+'…';
+    }
   }catch(e){}
 }
+
+async function checkNotifications(){
+  try{
+    var snap=await db.collection('notifications').where('toUid','==',CU.uid).where('read','==',false).get();
+    if(snap.size>0){
+      document.getElementById('notif-dot').style.display='block';
+      // Add badge to My Bids nav
+      var appsNav=document.getElementById('bnav-apps');
+      if(appsNav&&!appsNav.querySelector('.notif-dot')){
+        var dot=document.createElement('div');dot.className='notif-dot';
+        appsNav.style.position='relative';
+        appsNav.appendChild(dot);
+      }
+    }
+  }catch(e){}
+}
+
 function goDetail(id){location.href='detail.html?id='+id;}
 </script>
-</body></html>
+</body>
+</html>
